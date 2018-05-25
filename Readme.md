@@ -1,4 +1,4 @@
-# PIB: PHP in brower
+# PIB: PHP in Browser
 
 [Try it](https://oraoto.github.io/pib/)
 
