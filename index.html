@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en-us">
+
+<head>
+    <meta charset="utf-8">
+    <title>PIB: PHP in Browsere</title>
+</head>
+
+<body style="display: flex;">
+    <textarea id="input" style="width: 37%; height: 600px;">
+<?php
+
+$msg=<<<EOF
+<a href="https://github.com/oraoto/pib">Github</a> <br>
+EOF;
+
+echo $msg;
+
+phpinfo();
+
+</textarea>
+    <button id="run" style="width: 3%" disabled>Loading</button>
+    <iframe allow="midi; geolocation; microphone; camera; encrypted-media;"
+            sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups"
+        style="width: 60%" id="output"></iframe>
+
+    <script type='text/javascript'>
+        var input_area = document.getElementById('input');
+        var run_button = document.getElementById('run');
+        var output_area = document.getElementById('output').contentWindow.document;
+        output_area.open();
+
+        function init() {
+            try {
+                Module.ccall('php_embed_init', 'number', ['number', null], [1, null])
+            } catch (ex) {
+                console.log(ex)
+            }
+            console.log("inited")
+            run_button.disabled = false
+            run_button.textContent = "Run"
+            run_button.addEventListener('click', function () {
+                output_area.close();
+                var code = input_area.value;
+                code = code.replace(/^<\?php/, "")
+                console.log(code);
+                let ret = Module.ccall('zend_eval_string', 'number', ["string", null, 'string'], [code, null,
+                    "main"
+                ])
+                console.log(ret);
+                if (ret != 0) {
+                    output_area.write("Error, please reload this page")
+                }
+            });
+        }
+
+        var Module = {
+            preRun: [],
+            postRun: [init],
+            print: function (text) {
+
+                if (arguments.length > 1) {
+                    text = Array.prototype.slice.call(arguments).join(' ');
+                }
+                output_area.write(text)
+            }
+        };
+    </script>
+    <script async type="text/javascript" src="php.js"></script>
+</body>
+
+</html>
