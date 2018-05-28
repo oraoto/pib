@@ -10,11 +10,9 @@
     <textarea id="input" style="width: 37%; height: 600px;">
 <?php
 
-$msg=<<<EOF
-<a href="https://github.com/oraoto/pib">Github</a> <br>
+echo <<<EOF
+Github: https://github.com/oraoto/pib
 EOF;
-
-echo $msg;
 
 phpinfo();
 
@@ -31,26 +29,22 @@ phpinfo();
         output_area.open();
 
         function init() {
-            try {
-                Module.ccall('php_embed_init', 'number', ['number', null], [1, null])
-            } catch (ex) {
-                console.log(ex)
-            }
-            console.log("inited")
             run_button.disabled = false
             run_button.textContent = "Run"
             run_button.addEventListener('click', function () {
+                Module.ccall('php_embed_init', 'number', ['number', null], [0, null])
                 output_area.close();
                 var code = input_area.value;
-                code = code.replace(/^<\?php/, "")
-                console.log(code);
+                code = code.replace(/^\s*<\?php/, "")
+                code = code + "\necho PHP_EOL;" // flush line buffer
                 let ret = Module.ccall('zend_eval_string', 'number', ["string", null, 'string'], [code, null,
                     "main"
                 ])
                 console.log(ret);
                 if (ret != 0) {
-                    output_area.write("Error, please reload this page")
+                    output_area.write("Error, please check your code")
                 }
+                Module.ccall('php_embed_shutdown', 'void', [], [])
             });
         }
 

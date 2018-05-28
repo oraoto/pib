@@ -28,7 +28,7 @@ emmake make
 mkdir out
 emcc -O3 \
   -s WASM=1 \
-  -s EXPORTED_FUNCTIONS='["_php_embed_init", "_zend_eval_string"]' \
+  -s EXPORTED_FUNCTIONS='["_php_embed_init", "_zend_eval_string", "_php_embed_shutdown"]' \
   -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall"]' \
   -s TOTAL_MEMORY=134217728 \
   -s ASSERTIONS=0 \
