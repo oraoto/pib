@@ -4,25 +4,59 @@
 <head>
     <meta charset="utf-8">
     <title>PIB: PHP in Browser</title>
+    <script src="//ajaxorg.github.io/ace-builds/src-min/ace.js" type="text/javascript" charset="utf-8"></script>
+    <style>
+        #playground {
+            display: flex;
+            flex-direction: row;
+            height: 90vh;
+        }
+
+        #playground-editor,
+        #playground iframe {
+            flex: 1 1 auto;
+            position: relative;
+        }
+
+        #playground-editor {
+            border: 4px solid #bbb;
+            width: 40%;
+        }
+
+        #playground iframe {
+            border: none;
+            width: 60%;
+        }
+
+        #editor {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
 </head>
 
-<body style="display: flex;">
-    <textarea id="input" style="width: 37%; height: 600px;">
-<?php
-
-echo <<<EOF
-Github: https://github.com/oraoto/pib
-EOF;
-
-phpinfo();
-
-</textarea>
+<body>
     <button id="run" style="width: 3%" disabled>Loading</button>
-    <iframe allow="midi; geolocation; microphone; camera; encrypted-media;"
-            sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups"
-        style="width: 60%" id="output"></iframe>
 
+    <div id="playground">
+        <div id="playground-editor">
+            <div id="editor"></div>
+        </div>
+        <iframe allow="midi; geolocation; microphone; camera; encrypted-media;" sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups"
+            id="output"></iframe>
+    </div>
     <script type='text/javascript'>
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/github");
+        editor.session.setMode("ace/mode/php");
+        editor.setShowPrintMargin(false);
+
+        var default_code = "<?php\n\necho<<<EOF\nGithub: https://github.com/oraoto/pib\nEOF;\n\nphpinfo();\n"
+        editor.setValue(default_code);
+
         var input_area = document.getElementById('input');
         var run_button = document.getElementById('run');
         var output_area = document.getElementById('output').contentWindow.document;
@@ -34,7 +68,7 @@ phpinfo();
             run_button.addEventListener('click', function () {
                 Module.ccall('php_embed_init', 'number', ['number', null], [0, null])
                 output_area.close();
-                var code = input_area.value;
+                var code = editor.getValue();
                 code = code.replace(/^\s*<\?php/, "")
                 code = code + "\necho PHP_EOL;" // flush line buffer
                 let ret = Module.ccall('zend_eval_string', 'number', ["string", null, 'string'], [code, null,
