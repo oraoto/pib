@@ -58,7 +58,7 @@
 
         var query = new URLSearchParams(document.location.search);
         if (query.has('code')) {
-            editor.setValue(query.get('code'));
+            editor.setValue(decodeURIComponent(query.get('code')));
         } else {
             editor.setValue(default_code);
         }
@@ -76,7 +76,7 @@
                 output_area.close();
                 var code = editor.getValue();
                 var query = new URLSearchParams();
-                query.append('code', code);
+                query.append('code', encodeURIComponent(code));
                 history.replaceState({}, document.title, "?" + query.toString());
 
                 code = code.replace(/^\s*<\?php/, "")
