@@ -17,4 +17,3 @@ bash build.sh
 ## Known issues
 
 + Generator doesn't work
-+ Exception doesn't work

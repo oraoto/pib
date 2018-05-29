@@ -1,11 +1,14 @@
-#/bin/bash
+#!/bin/bash
 
 echo "Get PHP 7.2.5 source"
-wget https://github.com/php/php-src/archive/php-7.2.5.tar.gz
-tar xf php-7.2.5.tar.gz
-cd php-7.2.5
+wget https://php.net/distributions/php-7.2.5.tar.xz
+tar xf php-7.2.5.tar.xz
+
+echo "Apply patch"
+patch -p0 -i mods.diff
 
 echo "Configure"
+cd php-7.2.5
 emconfigure ./configure \
   --disable-all \
   --disable-cgi \
@@ -16,12 +19,10 @@ emconfigure ./configure \
   --without-pcre-jit \
   --with-layout=GNU \
   --enable-embed=static \
-  --enable-bcmath  \
+  --enable-bcmath \
   --enable-json \
   --enable-ctype \
   --enable-tokenizer
-
-echo "Apply patch"
 
 echo "Build"
 emmake make
@@ -35,7 +36,6 @@ emcc -O3 \
   -s INVOKE_RUN=0 \
   libs/libphp7.a -o out/php.html
 
-cd out/php.wasm out/php.js ..
+cp out/php.wasm out/php.js ..
 
 echo "Done"
-
