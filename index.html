@@ -55,7 +55,13 @@
         editor.setShowPrintMargin(false);
 
         var default_code = "<?php\n\necho<<<EOF\nGithub: https://github.com/oraoto/pib\nEOF;\n\nphpinfo();\n"
-        editor.setValue(default_code);
+
+        var query = new URLSearchParams(document.location.search);
+        if (query.has('code')) {
+            editor.setValue(query.get('code'));
+        } else {
+            editor.setValue(default_code);
+        }
 
         var input_area = document.getElementById('input');
         var run_button = document.getElementById('run');
@@ -69,6 +75,10 @@
                 Module.ccall('php_embed_init', 'number', ['number', null], [0, null])
                 output_area.close();
                 var code = editor.getValue();
+                var query = new URLSearchParams();
+                query.append('code', code);
+                history.replaceState({}, document.title, "?" + query.toString());
+
                 code = code.replace(/^\s*<\?php/, "")
                 code = code + "\necho PHP_EOL;" // flush line buffer
                 let ret = Module.ccall('zend_eval_string', 'number', ["string", null, 'string'], [code, null,
