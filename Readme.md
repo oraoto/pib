@@ -2,6 +2,8 @@
 
 [Try it](https://oraoto.github.io/pib/)
 
+Firefox is recommended for better user experience.
+
 ## Examples
 
 + [Hello, World](https://oraoto.github.io/pib/?code=%253C%253Fphp%250A%250Aecho%2520%2522Hello%252C%2520World%21%2522%253B)
