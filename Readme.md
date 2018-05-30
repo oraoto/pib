@@ -23,3 +23,8 @@ bash build.sh
 ## Known issues
 
 + Generator doesn't work
++ Memory leak
+
+## Acknowledge
+
+The Web UI is based on [Rust Playground](https://play.rust-lang.org/).
