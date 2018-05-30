@@ -27,7 +27,6 @@ bash build.sh
 
 ## Known issues
 
-+ Generator doesn't work
 + Memory leak
 
 ## Acknowledge
