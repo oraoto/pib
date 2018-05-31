@@ -5,6 +5,14 @@
     <meta charset="utf-8">
     <title>PIB: PHP in Browser</title>
     <script src="//ajaxorg.github.io/ace-builds/src-min/ace.js" type="text/javascript" charset="utf-8"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-105060513-3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-105060513-3');
+    </script>
     <style>
         body {
             background-color: #E1E1DB;
@@ -79,9 +87,7 @@
             border: 1px solid #dedede;
         }
 
-        #output {
-
-        }
+        #output {}
     </style>
 </head>
 
@@ -152,7 +158,15 @@
                     text = Array.prototype.slice.call(arguments).join(' ');
                 }
                 output_area.write(text)
+            },
+            printErr: function (text) {
+
+                if (arguments.length > 1) {
+                    text = Array.prototype.slice.call(arguments).join(' ');
+                }
+                output_area.write(text)
             }
+
         };
     </script>
     <script async type="text/javascript" src="php.js"></script>
