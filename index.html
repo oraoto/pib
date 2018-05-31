@@ -79,9 +79,7 @@
             border: 1px solid #dedede;
         }
 
-        #output {
-
-        }
+        #output {}
     </style>
 </head>
 
@@ -152,7 +150,15 @@
                     text = Array.prototype.slice.call(arguments).join(' ');
                 }
                 output_area.write(text)
+            },
+            printErr: function (text) {
+
+                if (arguments.length > 1) {
+                    text = Array.prototype.slice.call(arguments).join(' ');
+                }
+                output_area.write(text)
             }
+
         };
     </script>
     <script async type="text/javascript" src="php.js"></script>

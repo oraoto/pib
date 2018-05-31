@@ -34,8 +34,9 @@ emcc -O3 \
   -s TOTAL_MEMORY=134217728 \
   -s ASSERTIONS=0 \
   -s INVOKE_RUN=0 \
+  --preload-file Zend/bench.php \
   libs/libphp7.a -o out/php.html
 
-cp out/php.wasm out/php.js ..
+cp out/php.wasm out/php.js out/php.data ..
 
 echo "Done"
