@@ -87,7 +87,6 @@
             border: 1px solid #dedede;
         }
 
-        #output {}
     </style>
 </head>
 
@@ -126,6 +125,11 @@
         output_area.open();
 
         function init() {
+
+            output_area.close();
+            output_area.write("Click RUN");
+            output_area.close();
+
             run_button.disabled = false
             run_button.textContent = "Run"
             run_button.addEventListener('click', function () {
@@ -140,6 +144,7 @@
                 if (ret != 0) {
                     output_area.write("Error, please check your code")
                 }
+                output_area.close();
             });
         }
 
