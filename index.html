@@ -144,7 +144,9 @@
         }
 
         var Module = {
-            preRun: [],
+            preRun: [
+                function() {ENV.USE_ZEND_ALLOC = "0"}
+            ],
             postRun: [init],
             print: function (text) {
 
@@ -167,4 +169,3 @@
 </body>
 
 </html>
-
