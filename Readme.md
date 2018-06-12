@@ -1,4 +1,6 @@
 # PIB: PHP in Browser
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Foraoto%2Fpib.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Foraoto%2Fpib?ref=badge_shield)
+
 
 [Try it](https://oraoto.github.io/pib/)
 
@@ -34,3 +36,7 @@ bash build.sh
 ## Acknowledge
 
 The Web UI is based on [Rust Playground](https://play.rust-lang.org/).
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Foraoto%2Fpib.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Foraoto%2Fpib?ref=badge_large)
