@@ -1,14 +1,14 @@
 #!/bin/bash
 
-echo "Get PHP 7.2.5 source"
-wget https://php.net/distributions/php-7.2.5.tar.xz
-tar xf php-7.2.5.tar.xz
+echo "Get PHP source"
+#wget https://downloads.php.net/~cmb/php-7.3.0alpha3.tar.xz
+tar xf php-7.3.0alpha3.tar.xz
 
 echo "Apply patch"
 patch -p0 -i mods.diff
 
 echo "Configure"
-cd php-7.2.5
+cd php-7.3.0alpha3
 emconfigure ./configure \
   --disable-all \
   --disable-cgi \
