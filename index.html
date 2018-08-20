@@ -96,13 +96,14 @@
                 id="output"></iframe>
         </div>
     </div>
+    <a href="https://github.com/oraoto/pib"><img style="z-index: 1;position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
     <script type='text/javascript'>
         var editor = ace.edit("editor");
         editor.setTheme("ace/theme/github");
         editor.session.setMode("ace/mode/php");
         editor.setShowPrintMargin(false);
 
-        var default_code = "<?php\n\necho<<<EOF\nGithub: https://github.com/oraoto/pib\nEOF;\n\nphpinfo();\n"
+        var default_code = "<?php\n\nphpinfo();\n"
 
         var query = new URLSearchParams(document.location.search);
         if (query.has('code')) {
@@ -128,8 +129,10 @@
                 output_area.close();
                 var code = editor.getValue();
                 var query = new URLSearchParams();
-                query.append('code', encodeURIComponent(code));
-                history.replaceState({}, document.title, "?" + query.toString());
+                if (code.length < 1024) {
+                    query.append('code', encodeURIComponent(code));
+                    history.replaceState({}, document.title, "?" + query.toString());
+                }
                 code = code.replace(/^\s*<\?php/, "") // remove <?php
                 code = code + "\necho PHP_EOL;" // flush line buffer
                 let ret = Module.ccall('pib_eval', 'number', ["string"], [code])
