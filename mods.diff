@@ -1,20 +1,20 @@
 --- php-7.2.5-origin/main/reentrancy.c	2018-04-24 23:10:05.000000000 +0800
-+++ php-7.3.0alpha3/main/reentrancy.c	2018-05-31 14:38:08.604792731 +0800
++++ php-7.3.0beta2/main/reentrancy.c	2018-05-31 14:38:08.604792731 +0800
 @@ -136,7 +136,7 @@
  	   (HPUX returns 0 on success whereas Solaris returns non-zero)
  	 */
  	entry->d_name[0] = '\0';
 -	readdir_r(dirp, entry);
 +	readdir_r(dirp, entry, result);
- 
+
  	if (entry->d_name[0] == '\0') {
  		*result = NULL;
 --- php-7.2.5-origin/main/streams/plain_wrapper.c	2018-04-24 23:10:05.000000000 +0800
-+++ php-7.3.0alpha3/main/streams/plain_wrapper.c	2018-05-29 16:35:30.348845147 +0800
++++ php-7.3.0beta2/main/streams/plain_wrapper.c	2018-05-29 16:35:30.348845147 +0800
 @@ -1364,7 +1364,7 @@
  				fclose(file);
  			}
- 
+
 -			ret = VCWD_UTIME(url, newtime);
 +			//ret = VCWD_UTIME(url, newtime);
  			break;

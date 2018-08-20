@@ -1,14 +1,14 @@
 #!/bin/bash
 
 echo "Get PHP source"
-#wget https://downloads.php.net/~cmb/php-7.3.0alpha3.tar.xz
-tar xf php-7.3.0alpha3.tar.xz
+wget https://downloads.php.net/~cmb/php-7.3.0beta2.tar.xz
+tar xf php-7.3.0beta2.tar.xz
 
 echo "Apply patch"
 patch -p0 -i mods.diff
 
 echo "Configure"
-cd php-7.3.0alpha3
+cd php-7.3.0beta2
 emconfigure ./configure \
   --disable-all \
   --disable-cgi \
@@ -30,6 +30,7 @@ mkdir out
 emcc -O3 -I . -I Zend -I main -I TSRM/ ../pib_eval.c -o pib_eval.o
 emcc -O3 \
   -s WASM=1 \
+  -s ENVIRONMENT=web \
   -s EXPORTED_FUNCTIONS='["_pib_eval", "_php_embed_init", "_zend_eval_string", "_php_embed_shutdown"]' \
   -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall"]' \
   -s TOTAL_MEMORY=134217728 \

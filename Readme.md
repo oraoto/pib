@@ -2,7 +2,7 @@
 
 [Try it](https://oraoto.github.io/pib/)
 
-PHP Version: 7.3.0 alpha3
+PHP Version: 7.3.0 beta2
 
 Firefox is recommended for better user experience.
 
@@ -15,13 +15,13 @@ Firefox is recommended for better user experience.
 + [Multi catch exception handling](https://oraoto.github.io/pib/?code=%253C%253Fphp%250A%250Atry%2520%257B%250A%2520%2520%2520%2520if%2520%28random_int%280%252C%252010%29%2520%253E%25205%29%2520%257B%250A%2520%2520%2520%2520%2520%2520%2520%2520%2520throw%2520new%2520BadFunctionCallException%28%29%253B%250A%2520%2520%2520%2520%257D%2520else%2520%257B%250A%2520%2520%2520%2520%2520%2520%2520%2520throw%2520new%2520LengthException%28%29%253B%250A%2520%2520%2520%2520%257D%250A%257D%2520catch%2520%28BadFunctionCallException%2520%257C%2520LengthException%2520%2524ex%29%2520%257B%250A%2520%2520%2520%2520var_dump%28%2524ex%29%253B%250A%257D%250A)
 + [Scalar type declarations](https://oraoto.github.io/pib/?code=%253C%253Fphp%250A%252F%252Fdeclare%28strict_types%253D1%29%253B%250A%250Afunction%2520sumOfInts%28int%2520...%2524ints%29%250A%257B%250A%2520%2520%2520%2520return%2520array_sum%28%2524ints%29%253B%250A%257D%250A%250Avar_dump%28sumOfInts%282%252C%2520%273%27%252C%25204.1%29%29%253B%250A)
 + [File access](https://oraoto.github.io/pib/?code=%253C%253Fphp%250A%250A%2524it%2520%253D%2520new%2520RecursiveIteratorIterator%28new%2520RecursiveDirectoryIterator%28%2522.%2522%29%29%253B%250A%250Aforeach%2520%28%2524it%2520as%2520%2524name%2520%253D%253E%2520%2524entry%29%2520%257B%250A%2520%2520%2520%2520echo%2520%2524name%2520.%2520%2522%253Cbr%252F%253E%2522%253B%250A%257D%250A)
-+ [Zend/bench.php](https://oraoto.github.io/pib/?code=%253C%253Fphp%250A%250Ainclude%28%2522Zend%252Fbench.php%2522%29%253B%250A)
++ [Zend/bench.php](https://oraoto.github.io/pib/?code=%253C%253Fphp%250A%250Ainclude%28%2522Zend%252Fbench.php%2522%29%253B%250A) (**Benchmark, about 10x slower in Firefox than native PHP**)
 
 ## Build
 
 Requirement:
 
-+ emsdk: [Installation Instructions](https://github.com/juj/emsdk#installation-instructions)
++ emsdk (>= 1.38.11): [Installation Instructions](https://github.com/juj/emsdk#installation-instructions)
 
 Build:
 
