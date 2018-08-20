@@ -137,8 +137,10 @@
                 output_area.close();
                 var code = editor.getValue();
                 var query = new URLSearchParams();
-                query.append('code', encodeURIComponent(code));
-                history.replaceState({}, document.title, "?" + query.toString());
+                if (code.length < 1024) {
+                    query.append('code', encodeURIComponent(code));
+                    history.replaceState({}, document.title, "?" + query.toString());
+                }
                 code = code.replace(/^\s*<\?php/, "") // remove <?php
                 code = code + "\necho PHP_EOL;" // flush line buffer
                 let ret = Module.ccall('pib_eval', 'number', ["string"], [code])
