@@ -97,6 +97,7 @@
         </div>
     </div>
     <a href="https://github.com/oraoto/pib"><img style="z-index: 1;position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+    <script type="text/javascript" src="php.js"></script>
     <script type='text/javascript'>
         var editor = ace.edit("editor");
         editor.setTheme("ace/theme/github");
@@ -117,6 +118,8 @@
         var output_area = document.getElementById('output').contentWindow.document;
         output_area.open();
 
+        var phpModule;
+
         function init() {
 
             output_area.close();
@@ -135,7 +138,7 @@
                 }
                 code = code.replace(/^\s*<\?php/, "") // remove <?php
                 code = code + "\necho PHP_EOL;" // flush line buffer
-                let ret = Module.ccall('pib_eval', 'number', ["string"], [code])
+                let ret = phpModule.ccall('pib_eval', 'number', ["string"], [code])
                 if (ret != 0) {
                     output_area.write("Error, please check your code")
                 }
@@ -143,9 +146,9 @@
             });
         }
 
-        var Module = {
+        var phpModuleOptions = {
             preRun: [
-                function() {ENV.USE_ZEND_ALLOC = "0"}
+                function() {phpModule.asmLibraryArg._putenv('USE_ZEND_ALLOC=0')}
             ],
             postRun: [init],
             print: function (text) {
@@ -162,10 +165,9 @@
                 }
                 output_area.write(text)
             }
-
         };
+        phpModule = PHP(phpModuleOptions);
     </script>
-    <script async type="text/javascript" src="php.js"></script>
 </body>
 
 </html>
