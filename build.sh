@@ -1,14 +1,20 @@
 #!/bin/bash
 
+PHP_VERSION=php-7.3.0beta2
+CURRENTDIR=$(dirname "$0")
+
+cd $CURRENTDIR
+
 echo "Get PHP source"
-wget https://downloads.php.net/~cmb/php-7.3.0beta2.tar.xz
-tar xf php-7.3.0beta2.tar.xz
+wget https://downloads.php.net/~cmb/$PHP_VERSION.tar.xz
+tar xf $PHP_VERSION.tar.xz
+rm $PHP_VERSION.tar.xz
 
 echo "Apply patch"
 patch -p0 -i mods.diff
 
 echo "Configure"
-cd php-7.3.0beta2
+cd $PHP_VERSION
 emconfigure ./configure \
   --disable-all \
   --disable-cgi \
