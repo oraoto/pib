@@ -6,7 +6,7 @@ PHP_VERSION=7.3.0RC2
 PHP_PATH=php-$PHP_VERSION
 
 echo "Get PHP source"
-#wget http://downloads.php.net/~cmb/$PHP_PATH.tar.xz
+wget http://downloads.php.net/~cmb/$PHP_PATH.tar.xz
 tar xf $PHP_PATH.tar.xz
 
 echo "Apply patch"
@@ -35,6 +35,7 @@ emmake make
 mkdir out
 emcc -O3 -I . -I Zend -I main -I TSRM/ ../pib_eval.c -o pib_eval.o
 emcc -O3 \
+  --llvm-lto 2 \
   -s WASM=1 \
   -s ENVIRONMENT=web \
   -s EXPORTED_FUNCTIONS='["_pib_eval", "_php_embed_init", "_zend_eval_string", "_php_embed_shutdown"]' \
