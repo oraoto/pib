@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Get PHP source"
-wget https://downloads.php.net/~cmb/php-7.3.0beta2.tar.xz
+wget http://downloads.php.net/~cmb/php-7.3.0beta2.tar.xz
 tar xf php-7.3.0beta2.tar.xz
 
 echo "Apply patch"
@@ -15,6 +15,7 @@ emconfigure ./configure \
   --disable-cli \
   --disable-rpath \
   --disable-phpdbg \
+  --with-valgrind=no \
   --without-pear \
   --without-pcre-jit \
   --with-layout=GNU \
