@@ -1,26 +1,27 @@
-#!/bin/bash
+﻿#!/bin/bash
 
-PHP_VERSION=php-7.3.0beta2
-CURRENTDIR=$(dirname "$0")
+set -e
 
-cd $CURRENTDIR
+PHP_VERSION=7.3.0RC2
+PHP_PATH=php-$PHP_VERSION
 
 echo "Get PHP source"
-wget https://downloads.php.net/~cmb/$PHP_VERSION.tar.xz
-tar xf $PHP_VERSION.tar.xz
-rm $PHP_VERSION.tar.xz
+wget http://downloads.php.net/~cmb/$PHP_PATH.tar.xz
+tar xf $PHP_PATH.tar.xz
+rm $PHP_PATH.tar.xz
 
 echo "Apply patch"
 patch -p0 -i mods.diff
 
 echo "Configure"
-cd $PHP_VERSION
+cd $PHP_PATH
 emconfigure ./configure \
   --disable-all \
   --disable-cgi \
   --disable-cli \
   --disable-rpath \
   --disable-phpdbg \
+  --with-valgrind=no \
   --without-pear \
   --without-pcre-jit \
   --with-layout=GNU \
@@ -35,6 +36,7 @@ emmake make
 mkdir out
 emcc -O3 -I . -I Zend -I main -I TSRM/ ../pib_eval.c -o pib_eval.o
 emcc -O3 \
+  --llvm-lto 2 \
   -s ENVIRONMENT=web \
   -s EXPORTED_FUNCTIONS='["_pib_eval", "_php_embed_init", "_zend_eval_string", "_php_embed_shutdown"]' \
   -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall"]' \
