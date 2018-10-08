@@ -2,7 +2,7 @@
 
 [Try it](https://oraoto.github.io/pib/)
 
-PHP Version: 7.3.0 beta2
+PHP Version: 7.3.0 RC2
 
 Firefox is recommended for better user experience.
 
