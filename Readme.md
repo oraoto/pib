@@ -1,8 +1,8 @@
 # PIB: PHP in Browser
 
-[Try it](https://oraoto.github.io/pib/)
+[![Build Status](https://travis-ci.org/oraoto/pib.svg?branch=master)](https://travis-ci.org/oraoto/pib) ![PHP](https://img.shields.io/badge/PHP-7.3.0%20RC2-green.svg)
 
-PHP Version: 7.3.0 RC2
+**[Run PIB](https://oraoto.github.io/pib/)**
 
 Firefox is recommended for better user experience.
 
