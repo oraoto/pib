@@ -147,19 +147,14 @@
         }
 
         var phpModuleOptions = {
-            preRun: [
-                function() {phpModule.asmLibraryArg._putenv('USE_ZEND_ALLOC=0')}
-            ],
             postRun: [init],
             print: function (text) {
-
                 if (arguments.length > 1) {
                     text = Array.prototype.slice.call(arguments).join(' ');
                 }
                 output_area.write(text)
             },
             printErr: function (text) {
-
                 if (arguments.length > 1) {
                     text = Array.prototype.slice.call(arguments).join(' ');
                 }

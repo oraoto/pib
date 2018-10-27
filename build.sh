@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
@@ -33,7 +33,7 @@ emconfigure ./configure \
 
 echo "Build"
 emmake make
-mkdir out
+mkdir -p out
 emcc -O3 -I . -I Zend -I main -I TSRM/ ../pib_eval.c -o pib_eval.o
 emcc -O3 \
   --llvm-lto 2 \
