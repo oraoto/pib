@@ -5,14 +5,7 @@
     <meta charset="utf-8">
     <title>PIB: PHP in Browser</title>
     <script src="//ajaxorg.github.io/ace-builds/src-min/ace.js" type="text/javascript" charset="utf-8"></script>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-105060513-3"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'UA-105060513-3');
-    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-105060513-3"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'UA-105060513-3');</script>
     <style>
         body {
             background-color: #E1E1DB;
@@ -105,6 +98,7 @@
         </div>
     </div>
     <a href="https://github.com/oraoto/pib"><img style="z-index: 1;position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+    <script type="text/javascript" src="php.js"></script>
     <script type='text/javascript'>
         var editor = ace.edit("editor");
         editor.setTheme("ace/theme/github");
@@ -125,6 +119,8 @@
         var output_area = document.getElementById('output').contentWindow.document;
         output_area.open();
 
+        var phpModule;
+
         function init() {
 
             output_area.close();
@@ -143,7 +139,7 @@
                 }
                 code = code.replace(/^\s*<\?php/, "") // remove <?php
                 code = code + "\necho PHP_EOL;" // flush line buffer
-                let ret = Module.ccall('pib_eval', 'number', ["string"], [code])
+                let ret = phpModule.ccall('pib_eval', 'number', ["string"], [code])
                 if (ret != 0) {
                     output_area.write("Error, please check your code")
                 }
@@ -151,29 +147,23 @@
             });
         }
 
-        var Module = {
-            preRun: [
-                function() {ENV.USE_ZEND_ALLOC = "0"}
-            ],
+        var phpModuleOptions = {
             postRun: [init],
             print: function (text) {
-
                 if (arguments.length > 1) {
                     text = Array.prototype.slice.call(arguments).join(' ');
                 }
                 output_area.write(text)
             },
             printErr: function (text) {
-
                 if (arguments.length > 1) {
                     text = Array.prototype.slice.call(arguments).join(' ');
                 }
                 output_area.write(text)
             }
-
         };
+        phpModule = PHP(phpModuleOptions);
     </script>
-    <script async type="text/javascript" src="php.js"></script>
 </body>
 
 </html>
