@@ -17,17 +17,22 @@ Firefox is recommended for better user experience.
 + [File access](https://oraoto.github.io/pib/?code=%253C%253Fphp%250A%250A%2524it%2520%253D%2520new%2520RecursiveIteratorIterator%28new%2520RecursiveDirectoryIterator%28%2522.%2522%29%29%253B%250A%250Aforeach%2520%28%2524it%2520as%2520%2524name%2520%253D%253E%2520%2524entry%29%2520%257B%250A%2520%2520%2520%2520echo%2520%2524name%2520.%2520%2522%253Cbr%252F%253E%2522%253B%250A%257D%250A)
 + [Zend/bench.php](https://oraoto.github.io/pib/?code=%253C%253Fphp%250A%250Ainclude%28%2522Zend%252Fbench.php%2522%29%253B%250A) (**Benchmark, about 5x slower in Firefox than native PHP**)
 
-## Build
+## Building From Source
 
-Requirement:
+### Using Docker
 
-+ emsdk (>= 1.38.11): [Installation Instructions](https://github.com/juj/emsdk#installation-instructions)
-
-Build:
+The quickest way to build PIB is by using Docker:
 
 ```
-bash build.sh
+docker run --rm -v $(pwd):/src trzeci/emscripten:sdk-incoming-64bit bash build.sh
 ```
+
+### Setup Emscripten SDK (emsdk) manually
+
+Steps:
+
+1. Setup emsdk (>= 1.38.11), see [Installation Instructions](https://github.com/juj/emsdk#installation-instructions)
+2. Run `bash build.sh`
 
 ## Known issues
 
