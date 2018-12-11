@@ -1,5 +1,5 @@
---- php-7.3.0RC2-origin/main/reentrancy.c	2018-04-24 23:10:05.000000000 +0800
-+++ php-7.3.0RC2/main/reentrancy.c	2018-05-31 14:38:08.604792731 +0800
+--- php-7.3.0-origin/main/reentrancy.c	2018-04-24 23:10:05.000000000 +0800
++++ php-7.3.0/main/reentrancy.c	2018-05-31 14:38:08.604792731 +0800
 @@ -136,7 +136,7 @@
  	   (HPUX returns 0 on success whereas Solaris returns non-zero)
  	 */
@@ -9,8 +9,8 @@
 
  	if (entry->d_name[0] == '\0') {
  		*result = NULL;
---- php-7.3.0RC2-origin/main/streams/plain_wrapper.c	2018-04-24 23:10:05.000000000 +0800
-+++ php-7.3.0RC2/main/streams/plain_wrapper.c	2018-05-29 16:35:30.348845147 +0800
+--- php-7.3.0-origin/main/streams/plain_wrapper.c	2018-04-24 23:10:05.000000000 +0800
++++ php-7.3.0/main/streams/plain_wrapper.c	2018-05-29 16:35:30.348845147 +0800
 @@ -1364,7 +1364,7 @@
  				fclose(file);
  			}

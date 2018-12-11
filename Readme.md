@@ -1,6 +1,6 @@
 # PIB: PHP in Browser
 
-[![Build Status](https://travis-ci.org/oraoto/pib.svg?branch=master)](https://travis-ci.org/oraoto/pib) ![PHP](https://img.shields.io/badge/PHP-7.3.0%20RC2-green.svg)
+[![Build Status](https://travis-ci.org/oraoto/pib.svg?branch=master)](https://travis-ci.org/oraoto/pib) ![PHP](https://img.shields.io/badge/PHP-7.3.0-green.svg)
 
 **[Run PIB](https://oraoto.github.io/pib/)**
 

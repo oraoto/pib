@@ -2,7 +2,7 @@
 
 set -e
 
-PHP_VERSION=7.3.0RC2
+PHP_VERSION=7.3.0
 PHP_PATH=php-$PHP_VERSION
 
 echo "Get PHP source"
