@@ -29,6 +29,8 @@ emconfigure ./configure \
   --enable-bcmath \
   --enable-json \
   --enable-ctype \
+  --enable-mbstring \
+  --disable-mbregex \
   --enable-tokenizer
 
 echo "Build"
