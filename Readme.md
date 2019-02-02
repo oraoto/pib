@@ -38,6 +38,6 @@ Steps:
 
 + Memory leak
 
-## Acknowledge
+## Acknowledgements
 
 The Web UI is based on [Rust Playground](https://play.rust-lang.org/).
