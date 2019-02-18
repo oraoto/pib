@@ -33,6 +33,9 @@ Steps:
 
 1. Setup emsdk (>= 1.38.11), see [Installation Instructions](https://github.com/juj/emsdk#installation-instructions)
 2. Run `bash build.sh`
+3. npm install http-server -g
+4. http-server .
+5. open http://localhost:8081
 
 ## Known issues
 
