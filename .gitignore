@@ -17,3 +17,5 @@ php-7.3.0*
 
 wordpress
 www
+
+.DS_Store
