@@ -24,7 +24,7 @@ Firefox is recommended for better user experience.
 The quickest way to build PIB is by using Docker:
 
 ```
-docker run --rm -v $(pwd):/src trzeci/emscripten:sdk-tag-1.38.25-64bit bash build.sh
+docker-compose up -d
 ```
 
 ### Setup Emscripten SDK (emsdk) manually

@@ -2,6 +2,5 @@ version: '3'
 services:
   em:
     build: .
-    volumes: 
-      - .:/src:delegated
-    command: "tail -F anything"
+    volumes:
+      - .:/src

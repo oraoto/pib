@@ -14,7 +14,7 @@ tar xf $PHP_PATH.tar.xz
 rm $PHP_PATH.tar.xz
 
 echo "Apply patch"
-patch -p0 -i mods.diff
+patch -p0 -i mods.diff || true
 
 echo "Configure"
 cd $PHP_PATH
@@ -44,7 +44,7 @@ tar xf $WORDPRESS_PATH.tar.gz
 rm $WORDPRESS_PATH.tar.gz
 rm php-7.3.0/wordpress/wp-content/themes/twenty* || true
 
-cd ../
+cd ..
 
 echo "Install WordPress theme"
 cp -R minimal-theme $THEMES_PATH
