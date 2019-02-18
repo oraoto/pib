@@ -104,8 +104,26 @@
         editor.session.setMode("ace/mode/php");
         editor.setShowPrintMargin(false);
 
-        var default_code = `<?php
-require_once('/var/wordpress/wp-admin/install.php');`;
+        var default_code = `function language_attributes() {
+    echo 'lang="en"';
+};
+
+file_put_contents("./test.php", "<?php echo 'Will this work?'; ?>");
+
+
+?>
+
+<!DOCTYPE html>
+<html <?php language_attributes(); ?>>
+<head>
+
+<title>Test</title>
+</head>
+<body>
+    <span>Hello</span>
+    <?php require_once('./test.php'); ?>
+</body>
+</html>`;
 
         var query = new URLSearchParams(document.location.search);
         if (query.has('code')) {
