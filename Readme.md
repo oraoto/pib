@@ -1,4 +1,4 @@
-# PIB: PHP in Browser
+# WIW
 
 [![Build Status](https://travis-ci.org/oraoto/pib.svg?branch=master)](https://travis-ci.org/oraoto/pib) ![PHP](https://img.shields.io/badge/PHP-7.3.0-green.svg)
 
@@ -24,7 +24,7 @@ Firefox is recommended for better user experience.
 The quickest way to build PIB is by using Docker:
 
 ```
-docker run --rm -v $(pwd):/src trzeci/emscripten:sdk-incoming-64bit bash build.sh
+docker run --rm -v $(pwd):/src trzeci/emscripten:sdk-tag-1.38.25-64bit bash build.sh
 ```
 
 ### Setup Emscripten SDK (emsdk) manually
@@ -41,3 +41,7 @@ Steps:
 ## Acknowledgements
 
 The Web UI is based on [Rust Playground](https://play.rust-lang.org/).
+
+## Notes
+
+**Loading Files** https://emscripten.org/docs/porting/files/packaging_files.html

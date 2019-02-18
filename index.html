@@ -104,7 +104,8 @@
         editor.session.setMode("ace/mode/php");
         editor.setShowPrintMargin(false);
 
-        var default_code = "<?php\n\nphpinfo();\n"
+        var default_code = `<?php
+require_once('/var/wordpress/wp-admin/install.php');`;
 
         var query = new URLSearchParams(document.location.search);
         if (query.has('code')) {
