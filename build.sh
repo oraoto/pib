@@ -6,6 +6,7 @@ PHP_VERSION=7.3.0
 PHP_PATH=php-$PHP_VERSION
 WORDPRESS_VERSION=5.0.3
 WORDPRESS_PATH=wordpress-$WORDPRESS_VERSION
+THEMES_PATH=$PHP_PATH/wordpress/wp-content/themes
 
 echo "Get PHP source"
 wget http://downloads.php.net/~cmb/$PHP_PATH.tar.xz
@@ -43,6 +44,10 @@ tar xf $WORDPRESS_PATH.tar.gz
 rm $WORDPRESS_PATH.tar.gz
 
 cd ../
+
+echo "Install WordPress theme"
+cp -R minimal-theme $THEMES_PATH
+
 ./emmake.sh $PHP_PATH
 
 echo "Done"
