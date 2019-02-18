@@ -42,6 +42,7 @@ mkdir -p $WORDPRESS_PATH
 tar xf $WORDPRESS_PATH.tar.gz
 rm $WORDPRESS_PATH.tar.gz
 
+cd ../
 ./emmake.sh $PHP_PATH
 
 echo "Done"
