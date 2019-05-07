@@ -6,15 +6,24 @@ PHP_VERSION=7.3.0
 PHP_PATH=php-$PHP_VERSION
 
 echo "Get PHP source"
-wget http://downloads.php.net/~cmb/$PHP_PATH.tar.xz
-tar xf $PHP_PATH.tar.xz
-rm $PHP_PATH.tar.xz
+if [[ ! -f $PHP_PATH.tar.xz ]]; then
+  wget http://downloads.php.net/~cmb/$PHP_PATH.tar.xz
+  tar xf $PHP_PATH.tar.xz
 
-echo "Apply patch"
-patch -p0 -i mods.diff
+  echo "Apply patch"
+  patch -p0 -i mods.diff
+fi
+
+# "Copy" the extension into PHP source folder, make it easier to compile
+ln -rsfv ext-example $PHP_PATH/ext
+
+# Install
+apt-get update
+apt-get install -y autoconf
 
 echo "Configure"
 cd $PHP_PATH
+./buildconf --force
 emconfigure ./configure \
   --disable-all \
   --disable-cgi \
@@ -31,7 +40,8 @@ emconfigure ./configure \
   --enable-ctype \
   --enable-mbstring \
   --disable-mbregex \
-  --enable-tokenizer
+  --enable-tokenizer \
+  --enable-example
 
 echo "Build"
 emmake make

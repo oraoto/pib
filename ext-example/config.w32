@@ -1,0 +1,7 @@
+ARG_ENABLE('example', 'example support', 'no');
+
+if (PHP_EXAMPLE != 'no') {
+	AC_DEFINE('HAVE_EXAMPLE', 1, 'example support enabled');
+
+	EXTENSION('example', 'example.c', null, '/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1');
+}
