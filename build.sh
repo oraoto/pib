@@ -2,11 +2,11 @@
 
 set -e
 
-PHP_VERSION=7.3.0
+PHP_VERSION=7.3.6
 PHP_PATH=php-$PHP_VERSION
 
 echo "Get PHP source"
-wget http://downloads.php.net/~cmb/$PHP_PATH.tar.xz
+wget https://www.php.net/distributions/$PHP_PATH.tar.xz
 tar xf $PHP_PATH.tar.xz
 rm $PHP_PATH.tar.xz
 
