@@ -34,6 +34,6 @@ Steps:
 1. Setup emsdk (>= 1.38.11), see [Installation Instructions](https://github.com/juj/emsdk#installation-instructions)
 2. Run `bash build.sh`
 
-## Acknowledge
+## Acknowledgements
 
 The Web UI is based on [Rust Playground](https://play.rust-lang.org/).
