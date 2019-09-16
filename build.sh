@@ -13,6 +13,7 @@ echo "Configure"
 
 cd php-src
 git checkout $PHP_BRANCH
+./buildconf
 emconfigure ./configure \
   --disable-all \
   --disable-cgi \
