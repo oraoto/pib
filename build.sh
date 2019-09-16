@@ -2,19 +2,17 @@
 
 set -e
 
-PHP_VERSION=7.3.0
-PHP_PATH=php-$PHP_VERSION
+PHP_BRANCH=PHP-7.4
 
-echo "Get PHP source"
-wget http://downloads.php.net/~cmb/$PHP_PATH.tar.xz
-tar xf $PHP_PATH.tar.xz
-rm $PHP_PATH.tar.xz
-
-echo "Apply patch"
-patch -p0 -i mods.diff
+if [[ ! -d php-src ]]; then
+    echo "Get PHP source"
+    git clone https://github.com/php/php-src.git
+fi
 
 echo "Configure"
-cd $PHP_PATH
+
+cd php-src
+git checkout $PHP_BRANCH
 emconfigure ./configure \
   --disable-all \
   --disable-cgi \
@@ -33,9 +31,9 @@ emconfigure ./configure \
   --disable-mbregex \
   --enable-tokenizer
 
-echo "Build"
+# echo "Build"
 emmake make
-mkdir -p out
+# mkdir -p out
 emcc -O3 -I . -I Zend -I main -I TSRM/ ../pib_eval.c -o pib_eval.o
 emcc -O3 \
   --llvm-lto 2 \

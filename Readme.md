@@ -1,6 +1,6 @@
 # PIB: PHP in Browser
 
-[![Build Status](https://travis-ci.org/oraoto/pib.svg?branch=master)](https://travis-ci.org/oraoto/pib) ![PHP](https://img.shields.io/badge/PHP-7.3.0-green.svg)
+[![Build Status](https://travis-ci.org/oraoto/pib.svg?branch=master)](https://travis-ci.org/oraoto/pib) ![PHP](https://img.shields.io/badge/PHP-7.4.0dev-green.svg)
 
 **[Run PIB](https://oraoto.github.io/pib/)**
 
@@ -24,7 +24,7 @@ Firefox is recommended for better user experience.
 The quickest way to build PIB is by using Docker:
 
 ```
-docker run --rm -v $(pwd):/src trzeci/emscripten:sdk-incoming-64bit bash build.sh
+docker run --rm -it -v $(pwd):/src trzeci/emscripten:sdk-incoming-64bit bash build.sh
 ```
 
 ### Setup Emscripten SDK (emsdk) manually
@@ -33,10 +33,6 @@ Steps:
 
 1. Setup emsdk (>= 1.38.11), see [Installation Instructions](https://github.com/juj/emsdk#installation-instructions)
 2. Run `bash build.sh`
-
-## Known issues
-
-+ Memory leak
 
 ## Acknowledge
 
