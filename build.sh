@@ -9,10 +9,16 @@ if [[ ! -d php-src ]]; then
     git clone https://github.com/php/php-src.git
 fi
 
+# Install autoconf
+if hash autoconf 2>/dev/null; then
+    apt-get update && apt-get install -y autoconf
+fi
+
 echo "Configure"
 
 cd php-src
 git checkout $PHP_BRANCH
+./buildconf
 emconfigure ./configure \
   --disable-all \
   --disable-cgi \
@@ -29,11 +35,12 @@ emconfigure ./configure \
   --enable-ctype \
   --enable-mbstring \
   --disable-mbregex \
+  --enable-intl \
   --enable-tokenizer
 
 # echo "Build"
 emmake make
-# mkdir -p out
+mkdir -p out
 emcc -O3 -I . -I Zend -I main -I TSRM/ ../pib_eval.c -o pib_eval.o
 emcc -O3 \
   --llvm-lto 2 \
