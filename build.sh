@@ -10,7 +10,7 @@ if [[ ! -d php-src ]]; then
 fi
 
 # Install autoconf
-if hash autoconf 2>/dev/null; then
+if ! hash autoconf 2>/dev/null; then
     apt-get update && apt-get install -y autoconf
 fi
 
