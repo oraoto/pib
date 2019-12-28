@@ -5,8 +5,8 @@ set -e
 PHP_BRANCH=PHP-7.4
 
 if [[ ! -d php-src ]]; then
-    echo "Get PHP source"
-    git clone https://github.com/php/php-src.git --branch $PHP_BRANCH --single-branch --no-tags
+    echo "Get PHP source from branch $PHP_BRANCH"
+    git clone https://github.com/php/php-src.git --branch $PHP_BRANCH --single-branch --no-tags --depth 1
 fi
 
 # Install autoconf
