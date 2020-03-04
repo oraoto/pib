@@ -16,6 +16,6 @@ before_install:
   - docker run -dit --name emscripten -v $(pwd):/src trzeci/emscripten-ubuntu:latest bash
 
 script:
-  - docker exec -it apt-get update
-  - docker exec -it apt-get install -y autoconf bison re2c
+  - docker exec -it emscripten apt-get update
+  - docker exec -it emscripten apt-get install -y autoconf bison re2c
   - docker exec -it emscripten bash build.sh
