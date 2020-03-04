@@ -13,9 +13,13 @@ fi
 if ! hash autoconf 2>/dev/null; then
     apt-get update && apt-get install -y autoconf
 fi
-# Install bision
+# Install bison
 if ! hash bison 2>/dev/null; then
     apt-get update && apt-get install -y bison
+fi
+# Install re2c
+if ! hash re2c 2>/dev/null; then
+    apt-get update && apt-get install -y re2c
 fi
 
 echo "Configure"
