@@ -13,6 +13,10 @@ fi
 if ! hash autoconf 2>/dev/null; then
     apt-get update && apt-get install -y autoconf
 fi
+# Install bision
+if ! hash bison 2>/dev/null; then
+    apt-get update && apt-get install -y bison
+fi
 
 echo "Configure"
 
@@ -34,7 +38,6 @@ emconfigure ./configure \
   --enable-ctype \
   --enable-mbstring \
   --disable-mbregex \
-  --enable-intl \
   --enable-tokenizer
 
 # echo "Build"
