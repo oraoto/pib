@@ -60,7 +60,7 @@ emcc -O3 \
   -s INVOKE_RUN=0 \
   -s ERROR_ON_UNDEFINED_SYMBOLS=0 \
   --preload-file Zend/bench.php \
-  libs/libphp7.a pib_eval.o -o out/php.html
+  libs/libphp7.a pib_eval.o -o out/php.js
 
 cp out/php.wasm out/php.js out/php.data ..
 
