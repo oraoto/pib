@@ -31,7 +31,7 @@ docker run --rm -it -v $(pwd):/src trzeci/emscripten-ubuntu:latest bash build.sh
 
 Steps:
 
-1. Setup emsdk (>= 1.38.11), see [Installation Instructions](https://github.com/juj/emsdk#installation-instructions)
+1. Setup emsdk (>= 1.38.11), see [Installation Instructions](https://emscripten.org/docs/getting_started/downloads.html#installation-instructions)
 2. Run `bash build.sh`
 
 ## Acknowledgements
