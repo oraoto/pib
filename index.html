@@ -136,7 +136,8 @@
                     query.append('code', encodeURIComponent(code));
                     history.replaceState({}, document.title, "?" + query.toString());
                 }
-                code = code.replace(/^\s*<\?php/, "") // remove <?php
+                // code = code.replace(/^\s*<\?php/, "") // remove <?php
+                code = '?>' + code;
                 code = code + "\necho PHP_EOL;" // flush line buffer
                 let ret = phpModule.ccall('pib_eval', 'number', ["string"], [code])
                 if (ret != 0) {

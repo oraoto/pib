@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-set -e
+set -eux
 
+ENVIRONMENT=shell
 PHP_BRANCH=PHP-7.4
 
 if [[ ! -d php-src ]]; then
@@ -50,8 +51,8 @@ mkdir -p out
 emcc -O3 -I . -I Zend -I main -I TSRM/ ../pib_eval.c -o pib_eval.o
 emcc -O3 \
   --llvm-lto 2 \
-  -s ENVIRONMENT=web \
-  -s EXPORTED_FUNCTIONS='["_pib_eval", "_php_embed_init", "_zend_eval_string", "_php_embed_shutdown"]' \
+  -s ENVIRONMENT=$ENVIRONMENT \
+  -s EXPORTED_FUNCTIONS='["_pib_eval", "_php_embed_init", "_zend_eval_string", "_php_embed_shutdown", "_main"]' \
   -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall"]' \
   -s MODULARIZE=1 \
   -s EXPORT_NAME="'PHP'" \
@@ -60,8 +61,8 @@ emcc -O3 \
   -s INVOKE_RUN=0 \
   -s ERROR_ON_UNDEFINED_SYMBOLS=0 \
   --preload-file Zend/bench.php \
-  libs/libphp7.a pib_eval.o -o out/php.js
+  libs/libphp7.a pib_eval.o -o out/php-$ENVIRONMENT.js
 
-cp out/php.wasm out/php.js out/php.data ..
+cp out/php-$ENVIRONMENT.wasm out/php-$ENVIRONMENT.js out/php-$ENVIRONMENT.data ..
 
 echo "Done"
