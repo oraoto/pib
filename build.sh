@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
-set -eux
+set -euo pipefail
 
-ENVIRONMENT=shell
 PHP_BRANCH=PHP-7.4
 
 if [[ ! -d php-src ]]; then
@@ -48,10 +47,10 @@ emconfigure ./configure \
 # echo "Build"
 emmake make
 mkdir -p out
-emcc -O3 -I . -I Zend -I main -I TSRM/ ../pib_eval.c -o pib_eval.o
+emcc -O3 -I . -I Zend -I main -I TSRM/ ../source/pib_eval.c -o pib_eval.o
 emcc -O3 \
   --llvm-lto 2 \
-  -s ENVIRONMENT=$ENVIRONMENT \
+  -s ENVIRONMENT=${ENVIRONMENT:-shell} \
   -s EXPORTED_FUNCTIONS='["_pib_eval", "_php_embed_init", "_zend_eval_string", "_php_embed_shutdown", "_main"]' \
   -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall"]' \
   -s MODULARIZE=1 \
@@ -61,8 +60,11 @@ emcc -O3 \
   -s INVOKE_RUN=0 \
   -s ERROR_ON_UNDEFINED_SYMBOLS=0 \
   --preload-file Zend/bench.php \
-  libs/libphp7.a pib_eval.o -o out/php-$ENVIRONMENT.js
+  libs/libphp7.a pib_eval.o -o out/php-${ENVIRONMENT:-shell}.js
 
-cp out/php-$ENVIRONMENT.wasm out/php-$ENVIRONMENT.js out/php-$ENVIRONMENT.data ..
+cp out/php-${ENVIRONMENT:-shell}.wasm \
+	out/php-${ENVIRONMENT:-shell}.js \
+	out/php-${ENVIRONMENT:-shell}.data \
+	..
 
 echo "Done"

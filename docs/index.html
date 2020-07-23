@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en-us">
+
+<head>
+	<meta charset="utf-8">
+	<title>PIB: PHP in Browser</title>
+	<style>@import url('/style.css')</style>
+	<script src="//ajaxorg.github.io/ace-builds/src-min/ace.js" type="text/javascript" charset="utf-8"></script>
+	<script src = "./require1k.js" data-main = "./index"></script>
+</head>
+
+<body>
+
+	<div class="playground">
+		<div class="playground-header">
+			<button id="run" disabled>Loading...</button>
+		</div>
+		<div class="playground-split-vertical">
+			<div class="playground-editor">
+				<div id="editor"></div>
+			</div>
+			<iframe allow="midi; geolocation; microphone; camera; encrypted-media;" sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups"
+				id="output"></iframe>
+		</div>
+	</div>
+	<a href="https://github.com/oraoto/pib"><img style="z-index: 1;position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+</body>
+
+</html>
