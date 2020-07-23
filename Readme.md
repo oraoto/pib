@@ -41,7 +41,7 @@ Using php-wasm is easy.
 First, grab an instance of the object:
 
 ```javascript
-const php = new ( require('./Php').Php );
+const php = new ( require('./php-wasm/Php').Php );
 ```
 
 Then, add an output listener:
