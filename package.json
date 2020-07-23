@@ -3,13 +3,11 @@
 	"description": "Run PHP right in the browser.",
 	"repository": "https://github.com/seanmorris/pib",
 	"author": "Oraoto <oraoto@outlook.com>",
-	"version": "0.0.1",
+	"version": "0.0.1a",
 	"license": "MIT",
-	"dependencies": {
-		"babel-cli": "^6.26.0",
-		"babel-preset-es2015": "^6.24.1"
-	},
 	"devDependencies": {
+		"babel-cli": "^6.26.0",
+		"babel-preset-es2015": "^6.24.1",
 		"babel-plugin-transform-builtin-extend": "^1.1.2"
 	},
 	"contributors": [
