@@ -1,6 +1,78 @@
-# PIB: PHP in Browser
+# php-wasm
+
+*[PIB](https://github.com/oraoto/pib), except its an NPM module.*
 
 [![Build Status](https://travis-ci.org/oraoto/pib.svg?branch=master)](https://travis-ci.org/oraoto/pib) ![PHP](https://img.shields.io/badge/PHP-7.4-green.svg)
+
+v.0.0.0 - humble beginnings
+
+## Getting started
+
+Install with npm:
+
+```sh
+$ npm install php-wasm
+```
+
+### Static assets:
+
+You'll need to add the following `postinstall` script entry to your package.json to ensure the static assets are available to your web application. Make sure to replace `public/` with the path to your public document root if necessary.
+
+```json
+{
+  "scripts": {
+    "postinstall": [
+      "cp node_modules/php-wasm/php-web.* public/"
+    ]
+  },
+}
+```
+
+If you're using a more advanced bundler, use the vendor's documentation to learn how to move the files matching the following pattern to your public directory:
+
+```
+.../node_modules/php-wasm/php-web.*
+```
+
+### Usage
+
+Using php-wasm is easy.
+
+First, grab an instance of the object:
+
+```javascript
+const php = new ( require('./Php').Php );
+```
+
+Then, add an output listener:
+
+```javascript
+php.addEventListener('output', (event) => {
+	console.log(event.detail);
+});
+
+```
+
+Be sure to wait until your WASM is fully loaded, then run some PHP:
+
+```javascript
+php.addEventListener('ready', () => {
+	php.run('<?php echo "Hello, world!";');
+});
+
+```
+Get the result code of your script with `then()`:
+
+```javascript
+php.addEventListener('ready', () => {
+	php.run('<?php echo "Hello, world!";').then(retVal => {
+		// retVal contains the return code.
+	});
+});
+
+```
+
+# php-wasm is a fork of oraoto/PIB...
 
 **[Run PIB](https://oraoto.github.io/pib/)**
 

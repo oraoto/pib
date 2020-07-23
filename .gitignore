@@ -1,5 +1,9 @@
-php.wasm
-php.js
-php.data
-gh-pages
-php-src
+/php-src
+/php-web.js
+/php-web.wasm
+/php-web.data
+/php-shell.js
+/php-shell.wasm
+/php-shell.data
+/Php.js
+
