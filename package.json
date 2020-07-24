@@ -1,0 +1,30 @@
+{
+	"name": "php-wasm",
+	"description": "Run PHP right in the browser.",
+	"repository": "https://github.com/seanmorris/pib",
+	"author": "Oraoto <oraoto@outlook.com>",
+	"version": "0.0.0",
+	"license": "MIT",
+	"dependencies": {
+		"babel-cli": "^6.26.0",
+		"babel-preset-es2015": "^6.24.1"
+	},
+	"devDependencies": {
+		"babel-plugin-transform-builtin-extend": "^1.1.2"
+	},
+	"contributors": [
+		{
+			"name": "Oraoto",
+			"email": "oraoto@outlook.com"
+		},
+		{
+			"name": "Sean Morris",
+			"email": "php-wasm@seanmorr.is",
+			"url": "https://seanmorr.is"
+		}
+	],
+	"files": [
+		"Php.js",
+		"php-web.wasm"
+	]
+}
