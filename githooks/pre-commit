@@ -4,3 +4,5 @@ cp ./Php.js       ./docs
 cp ./php-web.js   ./docs
 cp ./php-web.wasm ./docs
 cp ./php-web.data ./docs
+
+make
