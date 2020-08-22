@@ -9,7 +9,14 @@ editor.setTheme("ace/theme/github");
 editor.session.setMode("ace/mode/php");
 editor.setShowPrintMargin(false);
 
-const php = new ( require('./Php').Php );
+console.log(1132);
+
+const Php = require('./Php').Php;
+
+console.log(Php);
+
+const php = new Php();
+console.log(1132);
 
 const init = () => {
 	outputArea.write("Click RUN");
@@ -36,12 +43,14 @@ const init = () => {
 		if (code.length < 1024)
 		{
 			query.append('code', encodeURIComponent(code));
+			query.append('persist', persistBox.checked ? 1 : 0);
 			history.replaceState({}, document.title, "?" + query.toString());
 		}
 
 		outputArea.close();
 	});
 }
+
 
 php.addEventListener('ready', (event) => init());
 
@@ -60,6 +69,13 @@ if(query.has('code'))
 else
 {
 	editor.setValue(defaultCode);
+}
+
+console.log(query.get('persist'));
+
+if(query.get('persist'))
+{
+	persistBox.checked = true;
 }
 
 output_area.open();

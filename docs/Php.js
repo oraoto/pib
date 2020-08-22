@@ -33,15 +33,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
-var PhpNode = require('./php-node');
-
-var PhpShell = require('./php-shell');
-
-var PhpWeb = require('./php-web');
-
-var PhpWebView = require('./php-webview');
-
-var PhpWorker = require('./php-worker');
+var PhpBinary = require('./php-web');
 
 var Php = /*#__PURE__*/function (_EventTarget) {
   _inherits(Php, _EventTarget);
@@ -50,8 +42,6 @@ var Php = /*#__PURE__*/function (_EventTarget) {
 
   function Php() {
     var _this;
-
-    var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'web';
 
     _classCallCheck(this, Php);
 
@@ -65,15 +55,8 @@ var Php = /*#__PURE__*/function (_EventTarget) {
 
     _this.onready = function () {};
 
-    var binaryClasses = {
-      webview: PhpWebView,
-      worker: PhpWorker,
-      shell: PhpShell,
-      node: PhpNode,
-      web: PhpWeb
-    };
-    var binaryClass = binaryClasses[type];
-    _this.binary = new binaryClass({
+    console.log(PhpBinary);
+    _this.binary = new PhpBinary({
       postRun: function postRun() {
         var event = new CustomEvent('ready');
 

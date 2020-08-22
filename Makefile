@@ -5,7 +5,7 @@ VRZNO_BRANCH:=master
 
 .PHONY: configure build hooks build-js build-web-bin build-webview-bin build-node-bin build-shell-bin build-worker-bin clean
 
-build: configure build-js build-webview-bin build-node-bin build-shell-bin build-worker-bin build-web-bin
+build: configure build-js build-web-bin
 	@ echo "Done!"
 
 configure: php-src php-src/ext/vrzno

@@ -1,6 +1,8 @@
+const PhpBinary = require('./php-web');
+
 export class Php extends EventTarget
 {
-	constructor(type = 'web')
+	constructor()
 	{
 		super();
 
@@ -12,34 +14,9 @@ export class Php extends EventTarget
 		this.onoutput = function () {};
 		this.onready  = function () {};
 
-		let binaryClass;
+		console.log(PhpBinary);
 
-		switch(type)
-		{
-			case 'webview':
-				binaryClass = require('./php-webview');
-				break;
-
-			case 'worker':
-				binaryClass = require('./php-worker');
-				break;
-
-			case 'shell':
-				binaryClass = require('./php-shell');
-				break;
-
-			case 'node':
-				binaryClass = require('./php-node');
-				break;
-
-			case 'web':
-				binaryClass = require('./php-web');
-				break;
-		}
-
-		binaryClasses[type];
-
-		this.binary = new binaryClass({
+		this.binary = new PhpBinary({
 
 			postRun:  () => {
 				const event = new CustomEvent('ready');

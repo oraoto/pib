@@ -3,7 +3,7 @@
 	"description": "Run PHP right in the browser.",
 	"repository": "https://github.com/seanmorris/pib",
 	"author": "Oraoto <oraoto@outlook.com>",
-	"version": "0.0.1c",
+	"version": "0.0.2",
 	"license": "MIT",
 	"devDependencies": {
 		"@babel/cli": "^7.8.4",

@@ -7,10 +7,13 @@
 	<script src="//ajaxorg.github.io/ace-builds/src-min/ace.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
 		// Allow the page to be served from any direcotry...
-		const path   = location.pathname.replace(/index.html$/, '');
+		const path   = location.pathname.replace(/index.html$/, '').replace(/\/$/, '') + '/';
+
 		const script = document.createElement('script');
 		script.type  = 'text/javascript';
 		script.src   = `${path}require1k.js`;
+
+		console.log(script.src);
 
 		console.log(path);
 
