@@ -33,7 +33,11 @@ const init = () => {
 
 			style.textContent = "body{ white-space:pre; }";
 
-			outputArea.head.append(style);
+			if(outputArea.head)
+			{
+				outputArea.head.append(style);
+			}
+
 
 			if(exitCode || !persistBox.checked)
 			{

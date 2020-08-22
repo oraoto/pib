@@ -5,28 +5,43 @@
 	<meta charset="utf-8">
 	<title>PIB: PHP in Browser</title>
 	<script src="//ajaxorg.github.io/ace-builds/src-min/ace.js" type="text/javascript" charset="utf-8"></script>
+	<link ="" href="" type="image/x-icon">
 	<script type="text/javascript">
 		// Allow the page to be served from any direcotry...
-		const path   = location.pathname.replace(/index.html$/, '').replace(/\/$/, '') + '/';
 
-		const script = document.createElement('script');
-		script.type  = 'text/javascript';
-		script.src   = `${path}require1k.js`;
+		const path  = location.pathname.replace(/index.html$/, '');
 
-		console.log(script.src);
+		if(!path.match(/\/$/))
+		{
+			window.location = path + '/' + (location.search||'');
 
-		console.log(path);
+			console.log(window.location);
+		}
+		else
+		{
+			const script = document.createElement('script');
+			script.type  = 'text/javascript';
+			script.src   = `${path}require1k.js`;
 
-		script.setAttribute('data-main', `./index`);
+			console.log(script.src);
+			script.setAttribute('data-main', `./index`);
+			document.head.append(script);
 
-		document.head.append(script);
+			const style = document.createElement('style');
+			style.type = 'text/css';
+			style.innerText = `@import url('${path}style.css')`;
+			document.head.append(style);
 
-		const style = document.createElement('style');
-		style.type = 'text/css';
+			const favicon = document.createElement('link');
 
-		style.innerText = `@import url('${path}style.css')`;
+			favicon.setAttribute('rel',  'icon');
+			favicon.setAttribute('href', `${path}favicon.ico`);
+			favicon.setAttribute('type', 'image/x-icon');
 
-		document.head.append(style);
+			document.head.append(favicon);
+		}
+
+
 	</script>
 </head>
 
