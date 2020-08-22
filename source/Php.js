@@ -25,13 +25,13 @@ export class Php extends EventTarget
 			},
 
 			print: (...chunks) =>{
-				const event = new CustomEvent('output', {detail: chunks});
+				const event = new CustomEvent('output', {detail: chunks.map(c=>c+"\n")});
 				this.dispatchEvent(event);
 				this.onoutput(event);
 			},
 
 			printErr: (...chunks) => {
-				const event = new CustomEvent('error', {detail: chunks});
+				const event = new CustomEvent('error', {detail: chunks.map(c=>c+"\n")});
 				this.onerror(event);
 				this.dispatchEvent(event);
 			}

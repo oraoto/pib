@@ -10,6 +10,7 @@ Changes
 * License changed from MIT to Apache-2.0, which has similar terms, but USERS must hav visibility of the attribution, rather that just DEVELOPERS.
 * Build dependencies are now expressed in the makefile
 * Project can be built in its entirety by running `make`.
+* Ensuring newlines in PHP output are respected.
 
 
 ## 0.0.1 - Humble Beginnings

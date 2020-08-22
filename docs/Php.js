@@ -70,7 +70,9 @@ var Php = /*#__PURE__*/function (_EventTarget) {
         }
 
         var event = new CustomEvent('output', {
-          detail: chunks
+          detail: chunks.map(function (c) {
+            return c + "\n";
+          })
         });
 
         _this.dispatchEvent(event);
@@ -83,7 +85,9 @@ var Php = /*#__PURE__*/function (_EventTarget) {
         }
 
         var event = new CustomEvent('error', {
-          detail: chunks
+          detail: chunks.map(function (c) {
+            return c + "\n";
+          })
         });
 
         _this.onerror(event);
