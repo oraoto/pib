@@ -1,9 +1,3 @@
-const PhpNode    = require('./php-node');
-const PhpShell   = require('./php-shell');
-const PhpWeb     = require('./php-web');
-const PhpWebView = require('./php-webview');
-const PhpWorker  = require('./php-worker');
-
 export class Php extends EventTarget
 {
 	constructor(type = 'web')
@@ -18,15 +12,32 @@ export class Php extends EventTarget
 		this.onoutput = function () {};
 		this.onready  = function () {};
 
-		const binaryClasses = {
-			webview : PhpWebView
-			, worker: PhpWorker
-			, shell : PhpShell
-			, node  : PhpNode
-			, web   : PhpWeb
-		};
+		let binaryClass;
 
-		const binaryClass = binaryClasses[type];
+		switch(type)
+		{
+			case 'webview':
+				binaryClass = require('./php-webview');
+				break;
+
+			case 'worker':
+				binaryClass = require('./php-worker');
+				break;
+
+			case 'shell':
+				binaryClass = require('./php-shell');
+				break;
+
+			case 'node':
+				binaryClass = require('./php-node');
+				break;
+
+			case 'web':
+				binaryClass = require('./php-web');
+				break;
+		}
+
+		binaryClasses[type];
 
 		this.binary = new binaryClass({
 

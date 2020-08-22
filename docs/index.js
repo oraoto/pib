@@ -1,5 +1,6 @@
 const inputArea   = document.getElementById('input');
 const runButton   = document.getElementById('run');
+const persistBox   = document.getElementById('persist');
 const outputArea  = document.getElementById('output').contentWindow.document;
 const defaultCode = '<?php phpinfo();';
 const editor      = ace.edit("editor");
@@ -23,7 +24,14 @@ const init = () => {
 		var code = editor.getValue();
 		var query = new URLSearchParams();
 
-		php.run(code);
+		php.run(code).then(exitCode => {
+
+			if(exitCode || !persistBox.checked)
+			{
+				php.refresh();
+			}
+
+		});
 
 		if (code.length < 1024)
 		{

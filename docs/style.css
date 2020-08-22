@@ -70,3 +70,10 @@ body {
 	border-radius: 4px;
 	border: 1px solid #dedede;
 }
+
+label {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+
+}
