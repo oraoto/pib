@@ -97,7 +97,7 @@ So long as `php.refresh()` is not called from Javascript, the instance will main
 ```php
 <?php
 // Run this over and over again...
-print $x++;
+print ++$x;
 
 ```
 
