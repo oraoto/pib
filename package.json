@@ -6,9 +6,10 @@
 	"version": "0.0.1c",
 	"license": "MIT",
 	"devDependencies": {
-		"babel-cli": "^6.26.0",
-		"babel-preset-es2015": "^6.24.1",
-		"babel-plugin-transform-builtin-extend": "^1.1.2"
+		"@babel/cli": "^7.8.4",
+		"@babel/core": "^7.8.7",
+		"@babel/plugin-proposal-class-properties": "^7.10.4",
+		"@babel/preset-env": "^7.0.0"
 	},
 	"contributors": [
 		{

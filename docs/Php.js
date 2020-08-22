@@ -1,113 +1,142 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+  value: true
 });
+exports.Php = void 0;
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-function _extendableBuiltin(cls) {
-	function ExtendableBuiltin() {
-		var instance = Reflect.construct(cls, Array.from(arguments));
-		Object.setPrototypeOf(instance, Object.getPrototypeOf(this));
-		return instance;
-	}
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
-	ExtendableBuiltin.prototype = Object.create(cls.prototype, {
-		constructor: {
-			value: cls,
-			enumerable: false,
-			writable: true,
-			configurable: true
-		}
-	});
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
 
-	if (Object.setPrototypeOf) {
-		Object.setPrototypeOf(ExtendableBuiltin, cls);
-	} else {
-		ExtendableBuiltin.__proto__ = cls;
-	}
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-	return ExtendableBuiltin;
-}
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
-var PhpWebBin = require('./php-web');
+function _wrapNativeSuper(Class) { var _cache = typeof Map === "function" ? new Map() : undefined; _wrapNativeSuper = function _wrapNativeSuper(Class) { if (Class === null || !_isNativeFunction(Class)) return Class; if (typeof Class !== "function") { throw new TypeError("Super expression must either be null or a function"); } if (typeof _cache !== "undefined") { if (_cache.has(Class)) return _cache.get(Class); _cache.set(Class, Wrapper); } function Wrapper() { return _construct(Class, arguments, _getPrototypeOf(this).constructor); } Wrapper.prototype = Object.create(Class.prototype, { constructor: { value: Wrapper, enumerable: false, writable: true, configurable: true } }); return _setPrototypeOf(Wrapper, Class); }; return _wrapNativeSuper(Class); }
 
-var Php = exports.Php = function (_extendableBuiltin2) {
-	_inherits(Php, _extendableBuiltin2);
+function _construct(Parent, args, Class) { if (_isNativeReflectConstruct()) { _construct = Reflect.construct; } else { _construct = function _construct(Parent, args, Class) { var a = [null]; a.push.apply(a, args); var Constructor = Function.bind.apply(Parent, a); var instance = new Constructor(); if (Class) _setPrototypeOf(instance, Class.prototype); return instance; }; } return _construct.apply(null, arguments); }
 
-	function Php() {
-		_classCallCheck(this, Php);
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
 
-		var _this = _possibleConstructorReturn(this, (Php.__proto__ || Object.getPrototypeOf(Php)).call(this));
+function _isNativeFunction(fn) { return Function.toString.call(fn).indexOf("[native code]") !== -1; }
 
-		var FLAGS = {};
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-		_this.returnValue = -1;
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
-		_this.onerror = function () {
-			console.log('READY!!!');
-		};
-		_this.onoutput = function () {};
-		_this.onready = function () {};
+var PhpNode = require('./php-node');
 
-		_this.binary = PhpWebBin({
+var PhpShell = require('./php-shell');
 
-			postRun: function postRun() {
-				var event = new CustomEvent('ready');
-				_this.dispatchEvent(event);
-				_this.onready(event);
-			},
+var PhpWeb = require('./php-web');
 
-			print: function print() {
-				for (var _len = arguments.length, chunks = Array(_len), _key = 0; _key < _len; _key++) {
-					chunks[_key] = arguments[_key];
-				}
+var PhpWebView = require('./php-webview');
 
-				var event = new CustomEvent('output', { detail: chunks });
-				_this.dispatchEvent(event);
-				_this.onoutput(event);
-			},
+var PhpWorker = require('./php-worker');
 
-			printErr: function printErr() {
-				for (var _len2 = arguments.length, chunks = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-					chunks[_key2] = arguments[_key2];
-				}
+var Php = /*#__PURE__*/function (_EventTarget) {
+  _inherits(Php, _EventTarget);
 
-				var event = new CustomEvent('error', { detail: chunks });
-				// this.onerror(event);
-				_this.dispatchEvent(event);
-			}
+  var _super = _createSuper(Php);
 
-		});
-		return _this;
-	}
+  function Php() {
+    var _this;
 
-	_createClass(Php, [{
-		key: 'run',
-		value: function run(phpCode) {
-			var _this2 = this;
+    var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'web';
 
-			return new Promise(function (accept) {
-				return _this2.binary.then(function (php) {
+    _classCallCheck(this, Php);
 
-					var retVal = php.ccall('pib_eval', 'number', ["string"], ['?>' + phpCode]);
+    _this = _super.call(this);
+    var FLAGS = {};
+    _this.returnValue = -1;
 
-					php.ccall('pib_eval', 'number', ["string"], ['echo "\n"']);
+    _this.onerror = function () {};
 
-					console.log(phpCode, retVal);
+    _this.onoutput = function () {};
 
-					accept(retVal);
-				});
-			});
-		}
-	}]);
+    _this.onready = function () {};
 
-	return Php;
-}(_extendableBuiltin(EventTarget));
+    var binaryClasses = {
+      webview: PhpWebView,
+      worker: PhpWorker,
+      shell: PhpShell,
+      node: PhpNode,
+      web: PhpWeb
+    };
+    var binaryClass = binaryClasses[type];
+    _this.binary = new binaryClass({
+      postRun: function postRun() {
+        var event = new CustomEvent('ready');
+
+        _this.dispatchEvent(event);
+
+        _this.onready(event);
+      },
+      print: function print() {
+        for (var _len = arguments.length, chunks = new Array(_len), _key = 0; _key < _len; _key++) {
+          chunks[_key] = arguments[_key];
+        }
+
+        var event = new CustomEvent('output', {
+          detail: chunks
+        });
+
+        _this.dispatchEvent(event);
+
+        _this.onoutput(event);
+      },
+      printErr: function printErr() {
+        for (var _len2 = arguments.length, chunks = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+          chunks[_key2] = arguments[_key2];
+        }
+
+        var event = new CustomEvent('error', {
+          detail: chunks
+        });
+
+        _this.onerror(event);
+
+        _this.dispatchEvent(event);
+      }
+    }).then(function (php) {
+      var retVal = php.ccall('pib_init', 'number', ["string"], []);
+      return php;
+    })["catch"](function (error) {
+      return console.log(error);
+    });
+    return _this;
+  }
+
+  _createClass(Php, [{
+    key: "run",
+    value: function run(phpCode) {
+      return this.binary.then(function (php) {
+        var retVal = php.ccall('pib_eval', 'number', ["string"], ["?>".concat(phpCode)]);
+        php.ccall('pib_eval', 'number', ["string"], ["fwrite(fopen('php://stdout', 'w'), PHP_EOL);"]);
+        return retVal;
+      });
+    }
+  }, {
+    key: "refresh",
+    value: function refresh() {
+      return this.binary.then(function (php) {
+        return php.ccall('pib_refresh', 'number', [], []);
+      })["catch"](function (error) {
+        return console.log(error);
+      });
+    }
+  }]);
+
+  return Php;
+}( /*#__PURE__*/_wrapNativeSuper(EventTarget));
+
+exports.Php = Php;

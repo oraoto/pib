@@ -1,8 +1,12 @@
-const PhpWebBin = require('./php-web');
+const PhpNode    = require('./php-node');
+const PhpShell   = require('./php-shell');
+const PhpWeb     = require('./php-web');
+const PhpWebView = require('./php-webview');
+const PhpWorker  = require('./php-worker');
 
 export class Php extends EventTarget
 {
-	constructor()
+	constructor(type = 'web')
 	{
 		super();
 
@@ -10,11 +14,21 @@ export class Php extends EventTarget
 
 		this.returnValue = -1;
 
-		this.onerror  = function () { console.log('READY!!!') };
+		this.onerror  = function () {};
 		this.onoutput = function () {};
 		this.onready  = function () {};
 
-		this.binary = PhpWebBin({
+		const binaryClasses = {
+			webview : PhpWebView
+			, worker: PhpWorker
+			, shell : PhpShell
+			, node  : PhpNode
+			, web   : PhpWeb
+		};
+
+		const binaryClass = binaryClasses[type];
+
+		this.binary = new binaryClass({
 
 			postRun:  () => {
 				const event = new CustomEvent('ready');
@@ -30,16 +44,27 @@ export class Php extends EventTarget
 
 			printErr: (...chunks) => {
 				const event = new CustomEvent('error', {detail: chunks});
-				// this.onerror(event);
+				this.onerror(event);
 				this.dispatchEvent(event);
 			}
 
-		});
+		}).then(php=>{
+
+			const retVal = php.ccall(
+				'pib_init'
+				, 'number'
+				, ["string"]
+				, []
+			);
+
+			return php;
+
+		}).catch(error => console.log(error));
 	}
 
 	run(phpCode)
 	{
-		return new Promise(accept => this.binary.then(php => {
+		return this.binary.then(php => {
 
 			const retVal = php.ccall(
 				'pib_eval'
@@ -52,14 +77,25 @@ export class Php extends EventTarget
 				'pib_eval'
 				, 'number'
 				, ["string"]
-				, [`echo "\n"`]
+				, [`fwrite(fopen('php://stdout', 'w'), PHP_EOL);`]
 			);
 
-			console.log(phpCode, retVal);
+			return retVal;
 
-			accept(retVal);
+		});
+	}
 
-		}));
+	refresh()
+	{
+		return this.binary.then(php => {
 
+			return php.ccall(
+				'pib_refresh'
+				, 'number'
+				, []
+				, []
+			);
+
+		}).catch(error => console.log(error));
 	}
 }

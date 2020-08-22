@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+
+  emscripten-builder:
+    image: seanmorris/php-emscripten-builder
+    build:
+      context: ./
+      dockerfile: emscripten-builder.dockerfile
+      args:
+        PHP_BRANCH: ${PHP_BRANCH:-PHP-7.4}
+    environment:
+      EMCC_CORES: 8
+      ENVIRONMENT: ${ENVIRONMENT:-web}
+    volumes:
+      - ./:/src
+    command: [bash, /src/build.sh]
