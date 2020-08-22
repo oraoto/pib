@@ -101,7 +101,7 @@ print $x++;
 
 ```
 
-See the example in action [here](https://seanmorris.github.io/php-wasm/?persistent=1&code=%253C%253Fphp%250A%252F%252F%2520Run%2520this%2520over%2520and%2520over%2520again...%250Aprint%2520%2524x%252B%252B%253B)
+See the example in action [here](https://seanmorris.github.io/php-wasm/?code=%253C%253Fphp%250A%252F%252F%2520Run%2520this%2520over%2520and%2520over%2520again...%250Aprint%2520%252B%252B%2524x%253B&persist=1)
 
 ### Accessing the DOM
 
