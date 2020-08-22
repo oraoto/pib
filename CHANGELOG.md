@@ -6,8 +6,9 @@ Changes
 
 * php objects now have persistent memory, may be cleared with `php.refresh();`.
 * php code may now access Javascript (and thus, the DOM) via the [VRZNO](https://github.com/seanmorris/vrzno) project. The extension is preinstalled with php-wasm.
-* Building objects is now separated so multiple binaries may be built from the same set of objects.
-* License changed from MIT to Apache-2.0, which has similar terms, but USERS must hav visibility of the attribution, rather that just DEVELOPERS.
+* `<script type = "text/php">` tags are now supported, both inline and with `src=...`. Both require opening tags as of now.
+* Building of object files is now separated from building of binary files so multiple binaries may be built from the same set of objects.
+* License changed from MIT to Apache-2.0, which has similar terms, but USERS must have visibility of the attribution, rather that just DEVELOPERS.
 * Build dependencies are now expressed in the makefile
 * Project can be built in its entirety by running `make`.
 * Ensuring newlines in PHP output are respected.

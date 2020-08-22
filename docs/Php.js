@@ -7,6 +7,12 @@ exports.Php = void 0;
 
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -55,7 +61,6 @@ var Php = /*#__PURE__*/function (_EventTarget) {
 
     _this.onready = function () {};
 
-    console.log(PhpBinary);
     _this.binary = new PhpBinary({
       postRun: function postRun() {
         var event = new CustomEvent('ready');
@@ -127,3 +132,85 @@ var Php = /*#__PURE__*/function (_EventTarget) {
 }( /*#__PURE__*/_wrapNativeSuper(EventTarget));
 
 exports.Php = Php;
+
+if (window && document) {
+  var php = new Php();
+
+  var runScriptTag = function runScriptTag(element) {
+    var src = element.getAttribute('src');
+
+    if (src) {
+      fetch(src).then(function (r) {
+        return r.text();
+      }).then(function (r) {
+        console.log(r);
+        php.run(r);
+      });
+      return;
+    }
+
+    var inlineCode = element.innerText.trim();
+    console.log(inlineCode);
+
+    if (inlineCode) {// php.run(inlineCode);
+    }
+  };
+
+  php.addEventListener('ready', function () {
+    var phpSelector = 'script[type="text/php"]';
+    var htmlNode = document.body.parentElement;
+    var observer = new MutationObserver(function (mutations, observer) {
+      var _iterator = _createForOfIteratorHelper(mutations),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var mutation = _step.value;
+
+          var _iterator2 = _createForOfIteratorHelper(mutation.addedNodes),
+              _step2;
+
+          try {
+            for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+              var addedNode = _step2.value;
+
+              if (!addedNode.matches || !addedNode.matches(phpSelector)) {
+                continue;
+              }
+
+              runScriptTag(addedNode);
+            }
+          } catch (err) {
+            _iterator2.e(err);
+          } finally {
+            _iterator2.f();
+          }
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+    });
+    observer.observe(htmlNode, {
+      childList: true,
+      subtree: true
+    });
+    var phpNodes = document.querySelectorAll(phpSelector);
+
+    var _iterator3 = _createForOfIteratorHelper(phpNodes),
+        _step3;
+
+    try {
+      for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+        var phpNode = _step3.value;
+        var code = phpNode.innerText.trim();
+        runScriptTag(phpNode);
+      }
+    } catch (err) {
+      _iterator3.e(err);
+    } finally {
+      _iterator3.f();
+    }
+  });
+}
