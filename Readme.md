@@ -135,7 +135,7 @@ The quickest way to build PIB is by using Make & Docker. Simply issue the `make`
 make
 ```
 
-### Setup Emscripten SDK (emsdk) manually
+### Using Emscripten SDK (emsdk) manually
 
 Steps:
 
@@ -143,10 +143,10 @@ Steps:
 + Run `bash configure.sh`
 + Run `bash build-objects.sh`
 + Run `bash build.sh` to build the web binaries
-  * Run ENVIRONMENT=shell to build the shell binaries (optional)
-  * Run ENVIRONMENT=node to build the node binaries (optional)
-  * Run ENVIRONMENT=worker to build the worker binaries (optional)
-  * Run ENVIRONMENT=webview to build the webview binaries (optional)
+  * Run `ENVIRONMENT=shell bash build.sh` to build the shell binaries (optional)
+  * Run `ENVIRONMENT=node bash build.sh` to build the node binaries (optional)
+  * Run `ENVIRONMENT=worker bash build.sh` to build the worker binaries (optional)
+  * Run `ENVIRONMENT=webview bash build.sh` to build the webview binaries (optional)
 
 ## Acknowledgements
 
