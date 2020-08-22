@@ -40,7 +40,7 @@ You'll need to add the following `postinstall` script entry to your package.json
 If you're using a more advanced bundler, use the vendor's documentation to learn how to move the files matching the following pattern to your public directory:
 
 ```
-.../node_modules/php-wasm/php-web.*
+./node_modules/php-wasm/php-web.*
 ```
 
 ## Usage
