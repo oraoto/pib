@@ -33,8 +33,6 @@ const init = () => {
 
 			style.textContent = "body{ white-space:pre; }";
 
-			console.log(style);
-
 			outputArea.head.append(style);
 
 			if(exitCode || !persistBox.checked)
