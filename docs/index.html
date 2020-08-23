@@ -4,9 +4,45 @@
 <head>
 	<meta charset="utf-8">
 	<title>PIB: PHP in Browser</title>
-	<style>@import url('/php-wasm/style.css')</style>
 	<script src="//ajaxorg.github.io/ace-builds/src-min/ace.js" type="text/javascript" charset="utf-8"></script>
-	<script src = "/php-wasm/require1k.js" data-main = "./index"></script>
+
+	<script type="text/javascript">
+		// Allow the page to be served from any direcotry...
+
+		const path  = location.pathname.replace(/index.html$/, '');
+
+		if(!path.match(/\/$/))
+		{
+			window.location = path + '/' + (location.search||'');
+
+			console.log(window.location);
+		}
+		else
+		{
+			const script = document.createElement('script');
+			script.type  = 'text/javascript';
+			script.src   = `${path}require1k.js`;
+
+			console.log(script.src);
+			script.setAttribute('data-main', `./index`);
+			document.head.append(script);
+
+			const style = document.createElement('style');
+			style.type = 'text/css';
+			style.innerText = `@import url('${path}style.css')`;
+			document.head.append(style);
+
+			const favicon = document.createElement('link');
+
+			favicon.setAttribute('rel',  'icon');
+			favicon.setAttribute('href', `${path}favicon.ico`);
+			favicon.setAttribute('type', 'image/x-icon');
+
+			document.head.append(favicon);
+		}
+
+
+	</script>
 </head>
 
 <body>
@@ -14,6 +50,10 @@
 	<div class="playground">
 		<div class="playground-header">
 			<button id="run" disabled>Loading...</button>
+			<label>
+				<input  id = "persist" type = "checkbox" >
+				Persist
+			</label>
 		</div>
 		<div class="playground-split-vertical">
 			<div class="playground-editor">

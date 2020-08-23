@@ -1,70 +1,26 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -euxo pipefail;
 
-PHP_BRANCH=PHP-7.4
+pushd php-src
 
-if [[ ! -d php-src ]]; then
-    echo "Get PHP source from branch $PHP_BRANCH"
-    git clone https://github.com/php/php-src.git --branch $PHP_BRANCH --single-branch --no-tags --depth 1
-fi
+EMCC_CORES=8 emcc -O3                    \
+	--llvm-lto 2                         \
+	-o ../out/php-${ENVIRONMENT:-web}.js \
+	-s ENVIRONMENT=${ENVIRONMENT:-web}   \
+	-s EXPORTED_FUNCTIONS='["_pib_init", "_pib_destroy", "_pib_eval" "_pib_refresh", "_main", "_php_embed_init", "_php_embed_shutdown", "_php_embed_shutdown", "_zend_eval_string"]' \
+	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "UTF8ToString", "lengthBytesUTF8"]' \
+	-s MODULARIZE=1                      \
+	-s EXPORT_NAME="'PHP'"               \
+	-s TOTAL_MEMORY=134217728            \
+	-s ASSERTIONS=0                      \
+	-s INVOKE_RUN=0                      \
+	-s ERROR_ON_UNDEFINED_SYMBOLS=0      \
+	--preload-file Zend/bench.php        \
+		libs/libphp7.a pib_eval.o
 
-# Install autoconf
-if ! hash autoconf 2>/dev/null; then
-    apt-get update && apt-get install -y autoconf
-fi
-# Install bison
-if ! hash bison 2>/dev/null; then
-    apt-get update && apt-get install -y bison
-fi
-# Install re2c
-if ! hash re2c 2>/dev/null; then
-    apt-get update && apt-get install -y re2c
-fi
+popd
 
-echo "Configure"
-
-cd php-src
-./buildconf
-emconfigure ./configure \
-  --disable-all \
-  --disable-cgi \
-  --disable-cli \
-  --disable-rpath \
-  --disable-phpdbg \
-  --with-valgrind=no \
-  --without-pear \
-  --without-pcre-jit \
-  --with-layout=GNU \
-  --enable-embed=static \
-  --enable-bcmath \
-  --enable-json \
-  --enable-ctype \
-  --enable-mbstring \
-  --disable-mbregex \
-  --enable-tokenizer
-
-# echo "Build"
-emmake make
-mkdir -p out
-emcc -O3 -I . -I Zend -I main -I TSRM/ ../source/pib_eval.c -o pib_eval.o
-emcc -O3 \
-  --llvm-lto 2 \
-  -s ENVIRONMENT=${ENVIRONMENT:-shell} \
-  -s EXPORTED_FUNCTIONS='["_pib_eval", "_php_embed_init", "_zend_eval_string", "_php_embed_shutdown", "_main"]' \
-  -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall"]' \
-  -s MODULARIZE=1 \
-  -s EXPORT_NAME="'PHP'" \
-  -s TOTAL_MEMORY=134217728 \
-  -s ASSERTIONS=0 \
-  -s INVOKE_RUN=0 \
-  -s ERROR_ON_UNDEFINED_SYMBOLS=0 \
-  --preload-file Zend/bench.php \
-  libs/libphp7.a pib_eval.o -o out/php-${ENVIRONMENT:-shell}.js
-
-cp out/php-${ENVIRONMENT:-shell}.wasm \
-	out/php-${ENVIRONMENT:-shell}.js \
-	out/php-${ENVIRONMENT:-shell}.data \
-	..
-
-echo "Done"
+cp  ./out/php-${ENVIRONMENT:-web}.wasm \
+	./out/php-${ENVIRONMENT:-web}.js   \
+	./

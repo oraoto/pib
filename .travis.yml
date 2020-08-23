@@ -12,10 +12,11 @@ sudo: required
 services:
   - docker
 
+git:
+  submodules: false
+
 before_install:
   - docker run -dit --name emscripten -v $(pwd):/src trzeci/emscripten-ubuntu:latest bash
 
 script:
-  - docker exec -it emscripten apt-get update
-  - docker exec -it emscripten apt-get install -y autoconf bison re2c
-  - docker exec -it emscripten bash build.sh
+  - make configure build-js build-web-bin
