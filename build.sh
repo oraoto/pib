@@ -2,25 +2,23 @@
 
 set -euxo pipefail;
 
-pushd php-src
+pushd php7.4-src
 
-EMCC_CORES=8 emcc -O3                    \
+EMCC_CORES=8 emcc -O1                    \
 	--llvm-lto 2                         \
-	-o ../out/php-${ENVIRONMENT:-web}.js \
 	-s ENVIRONMENT=${ENVIRONMENT:-web}   \
-	-s EXPORTED_FUNCTIONS='["_pib_init", "_pib_destroy", "_pib_eval" "_pib_refresh", "_main", "_php_embed_init", "_php_embed_shutdown", "_php_embed_shutdown", "_zend_eval_string"]' \
+	-s EXPORTED_FUNCTIONS='["_pib_init", "_pib_destroy", "_pib_eval" "_pib_refresh", "_main", "_php_embed_init", "_php_embed_shutdown", "_php_embed_shutdown", "_zend_eval_string", "_exec_callback", "_del_callback"]' \
 	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "UTF8ToString", "lengthBytesUTF8"]' \
 	-s MODULARIZE=1                      \
 	-s EXPORT_NAME="'PHP'"               \
-	-s TOTAL_MEMORY=134217728            \
+	-s TOTAL_MEMORY=512MB                \
 	-s ASSERTIONS=0                      \
 	-s INVOKE_RUN=0                      \
 	-s ERROR_ON_UNDEFINED_SYMBOLS=0      \
 	--preload-file Zend/bench.php        \
-		libs/libphp7.a pib_eval.o
+	-o ../build/php-${ENVIRONMENT:-web}.js \
+		libs/libphp7.a ../build/pib_eval.o
 
 popd
 
-cp  ./out/php-${ENVIRONMENT:-web}.wasm \
-	./out/php-${ENVIRONMENT:-web}.js   \
-	./
+cp -v ./build/php-${ENVIRONMENT:-web}.* ./
