@@ -24,7 +24,7 @@ DOCKER_RUN_IN_LIBXML =${DOCKER_ENV} -w /src/third_party/libxml2/ emscripten-buil
 
 .PHONY: build clean hooks build-image build-js push-image pull-image
 
-build: build-js php-web.js php-webview.js php-node.js php-shell.js php-worker.js
+build: build-js php-web.wasm php-webview.wasm php-node.wasm php-shell.wasm php-worker.wasm
 	@ echo "Done!"
 
 ########### Collect & patch the source code. ###########
