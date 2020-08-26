@@ -90,7 +90,7 @@ lib/libphp7.a: third_party/php7.4-src/patched
 		--enable-mbstring \
 		--disable-mbregex \
 		--enable-tokenizer \
-		--enable-vrzno | pv
+		--enable-vrzno
 
 lib/pib_eval.o: lib/libphp7.a build-objects.sh
 	@ ${DOCKER_RUN_IN_PHP} emmake make -j8
@@ -100,13 +100,13 @@ lib/pib_eval.o: lib/libphp7.a build-objects.sh
 		-I main           \
 		-I TSRM/          \
 		../../source/pib_eval.c \
-		-o ../../lib/pib_eval.o | pv
+		-o ../../lib/pib_eval.o
 
 lib/something:
 	${DOCKER_RUN_IN_LIBXML} ./autogen.sh
-	${DOCKER_RUN_IN_LIBXML} emconfigure ./configure --prefix=/src/lib/ | pv
-	${DOCKER_RUN_IN_LIBXML} emmake make | pv
-	${DOCKER_RUN_IN_LIBXML} emmake make install | pv
+	${DOCKER_RUN_IN_LIBXML} emconfigure ./configure --prefix=/src/lib/
+	${DOCKER_RUN_IN_LIBXML} emmake make
+	${DOCKER_RUN_IN_LIBXML} emmake make install
 
 ########### Build the final files. ###########
 
@@ -125,27 +125,27 @@ FINAL_BUILD=${DOCKER_RUN_IN_PHP} emcc -O1 \
 	-s INVOKE_RUN=0                      \
 		../../lib/libphp7.a ../../lib/pib_eval.o
 
-php-web.js: ENVIRONMENT=web
-php-web.js: lib/libphp7.a build/pib_eval.o build.sh
+php-web.wasm: ENVIRONMENT=web
+php-web.wasm: lib/libphp7.a build/pib_eval.o build.sh
 
-php-worker.js: ENVIRONMENT=worker
-php-worker.js: lib/libphp7.a build/pib_eval.o build.sh
-	@ ${FINAL_BUILD} | pv
+php-worker.wasm: ENVIRONMENT=worker
+php-worker.wasm: lib/libphp7.a build/pib_eval.o build.sh
+	@ ${FINAL_BUILD}
 	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
 
-php-node.js: ENVIRONMENT=node
-php-node.js: lib/libphp7.a build/pib_eval.o build.sh
-	@ ${FINAL_BUILD} | pv
+php-node.wasm: ENVIRONMENT=node
+php-node.wasm: lib/libphp7.a build/pib_eval.o build.sh
+	@ ${FINAL_BUILD}
 	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
 
-php-shell.js: ENVIRONMENT=shell
-php-shell.js: lib/libphp7.a build/pib_eval.o build.sh
-	@ ${FINAL_BUILD} | pv
+php-shell.wasm: ENVIRONMENT=shell
+php-shell.wasm: lib/libphp7.a build/pib_eval.o build.sh
+	@ ${FINAL_BUILD}
 	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
 
-php-webview.js: ENVIRONMENT=webview
-php-webview.js: lib/libphp7.a build/pib_eval.o build.sh
-	@ ${FINAL_BUILD} | pv
+php-webview.wasm: ENVIRONMENT=webview
+php-webview.wasm: lib/libphp7.a build/pib_eval.o build.sh
+	@ ${FINAL_BUILD}
 	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
 
 ########### Clerical stuff. ###########

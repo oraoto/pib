@@ -12,9 +12,6 @@ sudo: required
 services:
   - docker
 
-git:
-  submodules: false
-
 before_install:
   - docker run -dit --name emscripten -v $(pwd):/src trzeci/emscripten-ubuntu:latest bash
 
