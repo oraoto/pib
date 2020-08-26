@@ -1,7 +1,7 @@
 #!/bin/bash -eux
 
-cp ./PhpWeb.js    ./docs
-cp ./PhpBase.js   ./docs
-cp ./php-web.js   ./docs
-cp ./php-web.wasm ./docs
-cp ./php-web.data ./docs
+cp -v ./PhpWeb.js    ./docs
+cp -v ./PhpBase.js   ./docs
+cp -v ./php-web.js   ./docs
+cp -v ./php-web.wasm ./docs
+cp -v ./php-web.data ./docs

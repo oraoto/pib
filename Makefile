@@ -66,7 +66,7 @@ third_party/libxml2:
 
 ########### Build the objects. ###########
 
-lib/libphp7.a: third_party/php7.4-src/patched
+lib/libphp7.a: third_party/php7.4-src/patched third_party/php7.4-src/ext/vrzno/README.md
 	@ ${DOCKER_RUN_IN_PHP} rm configure || true
 	@ ${DOCKER_RUN_IN_PHP} ./buildconf --force
 	@ ${DOCKER_RUN_IN_PHP} emconfigure ./configure \
