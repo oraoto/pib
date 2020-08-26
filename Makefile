@@ -126,27 +126,25 @@ FINAL_BUILD=${DOCKER_RUN_IN_PHP} emcc -O1 \
 		../../lib/libphp7.a ../../lib/pib_eval.o
 
 php-web.js: ENVIRONMENT=web
-php-web.js: lib/libphp7.a build/pib_eval.o build.sh source/*.js source/*.c
-	@ ${FINAL_BUILD} | pv
-	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
+php-web.js: lib/libphp7.a build/pib_eval.o build.sh
 
 php-worker.js: ENVIRONMENT=worker
-php-worker.js: lib/libphp7.a build/pib_eval.o build.sh source/*.js source/*.c
+php-worker.js: lib/libphp7.a build/pib_eval.o build.sh
 	@ ${FINAL_BUILD} | pv
 	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
 
 php-node.js: ENVIRONMENT=node
-php-node.js: lib/libphp7.a build/pib_eval.o build.sh source/*.js source/*.c
+php-node.js: lib/libphp7.a build/pib_eval.o build.sh
 	@ ${FINAL_BUILD} | pv
 	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
 
 php-shell.js: ENVIRONMENT=shell
-php-shell.js: lib/libphp7.a build/pib_eval.o build.sh source/*.js source/*.c
+php-shell.js: lib/libphp7.a build/pib_eval.o build.sh
 	@ ${FINAL_BUILD} | pv
 	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
 
 php-webview.js: ENVIRONMENT=webview
-php-webview.js: lib/libphp7.a build/pib_eval.o build.sh source/*.js source/*.c
+php-webview.js: lib/libphp7.a build/pib_eval.o build.sh
 	@ ${FINAL_BUILD} | pv
 	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
 
