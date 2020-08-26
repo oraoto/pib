@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en-us">
+
+<head>
+	<meta charset="utf-8">
+	<title>PIB: PHP in Browser</title>
+	<script src="//ajaxorg.github.io/ace-builds/src-min/ace.js" type="text/javascript" charset="utf-8"></script>
+
+	<script type="text/javascript">
+		// Allow the page to be served from any direcotry...
+
+		const path  = location.pathname.replace(/index.html$/, '');
+
+		if(!path.match(/\/$/))
+		{
+			window.location = path + '/' + (location.search||'');
+		}
+		else
+		{
+			const script = document.createElement('script');
+			script.type  = 'text/javascript';
+			script.src   = `${path}require1k.js`;
+
+			console.log(script.src);
+			script.setAttribute('data-main', `./index`);
+			document.head.append(script);
+
+			const style = document.createElement('style');
+			style.type = 'text/css';
+			style.innerText = `@import url('${path}style.css')`;
+			document.head.append(style);
+
+			const favicon = document.createElement('link');
+
+			favicon.setAttribute('rel',  'icon');
+			favicon.setAttribute('href', `${path}favicon.ico`);
+			favicon.setAttribute('type', 'image/x-icon');
+
+			document.head.append(favicon);
+		}
+	</script>
+</head>
+
+<body>
+
+	<div class="playground">
+		<div class="playground-header">
+			<button id="run" disabled>Loading...</button>
+			<label>
+				<input  id = "persist" type = "checkbox" >
+				Persist
+			</label>
+		</div>
+		<div class="playground-split-vertical">
+			<div class="playground-editor">
+				<div id="editor"></div>
+			</div>
+			<iframe allow="midi; geolocation; microphone; camera; encrypted-media;" sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups"
+				id="output"></iframe>
+		</div>
+	</div>
+	<a href="https://github.com/seanmorris/php-wasm"><img style="z-index: 1;position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+</body>
+
+</html>

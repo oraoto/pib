@@ -1,14 +1,14 @@
 SHELL=/bin/bash -euxo pipefail
 
--include ./.env
+-include .env
 
-PHP_BRANCH:=PHP-7.4
-VRZNO_BRANCH:=DomAccess
-ENVIRONMENT:=web
+PHP_BRANCH     ?=PHP-7.4
+VRZNO_BRANCH   ?=DomAccess
+ENVIRONMENT    ?=web
+TOTAL_MEMORY   ?=256MB
+PRELOAD_ASSETS ?=Zend/bench.php
 
-PRELOAD_ASSETS:=Zend/bench.php
-
-.PHONY: build hooks build-js clean
+.PHONY: build hooks build-js clean e
 
 build: build-js php-web.js php-webview.js php-node.js php-shell.js php-worker.js
 	@ echo "Done!"
@@ -16,10 +16,10 @@ build: build-js php-web.js php-webview.js php-node.js php-shell.js php-worker.js
 ########### Build the objects. ###########
 
 build/pib_eval.o: configured build-objects.sh
-	@ docker-compose run --rm -e ENVIRONMENT=web emscripten-builder bash build-objects.sh | pv
+	@ docker-compose run --rm -e ENVIRONMENT=web -e TOTAL_MEMORY=${TOTAL_MEMORY} emscripten-builder bash build-objects.sh | pv
 
-configured: php7.4-src sqlite3.33-src php7.4-src/ext/vrzno configure.sh
-	@ docker-compose run --rm emscripten-builder bash configure.sh
+configured: php7.4-src sqlite3.33-src php7.4-src/ext/vrzno
+	@ docker-compose run --rm -e TOTAL_MEMORY=${TOTAL_MEMORY} emscripten-builder bash configure.sh
 	@ date > configured
 
 ########### Collect & patch the source code. ###########
@@ -49,24 +49,24 @@ php7.4-src/ext/vrzno:
 ########### Build the final files. ###########
 
 php-web.js: configured build/pib_eval.o build.sh source/*.js source/*.c
-	@ docker-compose run --rm -e ENVIRONMENT=web -e PRELOAD_ASSETS=${PRELOAD_ASSETS} emscripten-builder bash build.sh | pv
+	@ docker-compose run --rm -e ENVIRONMENT=web -e PRELOAD_ASSETS=${PRELOAD_ASSETS} -e TOTAL_MEMORY=${TOTAL_MEMORY} emscripten-builder bash build.sh | pv
 
 php-webview.js: configured build/pib_eval.o build.sh source/*.js source/*.c
-	@ docker-compose run --rm -e ENVIRONMENT=webview -e PRELOAD_ASSETS=${PRELOAD_ASSETS} emscripten-builder bash build.sh | pv
+	@ docker-compose run --rm -e ENVIRONMENT=webview -e PRELOAD_ASSETS=${PRELOAD_ASSETS} -e TOTAL_MEMORY=${TOTAL_MEMORY} emscripten-builder bash build.sh | pv
 
 php-node.js: configured build/pib_eval.o build.sh source/*.js source/*.c
-	@ docker-compose run --rm -e ENVIRONMENT=node -e PRELOAD_ASSETS=${PRELOAD_ASSETS} emscripten-builder bash build.sh | pv
+	@ docker-compose run --rm -e ENVIRONMENT=node -e PRELOAD_ASSETS=${PRELOAD_ASSETS} -e TOTAL_MEMORY=${TOTAL_MEMORY} emscripten-builder bash build.sh | pv
 
 php-shell.js: configured build/pib_eval.o build.sh source/*.js source/*.c
-	@ docker-compose run --rm -e ENVIRONMENT=shell -e PRELOAD_ASSETS=${PRELOAD_ASSETS} emscripten-builder bash build.sh | pv
+	@ docker-compose run --rm -e ENVIRONMENT=shell -e PRELOAD_ASSETS=${PRELOAD_ASSETS} -e TOTAL_MEMORY=${TOTAL_MEMORY} emscripten-builder bash build.sh | pv
 
 php-worker.js: configured build/pib_eval.o build.sh source/*.js source/*.c
-	@ docker-compose run --rm -e ENVIRONMENT=worker -e PRELOAD_ASSETS=${PRELOAD_ASSETS} emscripten-builder bash build.sh | pv
+	@ docker-compose run --rm -e ENVIRONMENT=worker -e PRELOAD_ASSETS=${PRELOAD_ASSETS} -e TOTAL_MEMORY=${TOTAL_MEMORY} emscripten-builder bash build.sh | pv
 
 ########### Clerical stuff. ###########
 
 clean:
-	@ docker-compose run --rm emscripten-builder rm -rf php7.4-src sqlite3.33-src Php.js php-web.* php-webview.* php-node.* php-shell.* php-worker.*
+	@ docker-compose run --rm -e TOTAL_MEMORY=${TOTAL_MEMORY} emscripten-builder rm -rf php7.4-src sqlite3.33-src Php.js php-web.* php-webview.* php-node.* php-shell.* php-worker.*
 
 hooks:
 	@ git config core.hooksPath githooks

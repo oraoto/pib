@@ -11,11 +11,11 @@ EMCC_CORES=8 emcc -O1                    \
 	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "UTF8ToString", "lengthBytesUTF8"]' \
 	-s MODULARIZE=1                      \
 	-s EXPORT_NAME="'PHP'"               \
-	-s TOTAL_MEMORY=512MB                \
+	-s TOTAL_MEMORY=${TOTAL_MEMORY}      \
 	-s ASSERTIONS=0                      \
 	-s INVOKE_RUN=0                      \
 	-s ERROR_ON_UNDEFINED_SYMBOLS=0      \
-	--preload-file Zend/bench.php        \
+	--preload-file ${PRELOAD_ASSETS}     \
 	-o ../build/php-${ENVIRONMENT:-web}.js \
 		libs/libphp7.a ../build/pib_eval.o
 
