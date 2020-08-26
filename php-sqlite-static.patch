@@ -1,5 +1,5 @@
---- a/php7.4-src/ext/sqlite3/config0.m4
-+++ b/php7.4-src/ext/sqlite3/config0.m4
+--- a/third_party/php7.4-src/ext/sqlite3/config0.m4
++++ b/third_party/php7.4-src/ext/sqlite3/config0.m4
 @@ -5,26 +5,6 @@ PHP_ARG_WITH([sqlite3],
    [yes])
 
@@ -27,3 +27,4 @@
    PHP_NEW_EXTENSION(sqlite3, sqlite3.c, $ext_shared,,-DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)
    PHP_SUBST(SQLITE3_SHARED_LIBADD)
  fi
+

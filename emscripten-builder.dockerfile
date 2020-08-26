@@ -12,23 +12,23 @@ RUN set -euxo pipefail;\
 		build-essential \
 		libargon2-0-dev \
 		libreadline-dev \
-    	libsqlite3-dev \
+		libsqlite3-dev \
 		automake-1.15 \
 		libsodium-dev \
 		libonig-dev \
 		libyaml-dev \
-    	libxml2-dev \
+		libxml2-dev \
 		libssl-dev \
 		libgmp-dev \
 		autoconf \
-    	valgrind \
-    	libtool \
-    	php-dev \
-    	pkgconf \
+		valgrind \
+		libtool \
+		php-dev \
+		pkgconf \
 		bison \
 		flex \
-    	make \
+		make \
 		re2c \
 		gdb \
-    	git \
-    	pv
+		git \
+		pv

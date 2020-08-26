@@ -1,5 +1,5 @@
---- a/sqlite3.33-src/sqlite3.h
-+++ b/sqlite3.33-src/sqlite3.h
+--- a/third_party/sqlite3.33-src/sqlite3.h
++++ b/third_party/sqlite3.33-src/sqlite3.h
 @@ -159,7 +159,7 @@ extern "C" {
  **
  ** See also: [sqlite_version()] and [sqlite_source_id()].

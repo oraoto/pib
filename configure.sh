@@ -2,17 +2,18 @@
 
 set -euxo pipefail;
 
-pushd php7.4-src
+pushd third_party/php7.4-src/
 
 rm configure || true
 
 ./buildconf --force
 
 emconfigure ./configure \
-	--enable-static=yes \
-	--enable-shared=no \
-	--with-sqlite3 \
 	--disable-all \
+	--prefix=`pwd`/../../lib/ \
+	--with-sqlite3 \
+	--without-pdo-sqlite \
+	--without-pdo \
 	--disable-cgi \
 	--disable-cli \
 	--disable-rpath \

@@ -7,7 +7,9 @@
 	<script src="//ajaxorg.github.io/ace-builds/src-min/ace.js" type="text/javascript" charset="utf-8"></script>
 
 	<script type="text/javascript">
-		// Allow the page to be served from any direcotry...
+		navigator.serviceWorker.register('/worker.js').then(reg => {
+			reg.update();
+		});
 
 		const path  = location.pathname.replace(/index.html$/, '');
 
