@@ -2,7 +2,7 @@
 
 Changes
 
-## 0.0.3 -
+## 0.0.3 - New Horizons
 
 * Totally revamped build process that tracks build artifact relationships.
 * Builds for web, node, shell, worker & webview.
