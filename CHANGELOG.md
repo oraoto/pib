@@ -10,6 +10,7 @@ Changes
 * The querySelector method is available on dom nodes.
 * addEventListener/removeEventListener is also available on dom nodes.
 * sqlite3 v3.33 is now statically linked to php & the sqlite3 extension is enabled.
+* The extensions: sqlite3, pdo, & pdo-sqlite, are now enabled.
 
 ## 0.0.2 - Gaining Momentum
 

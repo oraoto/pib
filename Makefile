@@ -12,9 +12,10 @@ VRZNO_BRANCH   ?=DomAccess
 ICU_TAG        ?=release-67-1
 LIBXML2_TAG    ?=v2.9.10
 
-DOCKER_ENV=docker-compose run --rm  \
+DOCKER_ENV=docker-compose run --rm      \
+	-e EMCC_ALLOW_FASTCOMP=1            \
 	-e PRELOAD_ASSETS=${PRELOAD_ASSETS} \
-	-e TOTAL_MEMORY=${TOTAL_MEMORY} \
+	-e TOTAL_MEMORY=${TOTAL_MEMORY}     \
 	-e ENVIRONMENT=${ENVIRONMENT}
 
 DOCKER_RUN           =${DOCKER_ENV} emscripten-builder
@@ -70,31 +71,32 @@ lib/libphp7.a: third_party/php7.4-src/patched third_party/php7.4-src/ext/vrzno/R
 	@ ${DOCKER_RUN_IN_PHP} rm configure || true
 	@ ${DOCKER_RUN_IN_PHP} ./buildconf --force
 	@ ${DOCKER_RUN_IN_PHP} emconfigure ./configure \
-		--prefix=`pwd`/../../lib/ \
-		--with-layout=GNU \
-		--disable-cgi \
-		--disable-cli \
-		--disable-all \
-		--with-sqlite3 \
-		--enable-pdo \
-		--with-pdo-sqlite \
-		--disable-rpath \
-		--disable-phpdbg \
-		--without-pear \
+		--enable-embed=static \
+		--prefix=`pwd`/lib/ \
+		--with-layout=GNU  \
+		--disable-cgi      \
+		--disable-cli      \
+		--disable-all      \
+		--with-sqlite3     \
+		--enable-pdo       \
+		--with-pdo-sqlite  \
+		--disable-rpath    \
+		--disable-phpdbg   \
+		--without-pear     \
 		--with-valgrind=no \
 		--without-pcre-jit \
-		--enable-embed=static \
-		--enable-bcmath \
-		--enable-json \
-		--enable-ctype \
-		--enable-mbstring \
-		--disable-mbregex \
+		--enable-bcmath    \
+		--enable-json      \
+		--enable-ctype     \
+		--enable-mbstring  \
+		--disable-mbregex  \
 		--enable-tokenizer \
 		--enable-vrzno
+	@ cp third_party/php7.4-src/.libs/* lib
 
-lib/pib_eval.o: lib/libphp7.a build-objects.sh
+lib/pib_eval.o: lib/libphp7.a
 	@ ${DOCKER_RUN_IN_PHP} emmake make -j8
-	@ ${DOCKER_RUN_IN_PHP} EMCC_CORES=8 emcc -O1 \
+	@ ${DOCKER_RUN_IN_PHP} emcc -O1 \
 		-I .              \
 		-I Zend           \
 		-I main           \
@@ -112,41 +114,41 @@ lib/something:
 
 FINAL_BUILD=${DOCKER_RUN_IN_PHP} emcc -O1 \
 	-o ../../build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.js \
-	--llvm-lto 2                         \
-	--preload-file ${PRELOAD_ASSETS}     \
+	--llvm-lto 2                     \
+	--preload-file ${PRELOAD_ASSETS} \
 	-s EXPORTED_FUNCTIONS='["_pib_init", "_pib_destroy", "_pib_eval" "_pib_refresh", "_main", "_php_embed_init", "_php_embed_shutdown", "_php_embed_shutdown", "_zend_eval_string", "_exec_callback", "_del_callback"]' \
 	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "UTF8ToString", "lengthBytesUTF8"]' \
-	-s ENVIRONMENT=${ENVIRONMENT}   \
-	-s ERROR_ON_UNDEFINED_SYMBOLS=0      \
-	-s TOTAL_MEMORY=${TOTAL_MEMORY}      \
-	-s EXPORT_NAME="'PHP'"               \
-	-s MODULARIZE=1                      \
-	-s ASSERTIONS=0                      \
-	-s INVOKE_RUN=0                      \
+	-s ENVIRONMENT=${ENVIRONMENT}    \
+	-s ERROR_ON_UNDEFINED_SYMBOLS=0  \
+	-s TOTAL_MEMORY=${TOTAL_MEMORY}  \
+	-s EXPORT_NAME="'PHP'"           \
+	-s MODULARIZE=1                  \
+	-s ASSERTIONS=0                  \
+	-s INVOKE_RUN=0                  \
 		../../lib/libphp7.a ../../lib/pib_eval.o
 
 php-web.wasm: ENVIRONMENT=web
-php-web.wasm: lib/libphp7.a build/pib_eval.o
+php-web.wasm: lib/libphp7.a lib/pib_eval.o
 	@ ${FINAL_BUILD}
 	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
 
 php-worker.wasm: ENVIRONMENT=worker
-php-worker.wasm: lib/libphp7.a build/pib_eval.o build.sh
+php-worker.wasm: lib/libphp7.a lib/pib_eval.o
 	@ ${FINAL_BUILD}
 	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
 
 php-node.wasm: ENVIRONMENT=node
-php-node.wasm: lib/libphp7.a build/pib_eval.o
+php-node.wasm: lib/libphp7.a lib/pib_eval.o
 	@ ${FINAL_BUILD}
 	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
 
 php-shell.wasm: ENVIRONMENT=shell
-php-shell.wasm: lib/libphp7.a build/pib_eval.o
+php-shell.wasm: lib/libphp7.a lib/pib_eval.o
 	@ ${FINAL_BUILD}
 	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
 
 php-webview.wasm: ENVIRONMENT=webview
-php-webview.wasm: lib/libphp7.a build/pib_eval.o
+php-webview.wasm: lib/libphp7.a lib/pib_eval.o
 	@ ${FINAL_BUILD}
 	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
 
