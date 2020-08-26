@@ -2,6 +2,14 @@
 
 Changes
 
+## 0.0.3 -
+
+* builds for web, node, shell, worker & webview.
+* php may now access & traverse the dom and access nodes.
+* The querySelector method is available on dom nodes.
+* addEventListener/removeEventListener is also available on dom nodes.
+* sqlite3 v3.33 is now statically linked to php & the sqlite3 extension is enabled.
+
 ## 0.0.2 - Gaining Momentum
 
 * php objects now have persistent memory, may be cleared with `php.refresh();`.

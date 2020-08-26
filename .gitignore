@@ -1,8 +1,9 @@
-/php-web.js
-/php-web.wasm
-/php-web.data
-/php-shell.js
-/php-shell.wasm
-/php-shell.data
-/Php.js
+/php*.js
+/php*.wasm
+/php*.data
+/Php*.js
+/*.js
 /node_modules
+configured
+.env
+/*-src/
