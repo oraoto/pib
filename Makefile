@@ -1,4 +1,4 @@
-SHELL=/bin/bash -euxo pipefail
+SHELL=/bin/bash -euo pipefail
 
 -include .env
 
@@ -126,7 +126,9 @@ FINAL_BUILD=${DOCKER_RUN_IN_PHP} emcc -O1 \
 		../../lib/libphp7.a ../../lib/pib_eval.o
 
 php-web.wasm: ENVIRONMENT=web
-php-web.wasm: lib/libphp7.a build/pib_eval.o build.sh
+php-web.wasm: lib/libphp7.a build/pib_eval.o
+	@ ${FINAL_BUILD}
+	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
 
 php-worker.wasm: ENVIRONMENT=worker
 php-worker.wasm: lib/libphp7.a build/pib_eval.o build.sh
@@ -134,17 +136,17 @@ php-worker.wasm: lib/libphp7.a build/pib_eval.o build.sh
 	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
 
 php-node.wasm: ENVIRONMENT=node
-php-node.wasm: lib/libphp7.a build/pib_eval.o build.sh
+php-node.wasm: lib/libphp7.a build/pib_eval.o
 	@ ${FINAL_BUILD}
 	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
 
 php-shell.wasm: ENVIRONMENT=shell
-php-shell.wasm: lib/libphp7.a build/pib_eval.o build.sh
+php-shell.wasm: lib/libphp7.a build/pib_eval.o
 	@ ${FINAL_BUILD}
 	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
 
 php-webview.wasm: ENVIRONMENT=webview
-php-webview.wasm: lib/libphp7.a build/pib_eval.o build.sh
+php-webview.wasm: lib/libphp7.a build/pib_eval.o
 	@ ${FINAL_BUILD}
 	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
 
