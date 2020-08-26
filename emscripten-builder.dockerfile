@@ -7,6 +7,7 @@ ARG PHP_BRANCH=PHP-7.4
 
 RUN set -euxo pipefail;\
 	apt-get update; \
+	emsdk install latest; \
 	apt-get --no-install-recommends -y install \
 		libcurl4-openssl-dev \
 		build-essential \

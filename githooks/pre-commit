@@ -1,9 +1,7 @@
 #!/bin/bash -eux
 
-make
-
-cp ./Php.js     ./docs
-cp ./php-*.js   ./docs
-cp ./php-*.wasm ./docs
-cp ./php-*.data ./docs
-
+cp ./PhpWeb.js    ./docs
+cp ./PhpBase.js   ./docs
+cp ./php-web.js   ./docs
+cp ./php-web.wasm ./docs
+cp ./php-web.data ./docs

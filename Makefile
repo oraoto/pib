@@ -12,39 +12,20 @@ VRZNO_BRANCH   ?=DomAccess
 ICU_TAG        ?=release-67-1
 LIBXML2_TAG    ?=v2.9.10
 
-DOCKER_RUN=docker-compose run --rm  \
+DOCKER_ENV=docker-compose run --rm  \
 	-e PRELOAD_ASSETS=${PRELOAD_ASSETS} \
 	-e TOTAL_MEMORY=${TOTAL_MEMORY} \
-	-e ENVIRONMENT=web
+	-e ENVIRONMENT=${ENVIRONMENT}
 
-DOCKER_RUN_IN_PHP  =${DOCKER_RUN} -w third_party/php7.4-src/ emscripten-builder
-DOCKER_RUN_IN_ICU4C=${DOCKER_RUN} -w /src/third_party/libicu-src/icu4c/source/ emscripten-builder
+DOCKER_RUN           =${DOCKER_ENV} emscripten-builder
+DOCKER_RUN_IN_PHP    =${DOCKER_ENV} -w /src/third_party/php7.4-src/ emscripten-builder
+DOCKER_RUN_IN_ICU4C  =${DOCKER_ENV} -w /src/third_party/libicu-src/icu4c/source/ emscripten-builder
+DOCKER_RUN_IN_LIBXML =${DOCKER_ENV} -w /src/third_party/libxml2/ emscripten-builder
 
-.PHONY: build hooks build-js clean
+.PHONY: build clean hooks build-image build-js push-image pull-image
 
 build: build-js php-web.js php-webview.js php-node.js php-shell.js php-worker.js
 	@ echo "Done!"
-
-########### Build the objects. ###########
-
-lib/pib_eval.o: lib/libphp7.a build-objects.sh
-	@ docker-compose run --rm -e ENVIRONMENT=web -e TOTAL_MEMORY=${TOTAL_MEMORY} emscripten-builder bash build-objects.sh | pv
-
-lib/libphp7.a: third_party/php7.4-src/patched third_party/php7.4-src/ext/vrzno/README.md
-	@ docker-compose run --rm -e TOTAL_MEMORY=${TOTAL_MEMORY} emscripten-builder bash configure.sh
-	@cp third_party/php7.4-src/.libs/* lib/
-
-lib/something:
-	${DOCKER_RUN_IN_ICU4C} make clean
-	${DOCKER_RUN_IN_ICU4C} emconfigure ./configure --prefix=/src/lib/
-	${DOCKER_RUN_IN_ICU4C} emmake make
-	${DOCKER_RUN_IN_ICU4C} emmake make install
-
-# 	@ ${DOCKER_BASH} cd third_party/libicu-src/icu4c/source/ && ls -al .
-# 	@ ${DOCKER_BASH} cd third_party/libicu-src/icu4c/source/ \
-# 	&& make clean \
-# 	&&  \
-# 	&&
 
 ########### Collect & patch the source code. ###########
 
@@ -53,8 +34,8 @@ third_party/php7.4-src/patched:
 		--branch ${PHP_BRANCH}   \
 		--single-branch          \
 		--depth 1;
-	@ git apply --no-index php-sqlite-static.patch
-	@ git apply --no-index php-pdo-sqlite-static.patch
+	@ git apply --no-index patch/php-sqlite-static.patch
+	@ git apply --no-index patch/php-pdo-sqlite-static.patch
 	@ touch third_party/php7.4-src/patched
 
 third_party/sqlite3.33-src/sqlite3.c:
@@ -62,7 +43,7 @@ third_party/sqlite3.33-src/sqlite3.c:
 	@ unzip sqlite-amalgamation-3330000.zip
 	@ mv sqlite-amalgamation-3330000 third_party/sqlite3.33-src
 	@ rm sqlite-amalgamation-3330000.zip*
-	@ git apply --no-index sqlite3-wasm.patch
+	@ git apply --no-index patch/sqlite3-wasm.patch
 	@ cp third_party/sqlite3.33-src/sqlite3.* third_party/php7.4-src/
 
 third_party/php7.4-src/ext/vrzno/README.md:
@@ -83,28 +64,100 @@ third_party/libxml2:
 		--single-branch     \
 		--depth 1;
 
+########### Build the objects. ###########
+
+lib/libphp7.a: third_party/php7.4-src/patched third_party/php7.4-src/*.c third_party/php7.4-src/*.h
+	@ ${DOCKER_RUN_IN_PHP} rm configure || true
+	@ ${DOCKER_RUN_IN_PHP} ./buildconf --force
+	@ ${DOCKER_RUN_IN_PHP} emconfigure ./configure \
+		--prefix=`pwd`/../../lib/ \
+		--with-layout=GNU \
+		--disable-cgi \
+		--disable-cli \
+		--disable-all \
+		--with-sqlite3 \
+		--enable-pdo \
+		--with-pdo-sqlite \
+		--disable-rpath \
+		--disable-phpdbg \
+		--without-pear \
+		--with-valgrind=no \
+		--without-pcre-jit \
+		--enable-embed=static \
+		--enable-bcmath \
+		--enable-json \
+		--enable-ctype \
+		--enable-mbstring \
+		--disable-mbregex \
+		--enable-tokenizer \
+		--enable-vrzno | pv
+
+lib/pib_eval.o: lib/libphp7.a build-objects.sh
+	@ ${DOCKER_RUN_IN_PHP} emmake make -j8
+	@ ${DOCKER_RUN_IN_PHP} EMCC_CORES=8 emcc -O1 \
+		-I .              \
+		-I Zend           \
+		-I main           \
+		-I TSRM/          \
+		../../source/pib_eval.c \
+		-o ../../lib/pib_eval.o | pv
+
+lib/something:
+	${DOCKER_RUN_IN_LIBXML} ./autogen.sh
+	${DOCKER_RUN_IN_LIBXML} emconfigure ./configure --prefix=/src/lib/ | pv
+	${DOCKER_RUN_IN_LIBXML} emmake make | pv
+	${DOCKER_RUN_IN_LIBXML} emmake make install | pv
 
 ########### Build the final files. ###########
 
+FINAL_BUILD=${DOCKER_RUN_IN_PHP} emcc -O1 \
+	-o ../../build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.js \
+	--llvm-lto 2                         \
+	--preload-file ${PRELOAD_ASSETS}     \
+	-s EXPORTED_FUNCTIONS='["_pib_init", "_pib_destroy", "_pib_eval" "_pib_refresh", "_main", "_php_embed_init", "_php_embed_shutdown", "_php_embed_shutdown", "_zend_eval_string", "_exec_callback", "_del_callback"]' \
+	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "UTF8ToString", "lengthBytesUTF8"]' \
+	-s ENVIRONMENT=${ENVIRONMENT}   \
+	-s ERROR_ON_UNDEFINED_SYMBOLS=0      \
+	-s TOTAL_MEMORY=${TOTAL_MEMORY}      \
+	-s EXPORT_NAME="'PHP'"               \
+	-s MODULARIZE=1                      \
+	-s ASSERTIONS=0                      \
+	-s INVOKE_RUN=0                      \
+		../../lib/libphp7.a ../../lib/pib_eval.o
+
+php-web.js: ENVIRONMENT=web
 php-web.js: lib/libphp7.a build/pib_eval.o build.sh source/*.js source/*.c
-	@ docker-compose run --rm -e ENVIRONMENT=web -e PRELOAD_ASSETS=${PRELOAD_ASSETS} -e TOTAL_MEMORY=${TOTAL_MEMORY} emscripten-builder bash build.sh | pv
+	@ ${FINAL_BUILD} | pv
+	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
 
-php-webview.js: lib/libphp7.a build/pib_eval.o build.sh source/*.js source/*.c
-	@ docker-compose run --rm -e ENVIRONMENT=webview -e PRELOAD_ASSETS=${PRELOAD_ASSETS} -e TOTAL_MEMORY=${TOTAL_MEMORY} emscripten-builder bash build.sh | pv
-
-php-node.js: lib/libphp7.a build/pib_eval.o build.sh source/*.js source/*.c
-	@ docker-compose run --rm -e ENVIRONMENT=node -e PRELOAD_ASSETS=${PRELOAD_ASSETS} -e TOTAL_MEMORY=${TOTAL_MEMORY} emscripten-builder bash build.sh | pv
-
-php-shell.js: lib/libphp7.a build/pib_eval.o build.sh source/*.js source/*.c
-	@ docker-compose run --rm -e ENVIRONMENT=shell -e PRELOAD_ASSETS=${PRELOAD_ASSETS} -e TOTAL_MEMORY=${TOTAL_MEMORY} emscripten-builder bash build.sh | pv
-
+php-worker.js: ENVIRONMENT=worker
 php-worker.js: lib/libphp7.a build/pib_eval.o build.sh source/*.js source/*.c
-	@ docker-compose run --rm -e ENVIRONMENT=worker -e PRELOAD_ASSETS=${PRELOAD_ASSETS} -e TOTAL_MEMORY=${TOTAL_MEMORY} emscripten-builder bash build.sh | pv
+	@ ${FINAL_BUILD} | pv
+	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
+
+php-node.js: ENVIRONMENT=node
+php-node.js: lib/libphp7.a build/pib_eval.o build.sh source/*.js source/*.c
+	@ ${FINAL_BUILD} | pv
+	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
+
+php-shell.js: ENVIRONMENT=shell
+php-shell.js: lib/libphp7.a build/pib_eval.o build.sh source/*.js source/*.c
+	@ ${FINAL_BUILD} | pv
+	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
+
+php-webview.js: ENVIRONMENT=webview
+php-webview.js: lib/libphp7.a build/pib_eval.o build.sh source/*.js source/*.c
+	@ ${FINAL_BUILD} | pv
+	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
 
 ########### Clerical stuff. ###########
 
 clean:
-	@ docker-compose run --rm -e TOTAL_MEMORY=${TOTAL_MEMORY} emscripten-builder rm -rf php7.4-src sqlite3.33-src Php.js php-web.* php-webview.* php-node.* php-shell.* php-worker.*
+	@ ${DOCKER_RUN} rm -f *.js *.wasm *.data
+	@ ${DOCKER_RUN} rm -rf third_party/php7.4-src
+	@ ${DOCKER_RUN} rm -rf third_party/libxml2
+	@ ${DOCKER_RUN} rm -rf third_party/libicu-src
+	@ ${DOCKER_RUN} rm -rf third_party/sqlite3.33-src
 
 hooks:
 	@ git config core.hooksPath githooks

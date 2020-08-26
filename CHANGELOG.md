@@ -4,7 +4,8 @@ Changes
 
 ## 0.0.3 -
 
-* builds for web, node, shell, worker & webview.
+* Totally revamped build process that tracks build artifact relationships.
+* Builds for web, node, shell, worker & webview.
 * php may now access & traverse the dom and access nodes.
 * The querySelector method is available on dom nodes.
 * addEventListener/removeEventListener is also available on dom nodes.
