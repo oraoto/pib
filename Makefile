@@ -98,7 +98,7 @@ lib/libphp7.a: third_party/php7.4-src/patched third_party/php7.4-src/ext/vrzno/R
 		--enable-vrzno | ${TIMER}
 	@ cp third_party/php7.4-src/.libs/* lib
 
-lib/pib_eval.o: source/pib_eval.c
+lib/pib_eval.o: source/pib_eval.c lib/libphp7.a
 	@ ${DOCKER_RUN_IN_PHP} emmake make -j8
 	@ ${DOCKER_RUN_IN_PHP} emcc ${OPTIMIZE} \
 		-I .              \
