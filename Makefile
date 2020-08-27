@@ -27,9 +27,10 @@ DOCKER_RUN_IN_LIBXML =${DOCKER_ENV} -w /src/third_party/libxml2/ emscripten-buil
 
 TIMER=(which pv > /dev/null && pv --name '${@}' || true)
 
-.PHONY: build clean image js hooks push-image pull-image
+.PHONY: web all clean image js hooks push-image pull-image
 
-build: js php-web.wasm php-webview.wasm php-node.wasm php-shell.wasm php-worker.wasm
+web: php-web.wasm
+all: php-web.wasm php-webview.wasm php-node.wasm php-shell.wasm php-worker.wasm js
 	@ echo "Done!"
 
 ########### Collect & patch the source code. ###########
@@ -71,7 +72,7 @@ third_party/libxml2:
 ########### Build the objects. ###########
 
 lib/libphp7.a: third_party/php7.4-src/patched third_party/php7.4-src/ext/vrzno/README.md third_party/php7.4-src/**.c third_party/php7.4-src/**.h
-	@ ${DOCKER_RUN_IN_PHP} rm configure || true
+	@ ${DOCKER_RUN_IN_PHP} rm -rf configure
 	@ ${DOCKER_RUN_IN_PHP} ./buildconf --force | ${TIMER}
 	@ ${DOCKER_RUN_IN_PHP} emconfigure ./configure \
 		--enable-embed=static \

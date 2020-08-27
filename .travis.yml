@@ -16,4 +16,4 @@ before_install:
   - docker run -dit --name emscripten -v $(pwd):/src trzeci/emscripten-ubuntu:latest bash
 
 script:
-  - make -j8
+  - make -j8 web
