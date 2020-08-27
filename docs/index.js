@@ -24,7 +24,7 @@ const init = () => {
 
 		outputArea.open();
 
-		var code = editor.getValue();
+		var code = editor.getValue().replace(/^<\?php/, '');
 		var query = new URLSearchParams();
 
 		php.run(code).then(returnValue => {
