@@ -27,7 +27,9 @@ const init = () => {
 		var code = editor.getValue();
 		var query = new URLSearchParams();
 
-		php.run(code).then(exitCode => {
+		php.run(code).then(returnValue => {
+
+			console.log(returnValue);
 
 			const style = document.createElement('style');
 
@@ -38,8 +40,7 @@ const init = () => {
 				outputArea.head.append(style);
 			}
 
-
-			if(exitCode || !persistBox.checked)
+			if(!persistBox.checked)
 			{
 				php.refresh();
 			}
