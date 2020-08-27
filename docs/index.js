@@ -9,7 +9,7 @@ editor.setTheme("ace/theme/github");
 editor.session.setMode("ace/mode/php");
 editor.setShowPrintMargin(false);
 
-const Php = require('./Php').Php;
+const Php = require('./PhpWeb').PhpWeb;
 
 const php = new Php();
 
