@@ -44,7 +44,7 @@ export class PhpBase extends EventTarget
 			const retVal = php.ccall(
 				'pib_init'
 				, 'number'
-				, ["string"]
+				, ['string']
 				, []
 			);
 
@@ -55,38 +55,25 @@ export class PhpBase extends EventTarget
 
 	run(phpCode)
 	{
-		return this.binary.then(php => {
-
-			const retVal = php.ccall(
-				'pib_eval'
-				, 'number'
-				, ["string"]
-				, [`?>${phpCode}`]
-			);
-
-			php.ccall(
-				'pib_eval'
-				, 'number'
-				, ["string"]
-				, [`fwrite(fopen('php://stdout', 'w'), PHP_EOL);`]
-			);
-
-			return retVal;
-
-		});
+		return this.binary.then(php => php.ccall(
+			'pib_eval'
+			, 'string'
+			, ['string']
+			, [phpCode]
+		));
 	}
 
 	refresh()
 	{
-		return this.binary.then(php => {
+		const call = this.binary.then(php => php.ccall(
+			'pib_refresh'
+			, 'number'
+			, []
+			, []
+		));
 
-			return php.ccall(
-				'pib_refresh'
-				, 'number'
-				, []
-				, []
-			);
+		call.catch(error => console.log(error));
 
-		}).catch(error => console.log(error));
+		return call;
 	}
 }

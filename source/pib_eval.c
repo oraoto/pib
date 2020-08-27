@@ -18,24 +18,28 @@ int EMSCRIPTEN_KEEPALIVE pib_init()
 	return php_embed_init(0, NULL);
 }
 
-int EMSCRIPTEN_KEEPALIVE pib_eval(char *code)
+char *EMSCRIPTEN_KEEPALIVE pib_eval(char *code)
 {
-	int retVal = 0;
+	char *retVal = "";
 
 	zend_try
 	{
-		retVal = zend_eval_string(code, NULL, "php shell code");
+		zval retZv;
+
+		zend_eval_string(code, &retZv, "php-wasm");
+
+		convert_to_string(&retZv);
+
+		retVal = Z_STRVAL(retZv);
 	}
 	zend_catch
 	{
-		fflush(stderr);
+		retVal = "--ERROR--";
 	}
 
 	zend_end_try();
 
-	fflush(stdout);
-
-	return retVal == FAILURE;
+	return retVal;
 }
 
 void EMSCRIPTEN_KEEPALIVE pib_destroy()
