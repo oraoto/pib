@@ -24,10 +24,10 @@ const init = () => {
 
 		outputArea.open();
 
-		var code = editor.getValue().replace(/^<\?php/, '');
+		var code = editor.getValue();
 		var query = new URLSearchParams();
 
-		php.run(code).then(returnValue => {
+		php.run(code.replace(/^<\?php/, '')).then(returnValue => {
 
 			console.log(returnValue);
 
@@ -62,6 +62,7 @@ const init = () => {
 php.addEventListener('ready', (event) => init());
 
 php.addEventListener('output', (event) => {
+	console.log(event.detail);
 	outputArea.write(event.detail.join("\n"));
 });
 
