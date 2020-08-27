@@ -34,7 +34,7 @@ char *EMSCRIPTEN_KEEPALIVE pib_eval(char *code)
 	}
 	zend_catch
 	{
-		retVal = "--ERROR--";
+		retVal = "";
 	}
 
 	zend_end_try();

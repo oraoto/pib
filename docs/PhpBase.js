@@ -98,7 +98,7 @@ var PhpBase = /*#__PURE__*/function (_EventTarget) {
         _this.dispatchEvent(event);
       }
     }).then(function (php) {
-      var retVal = php.ccall('pib_init', 'number', ["string"], []);
+      var retVal = php.ccall('pib_init', 'number', ['string'], []);
       return php;
     })["catch"](function (error) {
       return console.log(error);
@@ -110,19 +110,19 @@ var PhpBase = /*#__PURE__*/function (_EventTarget) {
     key: "run",
     value: function run(phpCode) {
       return this.binary.then(function (php) {
-        var retVal = php.ccall('pib_eval', 'number', ["string"], ["?>".concat(phpCode)]);
-        php.ccall('pib_eval', 'number', ["string"], ["fwrite(fopen('php://stdout', 'w'), PHP_EOL);"]);
-        return retVal;
+        return php.ccall('pib_eval', 'string', ['string'], [phpCode]);
       });
     }
   }, {
     key: "refresh",
     value: function refresh() {
-      return this.binary.then(function (php) {
+      var call = this.binary.then(function (php) {
         return php.ccall('pib_refresh', 'number', [], []);
-      })["catch"](function (error) {
+      });
+      call["catch"](function (error) {
         return console.log(error);
       });
+      return call;
     }
   }]);
 
