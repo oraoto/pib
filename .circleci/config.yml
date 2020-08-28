@@ -11,7 +11,7 @@ workflows:
 
   build-push-deploy:
     jobs:
-      - make -j8
+      - make
 
 jobs:
   make:
@@ -20,5 +20,5 @@ jobs:
       image: ubuntu-1604:202004-01
     steps:
       - checkout
-      - run: make
+      - run: make -j8
 
