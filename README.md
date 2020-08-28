@@ -69,9 +69,16 @@ Once the library is included in the page, you can run PHP right from a script ta
 First, grab an instance of the object:
 
 ```javascript
-const php = new ( require('php-wasm/Php').Php );
+const PHP = require('php-wasm/PhpWeb').PhpWeb;
+const php = new PHP;
 ```
 
+or, in es6:
+
+```javascript
+import { PhpWeb as PHP } from 'php-wasm/PhpWeb';
+const php = new PHP;
+```
 Then, add an output listener:
 
 ```javascript

@@ -9618,6 +9618,8 @@ process.umask = function() { return 0; };
 require.register("initialize.js", function(exports, require, module) {
 "use strict";
 
+var _PhpWeb = require("php-wasm/PhpWeb");
+
 var serviceWorker = navigator.serviceWorker; // if(serviceWorker)
 // {
 // 	serviceWorker.register('/DrupalWorker.js').then(registration => {
@@ -9629,8 +9631,6 @@ var serviceWorker = navigator.serviceWorker; // if(serviceWorker)
 // 		console.log(event);
 // 	});
 // }
-
-var PHP = require('php-wasm/PhpWeb').PhpWeb;
 
 document.addEventListener('DOMContentLoaded', function () {
   var input = document.querySelector('.input  textarea');
@@ -9665,7 +9665,7 @@ document.addEventListener('DOMContentLoaded', function () {
   editor.session.setMode("ace/mode/php");
   editor.setTheme('ace/theme/monokai');
   status.innerText = 'php-wasm loading...';
-  var php = new PHP();
+  var php = new _PhpWeb.PhpWeb();
   php.addEventListener('ready', function (event) {
     status.innerText = 'php-wasm ready!';
     run.removeAttribute('disabled');

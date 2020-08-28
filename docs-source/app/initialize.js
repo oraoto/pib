@@ -17,7 +17,7 @@ const serviceWorker = navigator.serviceWorker;
 // 	});
 // }
 
-const PHP = require('php-wasm/PhpWeb').PhpWeb;
+import { PhpWeb as PHP } from 'php-wasm/PhpWeb';
 
 document.addEventListener('DOMContentLoaded', () => {
 	const input  = document.querySelector('.input  textarea');
