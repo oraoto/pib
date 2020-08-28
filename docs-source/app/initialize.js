@@ -1,22 +1,79 @@
 "use strict";
 
+const serviceWorker = navigator.serviceWorker;
+
+// if(serviceWorker)
+// {
+// 	serviceWorker.register('/DrupalWorker.js').then(registration => {
+
+// 		console.log('Success!');
+
+// 	}).catch(error => {
+// 		console.log('Error, ', error);
+// 	});
+
+// 	serviceWorker.addEventListener('message', event => {
+// 		console.log(event);
+// 	});
+// }
+
 const PHP = require('php-wasm/PhpWeb').PhpWeb;
 
-document.addEventListener('DOMContentLoaded', function () {
-
+document.addEventListener('DOMContentLoaded', () => {
 	const input  = document.querySelector('.input  textarea');
-	const stdret = document.querySelector('.stdret > * > *');
-	const stdout = document.querySelector('.stdout > * > *');
-	const stderr = document.querySelector('.stderr > * > *');
+	const stdout = document.querySelector('.stdout > * > div.scroller');
+	const stderr = document.querySelector('.stderr > * > div.scroller');
+	const stdret = document.querySelector('.stdret > * > div.scroller');
 	const run    = document.querySelector('[data-run]');
+	const token  = document.querySelector('[data-tokenize]');
 	const status = document.querySelector('[data-status]');
 	const editor = ace.edit(input);
 	const ret    = document.querySelector('#ret');
+
+	const stdoutFrame = document.querySelector('.stdout > * > iframe');
+	const stderrFrame = document.querySelector('.stderr > * > iframe');
+	const stdretFrame = document.querySelector('.stdret > * > iframe');
+
+	console.log(stdoutFrame, stderrFrame, stdretFrame);
 
 	const exitBox    = document.querySelector('#exit')
 	const exitLabel  = exitBox.querySelector('span');
 	const persistBox = document.getElementById('persist');
 	const singleBox  = document.getElementById('single-expression');
+
+	const renderAs = Array.from(document.querySelectorAll('[name=render-as]'));
+
+	renderAs.map(radio => {
+		console.log(radio);
+		radio.addEventListener('change', event => {
+
+			const type = event.target.value;
+
+			if(type === 'html')
+			{
+				stdout.style.display = 'none';
+				stdoutFrame.style.display = 'flex';
+
+				stderr.style.display = 'none';
+				stderrFrame.style.display = 'flex';
+
+				stdret.style.display = 'none';
+				stdretFrame.style.display = 'flex';
+			}
+			else
+			{
+				stdout.style.display = 'flex';
+				stdoutFrame.style.display = 'none';
+
+				stderr.style.display = 'flex';
+				stderrFrame.style.display = 'none';
+
+				stdret.style.display = 'flex';
+				stdretFrame.style.display = 'none';
+			}
+
+		});
+	})
 
 	editor.session.setMode("ace/mode/php");
 	editor.setTheme('ace/theme/monokai')
@@ -31,11 +88,30 @@ document.addEventListener('DOMContentLoaded', function () {
 
 		run.removeAttribute('disabled');
 
+		token && token.addEventListener('click', () => {
+
+			const body = new FormData();
+
+			body.append('foo', 'bar');
+
+			const options = {method: 'POST', body};
+
+			fetch('/drupal/home?something=1', options).then(r=> r.text()).then(r => {
+				// console.log(r);
+				console.log('Done');
+			});
+
+		});
+
 		run.addEventListener('click', () => {
 
 			exitLabel.innerText = '_';
 
 			status.innerText = 'Executing...';
+
+			stdoutFrame.srcdoc = ' ';
+			stderrFrame.srcdoc = ' ';
+			stdretFrame.srcdoc = ' ';
 
 			while(stdout.firstChild)
 			{
@@ -84,6 +160,7 @@ document.addEventListener('DOMContentLoaded', function () {
 				const content = String(ret);
 
 				stdret.innerText = content;
+				stdretFrame.srcdoc = content;
 
 				exitLabel.innerText = '_';
 
@@ -95,15 +172,40 @@ document.addEventListener('DOMContentLoaded', function () {
 		});
 	});
 
+	const outputBuffer = [];
+
 	php.addEventListener('output', (event) => {
 		const row = document.createElement('div');
 		const content = event.detail.join("\n");
-		stdout.innerText += content;
+
+		outputBuffer.push(content);
+
+		requestAnimationFrame(()=>{
+
+			if(!outputBuffer)
+			{
+				return;
+			}
+
+			const chunk = outputBuffer.join("\n");
+
+			document.createTextNode(chunk);
+
+			stdout.append(chunk);
+			stdoutFrame.srcdoc += chunk;
+
+			while(outputBuffer.pop()){};
+
+		});
+
 	});
+
+	const errorBuffer = [];
 
 	php.addEventListener('error', (event) => {
 		const content = event.detail.join("\n");
 		stderr.innerText += content;
+		stderrFrame.srcdoc += content;
 	});
 
 	ret.style.display = 'none';
@@ -145,3 +247,4 @@ document.addEventListener('DOMContentLoaded', function () {
 	setTimeout(() => editor.selection.moveCursorFileStart(), 150);
 
 });
+

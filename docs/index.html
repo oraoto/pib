@@ -31,6 +31,18 @@
 				<h1>php-wasm</h1>
 			</div>
 		</div>
+		<div class = "separator">
+		</div>
+		<div class = "row rows">
+			<label>
+				<span>text</span>
+				<input value = "text" type = "radio" name = "render-as" checked />
+			</label>
+			<label>
+				<span>html</span>
+				<input value = "html" type = "radio" name = "render-as" />
+			</label>
+		</div>
 		<div class = "row rows">
 				<label>
 					<span>Persist Memory</span>
@@ -42,7 +54,7 @@
 				</label>
 			</div>
 		<button data-run disabled>RUN</button>
-		<!-- <button data-run>tokenize</button> -->
+		<!-- <button data-tokenize>tokenize</button> -->
 	</div>
 
 	<div class = "row body">
@@ -64,6 +76,7 @@
 				<label tabindex="-1">return</label>
 				<div class = "stdret output liquid">
 					<div class = "column">
+						<iframe class = "scroller" srcdoc=""></iframe>
 						<div class = "scroller"></div>
 					</div>
 				</div>
@@ -75,6 +88,7 @@
 				</div>
 				<div class = "stdout output liquid">
 					<div class = "column">
+						<iframe class = "scroller" srcdoc=""></iframe>
 						<div class = "scroller"></div>
 					</div>
 				</div>
@@ -83,6 +97,7 @@
 				<label tabindex="-1">stderr</label>
 				<div class = "stderr output liquid">
 					<div class = "column">
+						<iframe class = "scroller" srcdoc=""></iframe>
 						<div class = "scroller"></div>
 					</div>
 				</div>

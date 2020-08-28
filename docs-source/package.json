@@ -6,7 +6,7 @@
 	"author": "Sean Morris",
 	"license": "Apache-2.0",
 	"scripts": {
-		"postinstall": "cp -rfv node_modules/php-wasm/php-web.* docs/"
+		"postinstall": "cp -rfv node_modules/php-wasm/php-web.* app/assets/"
 	},
 	"dependencies": {
 	},

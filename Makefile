@@ -1,12 +1,10 @@
-SHELL=/bin/bash -euxo pipefail
-
 -include .env
 
 ENVIRONMENT    ?=web
 TOTAL_MEMORY   ?=256MB
 PRELOAD_ASSETS ?=Zend/bench.php
 ASSERTIONS     ?=0
-OPTIMIZE       ?=-O3
+OPTIMIZE       ?=-O1
 RELEASE_SUFFUX ?=
 
 PHP_BRANCH     ?=PHP-7.4
@@ -36,10 +34,11 @@ all: php-web.wasm php-webview.wasm php-node.wasm php-shell.wasm php-worker.wasm 
 ########### Collect & patch the source code. ###########
 
 third_party/php7.4-src/patched: third_party/sqlite3.33-src/sqlite3.c
-	@ git clone https://github.com/php/php-src.git third_party/php7.4-src \
+	@ test -e third_party/php7.4-src/patched \
+	|| git clone https://github.com/php/php-src.git third_party/php7.4-src \
 		--branch ${PHP_BRANCH}   \
 		--single-branch          \
-		--depth 1  || test -e third_party/php7.4-src/patched;
+		--depth 1
 	@ git apply --no-index patch/php7.4-sqlite.patch
 	@ touch third_party/php7.4-src/patched
 
@@ -52,11 +51,11 @@ third_party/sqlite3.33-src/sqlite3.c:
 	@ cp third_party/sqlite3.33-src/sqlite3.c source/
 	@ cp third_party/sqlite3.33-src/sqlite3.h source/
 
-third_party/php7.4-src/ext/vrzno/README.md: third_party/php7.4-src/patched
-	git clone https://github.com/seanmorris/vrzno.git third_party/php7.4-src/ext/vrzno \
+third_party/php7.4-src/ext/vrzno/vrzno.c: third_party/php7.4-src/patched
+	@ git clone https://github.com/seanmorris/vrzno.git third_party/php7.4-src/ext/vrzno \
 		--branch ${VRZNO_BRANCH} \
 		--single-branch          \
-		--depth 1 || test -e third_party/php7.4-src/ext/vrzno;
+		--depth 1
 
 third_party/libicu-src:
 	@ git clone https://github.com/unicode-org/icu.git third_party/libicu-src \
@@ -72,7 +71,7 @@ third_party/libxml2:
 
 ########### Build the objects. ###########
 
-lib/libphp7.a: third_party/php7.4-src/patched third_party/php7.4-src/ext/vrzno/README.md
+lib/libphp7.a: third_party/php7.4-src/patched third_party/php7.4-src/ext/vrzno/vrzno.c
 	@ ${DOCKER_RUN_IN_PHP} ./buildconf --force | ${TIMER}
 	@ ${DOCKER_RUN_IN_PHP} emconfigure ./configure \
 		--enable-embed=static \
@@ -96,10 +95,9 @@ lib/libphp7.a: third_party/php7.4-src/patched third_party/php7.4-src/ext/vrzno/R
 		--disable-mbregex  \
 		--enable-tokenizer \
 		--enable-vrzno | ${TIMER}
-cp:
 	@ ${DOCKER_RUN_IN_PHP} cp -v /src/third_party/php7.4-src/.libs/libphp7.la /src/third_party/php7.4-src/.libs/libphp7.a /src/lib
 
-lib/pib_eval.o: source/pib_eval.c lib/libphp7.a
+lib/pib_eval.o: source/pib_eval.c
 	@ ${DOCKER_RUN_IN_PHP} emmake make -j8
 	@ ${DOCKER_RUN_IN_PHP} emcc ${OPTIMIZE} \
 		-I .              \
@@ -136,14 +134,14 @@ php-web.wasm: ENVIRONMENT=web
 php-web.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h
 	@ ${FINAL_BUILD}
 	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
-	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./docs-source/source/assets
-	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./docs-source/docs
+	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./docs-source/app/assets
+	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./docs-source/public
 
 php-worker.wasm: ENVIRONMENT=worker
 php-worker.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h
 	@ ${FINAL_BUILD}
 	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
-	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./docs-source/docs
+	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./docs-source/public
 
 php-node.wasm: ENVIRONMENT=node
 php-node.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h
@@ -156,7 +154,7 @@ php-shell.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h
 	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
 
 php-webview.wasm: ENVIRONMENT=webview
-php-webview.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h
+php-webview.wasm: lib/libphp7.a lib/pib_eval.o source/pib_eval.c
 	@ ${FINAL_BUILD}
 	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
 
