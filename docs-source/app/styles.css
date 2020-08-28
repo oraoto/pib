@@ -21,7 +21,7 @@ body {
 }
 
 .output .scroller {
-	background-color: #bbb;
+	background-color: #EEE;
 }
 
 .output .row {
@@ -185,7 +185,10 @@ button,
 	margin-top: -1px;
 }
 
-.panel label[tabindex] {
+.panel label[tabindex]:first-child {
+	margin-left: -1px;
+}
+.panel label[tabindex]:last-child {
 	margin-right: -1px;
 }
 
@@ -207,6 +210,7 @@ button:active {
 
 pre {
 	flex: 1;
+	margin-top: 0px;
 	margin-bottom: 0px;
 }
 

@@ -9806,10 +9806,11 @@ document.addEventListener('DOMContentLoaded', function () {
     return editor.selection.moveCursorFileStart();
   }, 150);
 });
-
 });
 
 require.alias("process/browser.js", "process");process = require('process');require.register("___globals___", function(exports, require, module) {
   
 });})();require('___globals___');
 
+
+//# sourceMappingURL=app.js.map
