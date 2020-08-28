@@ -1,10 +1,21 @@
 <!DOCTYPE html>
 <head>
-<style>@import url('/php-wasm/app.css')</style>
-<script src="/php-wasm/app.js"></script>
+
+<script type="text/javascript">
+	// Allow the page to be served from any direcotry...
+	const path  = location.pathname.replace(/index.html$/, '');
+	if(!path.match(/\/$/))
+	{
+		window.location = path + '/' + (location.search||'');
+
+		console.log(window.location);
+	}
+</script>
+<style type = "text/css">@import url(app.css)</style>
+<script src = "app.js"></script>
+<script src = "//ajaxorg.github.io/ace-builds/src-min/ace.js"></script>
 <script>require('initialize');</script>
-<script src="//ajaxorg.github.io/ace-builds/src-min/ace.js" type="text/javascript" charset="utf-8"></script>
-<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
 </head>
 
 <body>
@@ -12,10 +23,10 @@
 		<div class = "cols">
 			<div class = "row start">
 				<a target = "_blank" href = "https://github.com/oraoto">
-					<img class = "round" src = "/php-wasm/oraoto-icon.png" />
+					<img class = "round" src = "oraoto-icon.png" />
 				</a>
 				<a target = "_blank" href = "https://github.com/seanmorris">
-					<img class = "round" src = "/php-wasm/sean-icon.png" />
+					<img class = "round" src = "sean-icon.png" />
 				</a>
 				<h1>php-wasm</h1>
 			</div>
@@ -30,7 +41,7 @@
 					<input type = "checkbox" id = "single-expression" />
 				</label>
 			</div>
-		<button data-run>execute</button>
+		<button data-run disabled>execute</button>
 		<!-- <button data-run>tokenize</button> -->
 	</div>
 

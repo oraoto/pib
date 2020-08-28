@@ -5,7 +5,7 @@ export class UniqueIndex
 		const map = new Map();
 		const set = new WeakMap();
 
-		let index = 0;
+		let id = 0;
 
 		Object.defineProperty(this, 'add', {
 			configurable: false
@@ -19,12 +19,12 @@ export class UniqueIndex
 					return existing;
 				}
 
-				const newIndex = ++index;
+				const newid = ++id;
 
-				set.set(callback, newIndex);
-				map.set(newIndex, callback);
+				set.set(callback, newid);
+				map.set(newid, callback);
 
-				return newIndex;
+				return newid;
 			}
 		});
 
@@ -42,10 +42,10 @@ export class UniqueIndex
 		Object.defineProperty(this, 'get', {
 			configurable: false
 			, writable:   false
-			, value: (index) => {
-				if(map.has(index))
+			, value: (id) => {
+				if(map.has(id))
 				{
-					return map.get(index);
+					return map.get(id);
 				}
 			}
 		});
@@ -53,14 +53,14 @@ export class UniqueIndex
 		Object.defineProperty(this, 'remove', {
 			configurable: false
 			, writable:   false
-			, value: (index) => {
+			, value: (id) => {
 
-				const callback = map.get(index);
+				const callback = map.get(id);
 
 				if(callback)
 				{
 					set.delete(callback)
-					map.delete(index)
+					map.delete(id)
 				}
 			}
 		});

@@ -13,8 +13,4 @@ module.exports = {
 			wrapper: content => `module.exports = ${JSON.stringify(content)}`
 		}
 	}
-	, paths: {
-		public: 'docs'
-		, watched: ['source/', 'build/']
-	}
 };

@@ -21,7 +21,6 @@
 		"brunch": "^3.0.0",
 		"clean-css-brunch": "^3.0.0",
 		"raw-brunch": "^1.0.2",
-		"uglify-js-brunch": "^2.10.0",
 		"php-wasm": "^0.0.3"
 	}
 }

@@ -6,7 +6,7 @@ ENVIRONMENT    ?=web
 TOTAL_MEMORY   ?=256MB
 PRELOAD_ASSETS ?=Zend/bench.php
 ASSERTIONS     ?=0
-OPTIMIZE       ?=-O1 #-O1 -g4 --source-map-base http://localhost:3333/
+OPTIMIZE       ?=-O3
 RELEASE_SUFFUX ?=
 
 PHP_BRANCH     ?=PHP-7.4
@@ -134,14 +134,14 @@ php-web.wasm: ENVIRONMENT=web
 php-web.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h
 	@ ${FINAL_BUILD}
 	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
-	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./source_docs/source/assets
-	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./source_docs/docs
+	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./docs-source/source/assets
+	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./docs-source/docs
 
 php-worker.wasm: ENVIRONMENT=worker
 php-worker.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h
 	@ ${FINAL_BUILD}
 	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
-	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./source_docs/docs
+	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./docs-source/docs
 
 php-node.wasm: ENVIRONMENT=node
 php-node.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h
