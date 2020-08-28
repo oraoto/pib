@@ -255,3 +255,7 @@ label {
 iframe {
 	border: none;
 }
+
+input[type=file] {
+	display: none;
+}

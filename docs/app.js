@@ -9645,12 +9645,22 @@ document.addEventListener('DOMContentLoaded', function () {
   var stdoutFrame = document.querySelector('.stdout > * > iframe');
   var stderrFrame = document.querySelector('.stderr > * > iframe');
   var stdretFrame = document.querySelector('.stdret > * > iframe');
+  var openFile = document.getElementById('openFile');
   console.log(stdoutFrame, stderrFrame, stdretFrame);
   var exitBox = document.querySelector('#exit');
   var exitLabel = exitBox.querySelector('span');
   var persistBox = document.getElementById('persist');
-  var singleBox = document.getElementById('single-expression');
+  var singleBox = document.getElementById('singleExpression');
   var renderAs = Array.from(document.querySelectorAll('[name=render-as]'));
+  openFile.addEventListener('input', function (event) {
+    var reader = new FileReader();
+
+    reader.onload = function (event) {
+      editor.setValue(event.target.result);
+    };
+
+    reader.readAsText(event.target.files[0]);
+  });
   renderAs.map(function (radio) {
     console.log(radio);
     radio.addEventListener('change', function (event) {
@@ -9806,11 +9816,10 @@ document.addEventListener('DOMContentLoaded', function () {
     return editor.selection.moveCursorFileStart();
   }, 150);
 });
+
 });
 
 require.alias("process/browser.js", "process");process = require('process');require.register("___globals___", function(exports, require, module) {
   
 });})();require('___globals___');
 
-
-//# sourceMappingURL=app.js.map

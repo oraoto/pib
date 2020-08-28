@@ -34,14 +34,28 @@ document.addEventListener('DOMContentLoaded', () => {
 	const stderrFrame = document.querySelector('.stderr > * > iframe');
 	const stdretFrame = document.querySelector('.stdret > * > iframe');
 
+	const openFile = document.getElementById('openFile');
+
 	console.log(stdoutFrame, stderrFrame, stdretFrame);
 
 	const exitBox    = document.querySelector('#exit')
 	const exitLabel  = exitBox.querySelector('span');
 	const persistBox = document.getElementById('persist');
-	const singleBox  = document.getElementById('single-expression');
+	const singleBox  = document.getElementById('singleExpression');
 
 	const renderAs = Array.from(document.querySelectorAll('[name=render-as]'));
+
+	openFile.addEventListener('input', event =>{
+
+		const reader = new FileReader();
+
+		reader.onload = (event) => {
+			editor.setValue(event.target.result);
+		};
+
+		reader.readAsText(event.target.files[0]);
+
+	});
 
 	renderAs.map(radio => {
 		console.log(radio);
