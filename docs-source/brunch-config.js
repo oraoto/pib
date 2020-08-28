@@ -1,7 +1,13 @@
 module.exports = {
 	files: {
-		javascripts: {joinTo: 'app.js'}
-		, stylesheets: {joinTo: 'app.css'}
+		stylesheets: {joinTo: 'app.css'}
+		, javascripts: {
+			entrypoints: {
+				'app.js': {
+					'app.js': 'app/initialize.js'
+				}
+			}
+		}
 	}
 	, plugins: {
 		babel: {

@@ -52,7 +52,7 @@ third_party/sqlite3.33-src/sqlite3.c:
 	@ cp third_party/sqlite3.33-src/sqlite3.c source/
 	@ cp third_party/sqlite3.33-src/sqlite3.h source/
 
-third_party/php7.4-src/ext/vrzno/README.md:
+third_party/php7.4-src/ext/vrzno/README.md: third_party/php7.4-src/patched
 	git clone https://github.com/seanmorris/vrzno.git third_party/php7.4-src/ext/vrzno \
 		--branch ${VRZNO_BRANCH} \
 		--single-branch          \
