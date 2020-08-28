@@ -1,7 +1,4 @@
-# Based on http://kripken.github.io/emscripten-site/docs/compiling/Travis.html
-
-notifications:
-  email: false
+dist: focal
 
 language: node_js
 node_js:
@@ -17,3 +14,6 @@ before_install:
 
 script:
   - make -j8 web
+
+notifications:
+  email: false
