@@ -5,7 +5,7 @@
 ### v0.0.3 - New Horizons
 
 
-[![changelog](https://raw.githubusercontent.com/seanmorris/php-wasm/master/CHANGELOG.md)
+[changelog](https://raw.githubusercontent.com/seanmorris/php-wasm/master/CHANGELOG.md)
 
 ## Examples
 
