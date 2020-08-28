@@ -18,15 +18,24 @@ int EMSCRIPTEN_KEEPALIVE pib_init()
 	return php_embed_init(0, NULL);
 }
 
-char *EMSCRIPTEN_KEEPALIVE pib_eval(char *code)
+void pib_finally()
 {
-	char *retVal = "";
+	fflush(stdout);
+	fprintf(stdout, "\n");
+
+	fflush(stderr);
+	fprintf(stderr, "\n");
+}
+
+char *EMSCRIPTEN_KEEPALIVE pib_exec(char *code)
+{
+	char *retVal = NULL;
 
 	zend_try
 	{
 		zval retZv;
 
-		zend_eval_string(code, &retZv, "php-wasm");
+		zend_eval_string(code, &retZv, "php-wasm evaluate expression");
 
 		convert_to_string(&retZv);
 
@@ -34,12 +43,40 @@ char *EMSCRIPTEN_KEEPALIVE pib_eval(char *code)
 	}
 	zend_catch
 	{
-		retVal = "";
 	}
 
 	zend_end_try();
 
+	pib_finally();
+
 	return retVal;
+}
+
+int EMSCRIPTEN_KEEPALIVE pib_run(char *code)
+{
+	int retVal = 255; // Unknown error.
+
+	zend_try
+	{
+		retVal = zend_eval_string(code, NULL, "php-wasm run script");
+	}
+	zend_catch
+	{
+		retVal = 1; // Code died.
+	}
+
+	zend_end_try();
+
+	pib_finally();
+
+	return retVal;
+}
+
+char *pib_tokenize(char *code)
+{
+	// tokenize_parse(zval zend_string)
+
+	return "";
 }
 
 void EMSCRIPTEN_KEEPALIVE pib_destroy()

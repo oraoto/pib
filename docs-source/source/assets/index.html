@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<head>
+<style>@import url('/app.css')</style>
+<script src="/app.js"></script>
+<script>require('source/initialize');</script>
+<script src="//ajaxorg.github.io/ace-builds/src-min/ace.js" type="text/javascript" charset="utf-8"></script>
+<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+</head>
+
+<body>
+	<div class = "row header toolbar">
+		<div class = "cols">
+			<div class = "row start">
+				<a target = "_blank" href = "https://github.com/oraoto">
+					<img class = "round" src = "/oraoto-icon.png" />
+				</a>
+				<a target = "_blank" href = "https://github.com/seanmorris">
+					<img class = "round" src = "/sean-icon.png" />
+				</a>
+				<h1>php-wasm</h1>
+			</div>
+		</div>
+		<div class = "row rows">
+				<label>
+					<span>Persist Memory</span>
+					<input type = "checkbox" id = "persist" />
+				</label>
+				<label>
+					<span>Single Expression</span>
+					<input type = "checkbox" id = "single-expression" />
+				</label>
+			</div>
+		<button data-run>execute</button>
+		<!-- <button data-run>tokenize</button> -->
+	</div>
+
+	<div class = "row body">
+		<div class = "panel">
+			<div class = "input">
+				<div class = "cols">
+					<label tabindex="-1">
+						Input PHP Code
+					</label>
+					<!-- <button>open file</button> -->
+
+				</div>
+				<textarea></textarea>
+			</div>
+		</div>
+
+		<div class = "panel">
+			<div id = "ret">
+				<label tabindex="-1">return</label>
+				<div class = "stdret output liquid">
+					<div class = "column">
+						<div class = "scroller"></div>
+					</div>
+				</div>
+			</div>
+			<div>
+				<label tabindex="-1">stdout</label>
+				<div class = "stdout output liquid">
+					<div class = "column">
+						<div class = "scroller"></div>
+					</div>
+				</div>
+			</div>
+			<div>
+				<label tabindex="-1">stderr</label>
+				<div class = "stderr output liquid">
+					<div class = "column">
+						<div class = "scroller"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class = "row status toolbar">
+		<div>
+			<div class = "row start" data-status>
+				php-wasm
+			</div>
+		</div>
+		<div>
+		</div>
+	</div>
+
+</body>
+<!--
+
+		 -->
+
+<!-- <body>
+
+
+	<div class = "row footer">foot</div>
+</body>
+ -->

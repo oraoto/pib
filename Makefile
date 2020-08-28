@@ -49,7 +49,7 @@ third_party/sqlite3.33-src/sqlite3.c:
 	@ mv sqlite-amalgamation-3330000 third_party/sqlite3.33-src
 	@ rm sqlite-amalgamation-3330000.zip*
 	@ git apply --no-index patch/sqlite3-wasm.patch
-	@ cp third_party/sqlite3.33-src/sqlite3.* third_party/php7.4-src/
+	@ cp third_party/sqlite3.33-src/sqlite3.* source/
 
 third_party/php7.4-src/ext/vrzno/README.md:
 	git clone https://github.com/seanmorris/vrzno.git third_party/php7.4-src/ext/vrzno \
@@ -71,8 +71,7 @@ third_party/libxml2:
 
 ########### Build the objects. ###########
 
-lib/libphp7.a: third_party/php7.4-src/patched third_party/php7.4-src/ext/vrzno/README.md third_party/php7.4-src/**.c third_party/php7.4-src/**.h
-	@ ${DOCKER_RUN_IN_PHP} rm -rf configure
+lib/libphp7.a: third_party/php7.4-src/patched third_party/php7.4-src/ext/vrzno/README.md
 	@ ${DOCKER_RUN_IN_PHP} ./buildconf --force | ${TIMER}
 	@ ${DOCKER_RUN_IN_PHP} emconfigure ./configure \
 		--enable-embed=static \
@@ -96,7 +95,7 @@ lib/libphp7.a: third_party/php7.4-src/patched third_party/php7.4-src/ext/vrzno/R
 		--disable-mbregex  \
 		--enable-tokenizer \
 		--enable-vrzno | ${TIMER}
-	@ cp third_party/php7.4-src/.libs/* lib
+	@ cp -v third_party/php7.4-src/.libs/* lib
 
 lib/pib_eval.o: source/pib_eval.c lib/libphp7.a
 	@ ${DOCKER_RUN_IN_PHP} emmake make -j8
@@ -120,7 +119,7 @@ FINAL_BUILD=${DOCKER_RUN_IN_PHP} emcc ${OPTIMIZE} \
 	-o ../../build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.js \
 	--llvm-lto 2                     \
 	--preload-file ${PRELOAD_ASSETS} \
-	-s EXPORTED_FUNCTIONS='["_pib_init", "_pib_destroy", "_pib_eval" "_pib_refresh", "_main", "_php_embed_init", "_php_embed_shutdown", "_php_embed_shutdown", "_zend_eval_string", "_exec_callback", "_del_callback"]' \
+	-s EXPORTED_FUNCTIONS='["_pib_init", "_pib_destroy", "_pib_run", "_pib_exec" "_pib_refresh", "_main", "_php_embed_init", "_php_embed_shutdown", "_php_embed_shutdown", "_zend_eval_string", "_exec_callback", "_del_callback"]' \
 	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "UTF8ToString", "lengthBytesUTF8"]' \
 	-s ENVIRONMENT=${ENVIRONMENT}    \
 	-s ERROR_ON_UNDEFINED_SYMBOLS=0  \
@@ -135,11 +134,14 @@ php-web.wasm: ENVIRONMENT=web
 php-web.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h
 	@ ${FINAL_BUILD}
 	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
+	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./source_docs/source/assets
+	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./source_docs/docs
 
 php-worker.wasm: ENVIRONMENT=worker
 php-worker.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h
 	@ ${FINAL_BUILD}
 	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
+	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./source_docs/docs
 
 php-node.wasm: ENVIRONMENT=node
 php-node.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h
@@ -155,6 +157,7 @@ php-webview.wasm: ENVIRONMENT=webview
 php-webview.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h
 	@ ${FINAL_BUILD}
 	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
+
 
 ########### Clerical stuff. ###########
 

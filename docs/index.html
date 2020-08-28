@@ -1,65 +1,99 @@
-<!doctype html>
-<html lang="en-us">
-
+<!DOCTYPE html>
 <head>
-	<meta charset="utf-8">
-	<title>PIB: PHP in Browser</title>
-	<script src="//ajaxorg.github.io/ace-builds/src-min/ace.js" type="text/javascript" charset="utf-8"></script>
-
-	<script type="text/javascript">
-		// Allow the page to be served from any direcotry...
-
-		const path  = location.pathname.replace(/index.html$/, '');
-
-		if(!path.match(/\/$/))
-		{
-			window.location = path + '/' + (location.search||'');
-		}
-		else
-		{
-			const script = document.createElement('script');
-			script.type  = 'text/javascript';
-			script.src   = `${path}require1k.js`;
-
-			console.log(script.src);
-			script.setAttribute('data-main', `./index`);
-			document.head.append(script);
-
-			const style = document.createElement('style');
-			style.type = 'text/css';
-			style.innerText = `@import url('${path}style.css')`;
-			document.head.append(style);
-
-			const favicon = document.createElement('link');
-
-			favicon.setAttribute('rel',  'icon');
-			favicon.setAttribute('href', `${path}favicon.ico`);
-			favicon.setAttribute('type', 'image/x-icon');
-
-			document.head.append(favicon);
-		}
-	</script>
+<style>@import url('/app.css')</style>
+<script src="/app.js"></script>
+<script>require('source/initialize');</script>
+<script src="//ajaxorg.github.io/ace-builds/src-min/ace.js" type="text/javascript" charset="utf-8"></script>
+<link rel="icon" type="image/x-icon" href="/favicon.ico" />
 </head>
 
 <body>
-
-	<div class="playground">
-		<div class="playground-header">
-			<button id="run" disabled>Loading...</button>
-			<label>
-				<input  id = "persist" type = "checkbox" >
-				Persist
-			</label>
-		</div>
-		<div class="playground-split-vertical">
-			<div class="playground-editor">
-				<div id="editor"></div>
+	<div class = "row header toolbar">
+		<div class = "cols">
+			<div class = "row start">
+				<a target = "_blank" href = "https://github.com/oraoto">
+					<img class = "round" src = "/oraoto-icon.png" />
+				</a>
+				<a target = "_blank" href = "https://github.com/seanmorris">
+					<img class = "round" src = "/sean-icon.png" />
+				</a>
+				<h1>php-wasm</h1>
 			</div>
-			<iframe allow="midi; geolocation; microphone; camera; encrypted-media;" sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups"
-				id="output"></iframe>
+		</div>
+		<div class = "row rows">
+				<label>
+					<span>Persist Memory</span>
+					<input type = "checkbox" id = "persist" />
+				</label>
+				<label>
+					<span>Single Expression</span>
+					<input type = "checkbox" id = "single-expression" />
+				</label>
+			</div>
+		<button data-run>execute</button>
+		<!-- <button data-run>tokenize</button> -->
+	</div>
+
+	<div class = "row body">
+		<div class = "panel">
+			<div class = "input">
+				<div class = "cols">
+					<label tabindex="-1">
+						Input PHP Code
+					</label>
+					<!-- <button>open file</button> -->
+
+				</div>
+				<textarea></textarea>
+			</div>
+		</div>
+
+		<div class = "panel">
+			<div id = "ret">
+				<label tabindex="-1">return</label>
+				<div class = "stdret output liquid">
+					<div class = "column">
+						<div class = "scroller"></div>
+					</div>
+				</div>
+			</div>
+			<div>
+				<label tabindex="-1">stdout</label>
+				<div class = "stdout output liquid">
+					<div class = "column">
+						<div class = "scroller"></div>
+					</div>
+				</div>
+			</div>
+			<div>
+				<label tabindex="-1">stderr</label>
+				<div class = "stderr output liquid">
+					<div class = "column">
+						<div class = "scroller"></div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
-	<a href="https://github.com/seanmorris/php-wasm"><img style="z-index: 1;position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
-</body>
 
-</html>
+	<div class = "row status toolbar">
+		<div>
+			<div class = "row start" data-status>
+				php-wasm
+			</div>
+		</div>
+		<div>
+		</div>
+	</div>
+
+</body>
+<!--
+
+		 -->
+
+<!-- <body>
+
+
+	<div class = "row footer">foot</div>
+</body>
+ -->

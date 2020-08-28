@@ -1,5 +1,8 @@
 import { UniqueIndex } from './UniqueIndex';
 
+const STR = 'string';
+const NUM = 'number';
+
 export class PhpBase extends EventTarget
 {
 	constructor(PhpBinary)
@@ -28,12 +31,14 @@ export class PhpBase extends EventTarget
 			},
 
 			print: (...chunks) =>{
+				console.log(chunks);
 				const event = new CustomEvent('output', {detail: chunks.map(c=>c+"\n")});
 				this.dispatchEvent(event);
 				this.onoutput(event);
 			},
 
 			printErr: (...chunks) => {
+				console.log(chunks);
 				const event = new CustomEvent('error', {detail: chunks.map(c=>c+"\n")});
 				this.onerror(event);
 				this.dispatchEvent(event);
@@ -43,8 +48,8 @@ export class PhpBase extends EventTarget
 
 			const retVal = php.ccall(
 				'pib_init'
-				, 'number'
-				, ['string']
+				, NUM
+				, [STR]
 				, []
 			);
 
@@ -55,10 +60,22 @@ export class PhpBase extends EventTarget
 
 	run(phpCode)
 	{
+		console.log('Run script', phpCode);
 		return this.binary.then(php => php.ccall(
-			'pib_eval'
-			, 'string'
-			, ['string']
+			'pib_run'
+			, NUM
+			, [STR]
+			, [`?>${phpCode}`]
+		));
+	}
+
+	exec(phpCode)
+	{
+		console.log('Exec expression', phpCode);
+		return this.binary.then(php => php.ccall(
+			'pib_exec'
+			, STR
+			, [STR]
 			, [phpCode]
 		));
 	}
@@ -67,7 +84,7 @@ export class PhpBase extends EventTarget
 	{
 		const call = this.binary.then(php => php.ccall(
 			'pib_refresh'
-			, 'number'
+			, NUM
 			, []
 			, []
 		));

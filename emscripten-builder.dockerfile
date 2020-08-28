@@ -9,22 +9,10 @@ RUN set -euxo pipefail;\
 	apt-get update; \
 	emsdk install latest; \
 	apt-get --no-install-recommends -y install \
-		libcurl4-openssl-dev \
 		build-essential \
-		libargon2-0-dev \
-		libreadline-dev \
-		libsqlite3-dev \
 		automake-1.15 \
-		libsodium-dev \
-		libonig-dev \
-		libyaml-dev \
-		libxml2-dev \
-		libssl-dev \
-		libgmp-dev \
 		autoconf \
-		valgrind \
 		libtool \
-		php-dev \
 		pkgconf \
 		bison \
 		flex \
