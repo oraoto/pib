@@ -220,32 +220,30 @@ var PhpBase = /*#__PURE__*/function (_EventTarget) {
       postRun: function postRun() {
         var event = new CustomEvent('ready');
 
-        _this.dispatchEvent(event);
-
         _this.onready(event);
+
+        _this.dispatchEvent(event);
       },
       print: function print() {
         for (var _len = arguments.length, chunks = new Array(_len), _key = 0; _key < _len; _key++) {
           chunks[_key] = arguments[_key];
         }
 
-        console.log(chunks);
         var event = new CustomEvent('output', {
           detail: chunks.map(function (c) {
             return c + "\n";
           })
         });
 
-        _this.dispatchEvent(event);
-
         _this.onoutput(event);
+
+        _this.dispatchEvent(event);
       },
       printErr: function printErr() {
         for (var _len2 = arguments.length, chunks = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
           chunks[_key2] = arguments[_key2];
         }
 
-        console.log(chunks);
         var event = new CustomEvent('error', {
           detail: chunks.map(function (c) {
             return c + "\n";
@@ -268,7 +266,6 @@ var PhpBase = /*#__PURE__*/function (_EventTarget) {
   _createClass(PhpBase, [{
     key: "run",
     value: function run(phpCode) {
-      console.log('Run script', phpCode);
       return this.binary.then(function (php) {
         return php.ccall('pib_run', NUM, [STR], ["?>".concat(phpCode)]);
       });
@@ -276,7 +273,6 @@ var PhpBase = /*#__PURE__*/function (_EventTarget) {
   }, {
     key: "exec",
     value: function exec(phpCode) {
-      console.log('Exec expression', phpCode);
       return this.binary.then(function (php) {
         return php.ccall('pib_exec', STR, [STR], [phpCode]);
       });
@@ -613,13 +609,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
   php.addEventListener('output', function (event) {
-    console.log('output', event);
     var row = document.createElement('div');
     var content = event.detail.join("\n");
     stdout.innerText += content;
   });
   php.addEventListener('error', function (event) {
-    console.log('error', event);
     var content = event.detail.join("\n");
     stderr.innerText += content;
   });
@@ -632,8 +626,6 @@ document.addEventListener('DOMContentLoaded', function () {
       exitBox.style.display = 'flex';
       ret.style.display = 'none';
     }
-
-    console.log(ret, event.target.checked);
   });
   exitLabel.innerText = '_';
 

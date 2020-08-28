@@ -64,6 +64,24 @@ button {
 	border-image: url(border.png) 2 2 2 2;
 }
 
+button[data-run]:not([disabled])::after {
+	position: absolute;
+	top: -2px;
+	left:-2px;
+	bottom:-2px;
+	right:-2px;
+	content: '';
+	background-color: #F00 !important;
+	mix-blend-mode: darken;
+    opacity: 0.5;
+}
+button[data-run] {
+	position: relative;
+	font-weight: bold;
+	font-size: 13pt;
+	box-sizing: border-box;
+}
+
 *:focus {
 	outline-style: dotted;
 	outline-color: black;

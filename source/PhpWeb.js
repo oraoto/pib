@@ -21,17 +21,13 @@ if(window && document)
 		if(src)
 		{
 			fetch(src).then(r => r.text()).then(r => {
-
 				php.run(r).then(exit=>console.log(exit));
-
 			});
 
 			return;
 		}
 
 		const inlineCode = element.innerText.trim();
-
-		console.log(inlineCode);
 
 		if(inlineCode)
 		{

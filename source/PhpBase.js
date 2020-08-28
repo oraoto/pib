@@ -26,19 +26,17 @@ export class PhpBase extends EventTarget
 
 			postRun:  () => {
 				const event = new CustomEvent('ready');
+				this.onready(event);
 				this.dispatchEvent(event);
-				this.onready(event)
 			},
 
 			print: (...chunks) =>{
-				console.log(chunks);
 				const event = new CustomEvent('output', {detail: chunks.map(c=>c+"\n")});
-				this.dispatchEvent(event);
 				this.onoutput(event);
+				this.dispatchEvent(event);
 			},
 
 			printErr: (...chunks) => {
-				console.log(chunks);
 				const event = new CustomEvent('error', {detail: chunks.map(c=>c+"\n")});
 				this.onerror(event);
 				this.dispatchEvent(event);

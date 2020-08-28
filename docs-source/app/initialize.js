@@ -96,28 +96,19 @@ document.addEventListener('DOMContentLoaded', function () {
 	});
 
 	php.addEventListener('output', (event) => {
-
-		console.log('output', event);
-
 		const row = document.createElement('div');
-
 		const content = event.detail.join("\n");
-
 		stdout.innerText += content;
 	});
 
 	php.addEventListener('error', (event) => {
-
-		console.log('error', event);
 		const content = event.detail.join("\n");
-
 		stderr.innerText += content;
 	});
 
 	ret.style.display = 'none';
 
 	singleBox.addEventListener('input', event=>{
-
 		if(event.target.checked)
 		{
 			exitBox.style.display = 'none';
@@ -128,9 +119,6 @@ document.addEventListener('DOMContentLoaded', function () {
 			exitBox.style.display = 'flex';
 			ret.style.display = 'none';
 		}
-
-		console.log(ret, event.target.checked)
-
 	});
 
 	exitLabel.innerText = '_';
