@@ -12,7 +12,7 @@ VRZNO_BRANCH   ?=DomAccess
 ICU_TAG        ?=release-67-1
 LIBXML2_TAG    ?=v2.9.10
 
-DOCKER_ENV=docker-compose run --rm      \
+DOCKER_ENV=docker-compose -p php_wasm_ci run --rm      \
 	-e EMCC_ALLOW_FASTCOMP=1            \
 	-e PRELOAD_ASSETS=${PRELOAD_ASSETS} \
 	-e TOTAL_MEMORY=${TOTAL_MEMORY}     \
