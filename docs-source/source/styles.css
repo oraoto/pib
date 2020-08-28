@@ -161,8 +161,9 @@ button,
 	padding: 0.25em;
 }
 
-.panel label, .panel .cols button  {
+is:(.panel label, .panel .cols button):last-child; {
 	margin-top: -1px;
+	margin-right: -1px;
 }
 
 label[tabindex]:active,
