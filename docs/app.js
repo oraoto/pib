@@ -718,7 +718,7 @@ Module['ready'] = new Promise(function(resolve, reject) {
     }
   
    }
-   loadPackage({"files": [{"filename": "/Zend/bench.php", "start": 0, "end": 7634, "audio": 0}], "remote_package_size": 7634, "package_uuid": "ce4df54f-f071-4261-a1aa-efd9a7c5b036"});
+   loadPackage({"files": [{"filename": "/Zend/bench.php", "start": 0, "end": 7634, "audio": 0}], "remote_package_size": 7634, "package_uuid": "824ee15b-164e-405b-a6c5-44458af9e94a"});
   
   })();
   
@@ -1870,11 +1870,11 @@ function updateGlobalBufferAndViews(buf) {
 }
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 2285120,
+    STACK_BASE = 2285232,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 7528000,
-    DYNAMIC_BASE = 7528000,
-    DYNAMICTOP_PTR = 2284928;
+    STACK_MAX = 7528112,
+    DYNAMIC_BASE = 7528112,
+    DYNAMICTOP_PTR = 2285040;
 
 
 
@@ -2325,10 +2325,10 @@ var tempI64;
 // === Body ===
 
 var ASM_CONSTS = [function($0, $1) { const target = Module.targets.get($0) || window; const property = UTF8ToString($1); const result = target[property]; console.log('target/prop:', $0, target, property, typeof result, result); if(!result || !['function','object'].includes(typeof result)) { const jsRet = 'OK' + String(result); const len = lengthBytesUTF8(jsRet) + 1; const strLoc = _malloc(len); stringToUTF8(jsRet, strLoc, len); return strLoc; } const jsRet = 'XX'; const len = lengthBytesUTF8(jsRet) + 1; const strLoc = _malloc(len); stringToUTF8(jsRet, strLoc, len); return strLoc; },
- function($0, $1) { const target = Module.targets.get($0) || window; const property = UTF8ToString($1); const result = target[property]; if(['function','object'].includes(typeof result)) { var id = Module.targets.has(result); if(!id) { id = Module.targets.add(result); } return id; } return 0; },
- function($0, $1, $2) { const target = Module.targets.get($0) || window; const eventName = UTF8ToString($1); const funcPtr = $2; const options = {}; const callback = () => { Module.ccall( 'exec_callback' , 'number' , ['number'] , [funcPtr] ); }; console.log(target,funcPtr); target.addEventListener(eventName, callback, options); const remover = () => { target.removeEventListener(eventName, callback, options); return $2; }; return Module.callbacks.add(remover); },
- function($0) { var remover = Module.callbacks.get($0); return remover(); },
- function($0, $1) { var target = Module.targets.get($0) || document; var querySelector = UTF8ToString($1); var result = target.querySelector(querySelector); if(!result) { return 0; } let id = Module.targets.has(result) || 0; if(!id) { id = Module.targets.add(result); } return id; },
+ function($0, $1) { const target = Module.targets.get($0) || window; const property = UTF8ToString($1); const result = target[property]; console.log('target/prop:', $0, target, property, typeof result, result); if(['function','object'].includes(typeof result)) { let index = Module.targets.has(result); if(!index) { index = Module.targets.add(result); } console.log(index); return index; } console.log(0); return 0; },
+ function($0, $1, $2) { const target = Module.targets.get($0) || window; const eventName = UTF8ToString($1); const funcPtr = $2; const options = {}; const callback = () => { Module.ccall( 'exec_callback' , 'number' , ["number"] , [funcPtr] ); }; target.addEventListener(eventName, callback, options); const remover = () => { target.removeEventListener(eventName, callback, options); return $2; }; return Module.callbacks.add(remover); },
+ function($0) { const remover = Module.callbacks.get($0); return remover(); },
+ function($0, $1) { const target = Module.targets.get($0) || document; const querySelector = UTF8ToString($1); const result = target.querySelector(querySelector); if(!result) { return 0; } let index = Module.targets.has(result) || 0; if(!index) { index = Module.targets.add(result); } return index; },
  function($0) { const jsRet = String(eval(UTF8ToString($0))); const len = lengthBytesUTF8(jsRet) + 1; const strLoc = _malloc(len); stringToUTF8(jsRet, strLoc, len); return strLoc; },
  function($0, $1) { const funcName = UTF8ToString($0); const argJson = UTF8ToString($1); const func = window[funcName]; const args = JSON.parse(argJson || '[]') || []; const jsRet = String(func(...args)); const len = lengthBytesUTF8(jsRet) + 1; const strLoc = _malloc(len); stringToUTF8(jsRet, strLoc, len); return strLoc; },
  function($0, $1) { const timeout = Number(UTF8ToString($0)); const funcPtr = $1; setTimeout(()=>{ Module.ccall( 'exec_callback' , 'number' , ["number"] , [funcPtr] ); Module.ccall( 'del_callback' , 'number' , ["number"] , [funcPtr] ); }, timeout); }];
@@ -2348,7 +2348,7 @@ function _emscripten_asm_const_iiii(code, a0, a1, a2) {
 
 
 
-// STATICTOP = STATIC_BASE + 2284096;
+// STATICTOP = STATIC_BASE + 2284208;
 /* global initializers */  __ATINIT__.push({ func: function() { ___emscripten_environ_constructor() } });
 
 
@@ -2359,7 +2359,7 @@ function _emscripten_asm_const_iiii(code, a0, a1, a2) {
 
 
 /* no memory initializer */
-var tempDoublePtr = 2285104;
+var tempDoublePtr = 2285216;
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much
   HEAP8[tempDoublePtr] = HEAP8[ptr];
@@ -7068,7 +7068,7 @@ function copyTempDouble(ptr) {
     }
 
   
-  var ___tm_formatted=2285024;
+  var ___tm_formatted=2285136;
   
   
   function _tzset() {
@@ -7393,7 +7393,7 @@ function copyTempDouble(ptr) {
     }
 
   
-  var ___tm_timezone=(stringToUTF8("GMT", 2285008, 4), 2285008);function _gmtime_r(time, tmPtr) {
+  var ___tm_timezone=(stringToUTF8("GMT", 2285120, 4), 2285120);function _gmtime_r(time, tmPtr) {
       var date = new Date(HEAP32[((time)>>2)]*1000);
       HEAP32[((tmPtr)>>2)]=date.getUTCSeconds();
       HEAP32[(((tmPtr)+(4))>>2)]=date.getUTCMinutes();
@@ -9837,11 +9837,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 });
+
 });
 
 require.alias("process/browser.js", "process");process = require('process');require.register("___globals___", function(exports, require, module) {
   
 });})();require('___globals___');
 
-
-//# sourceMappingURL=app.js.map

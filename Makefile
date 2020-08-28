@@ -25,7 +25,7 @@ DOCKER_RUN_IN_LIBXML =${DOCKER_ENV} -w /src/third_party/libxml2/ emscripten-buil
 
 TIMER=(which pv > /dev/null && pv --name '${@}' || cat)
 
-.PHONY: web all clean image js hooks push-image pull-image
+.PHONY: lib/pib_eval.o web all clean image js hooks push-image pull-image
 
 web: php-web.wasm
 all: php-web.wasm php-webview.wasm php-node.wasm php-shell.wasm php-worker.wasm js
