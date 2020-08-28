@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', function () {
 	const editor = ace.edit(input);
 	const ret    = document.querySelector('#ret');
 
+	const exitBox    = document.querySelector('#exit')
+	const exitLabel  = exitBox.querySelector('span');
 	const persistBox = document.getElementById('persist');
 	const singleBox  = document.getElementById('single-expression');
 
@@ -73,7 +75,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 			php[func](code).then(ret=>{
 
-				console.log(ret);
+				if(!singleBox.checked)
+				{
+					exitLabel.innerText = ret;
+				}
 
 				status.innerText = 'php-wasm ready!';
 
@@ -125,16 +130,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
 		if(event.target.checked)
 		{
+			exitBox.style.display = 'none';
 			ret.style.display = 'flex';
 		}
 		else
 		{
+			exitBox.style.display = 'flex';
 			ret.style.display = 'none';
 		}
 
 		console.log(ret, event.target.checked)
 
-	})
+	});
+
+	exitLabel.innerText = '_';
 
 	if(query.has('code'))
 	{

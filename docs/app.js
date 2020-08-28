@@ -9633,6 +9633,8 @@ document.addEventListener('DOMContentLoaded', function () {
   var status = document.querySelector('[data-status]');
   var editor = ace.edit(input);
   var ret = document.querySelector('#ret');
+  var exitBox = document.querySelector('#exit');
+  var exitLabel = exitBox.querySelector('span');
   var persistBox = document.getElementById('persist');
   var singleBox = document.getElementById('single-expression');
   editor.session.setMode("ace/mode/php");
@@ -9676,7 +9678,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
       console.log(func);
       php[func](code).then(function (ret) {
-        console.log(ret);
+        if (!singleBox.checked) {
+          exitLabel.innerText = ret;
+        }
+
         status.innerText = 'php-wasm ready!';
         var row = document.createElement('div');
         row.innerText = ret;
@@ -9705,13 +9710,16 @@ document.addEventListener('DOMContentLoaded', function () {
   ret.style.display = 'none';
   singleBox.addEventListener('input', function (event) {
     if (event.target.checked) {
+      exitBox.style.display = 'none';
       ret.style.display = 'flex';
     } else {
+      exitBox.style.display = 'flex';
       ret.style.display = 'none';
     }
 
     console.log(ret, event.target.checked);
   });
+  exitLabel.innerText = '_';
 
   if (query.has('code')) {
     editor.setValue(decodeURIComponent(query.get('code')));

@@ -219,5 +219,10 @@ label {
 	user-select: none;
 }
 
+.collapse {
+	flex: 0 !important;
+	white-space: nowrap;
+}
+
 
 /*# sourceMappingURL=app.css.map*/
