@@ -13,7 +13,8 @@ before_install:
   - docker run -dit --name emscripten -v $(pwd):/src trzeci/emscripten-ubuntu:latest bash
 
 script:
-  - make web
+  - make image
+  - make -j8
 
 notifications:
   email: false

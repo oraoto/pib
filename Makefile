@@ -52,19 +52,19 @@ third_party/sqlite3.33-src/sqlite3.c:
 	@ cp third_party/sqlite3.33-src/sqlite3.h source/
 
 third_party/php7.4-src/ext/vrzno/vrzno.c: third_party/php7.4-src/patched
-	@ git clone https://github.com/seanmorris/vrzno.git third_party/php7.4-src/ext/vrzno \
+	@ ${DOCKER_RUN} git clone https://github.com/seanmorris/vrzno.git third_party/php7.4-src/ext/vrzno \
 		--branch ${VRZNO_BRANCH} \
 		--single-branch          \
 		--depth 1
 
 third_party/libicu-src:
-	@ git clone https://github.com/unicode-org/icu.git third_party/libicu-src \
+	@ ${DOCKER_RUN} git clone https://github.com/unicode-org/icu.git third_party/libicu-src \
 		--branch ${ICU_TAG} \
 		--single-branch     \
 		--depth 1;
 
 third_party/libxml2:
-	@ git clone https://gitlab.gnome.org/GNOME/libxml2.git third_party/libxml2 \
+	@ ${DOCKER_RUN} git clone https://gitlab.gnome.org/GNOME/libxml2.git third_party/libxml2 \
 		--branch ${LIBXML2_TAG} \
 		--single-branch     \
 		--depth 1;

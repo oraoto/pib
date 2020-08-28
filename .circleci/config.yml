@@ -16,5 +16,6 @@ jobs:
       image: ubuntu-1604:202007-01
     steps:
       - checkout
-      - run: make
+      - run: make image
+      - run: make -j8
 
