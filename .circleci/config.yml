@@ -16,7 +16,7 @@ jobs:
       image: ubuntu-1604:202007-01
     steps:
       - checkout
-      - run: apt install pv
+      - run: sudo apt install pv
       - run: docker system prune -af
       - run: make pull-image
       - run: make -j8
