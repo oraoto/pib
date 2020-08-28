@@ -50,8 +50,10 @@ third_party/sqlite3.33-src/sqlite3.c:
 	@ git apply --no-index patch/sqlite3-wasm.patch
 
 source/sqlite3.c: third_party/sqlite3.33-src/sqlite3.c
-	@ cp third_party/sqlite3.33-src/sqlite3.c source/sqlite3.c
-	@ cp third_party/sqlite3.33-src/sqlite3.h source/sqlite3.h
+	@ ${DOCKER_RUN} cp -v third_party/sqlite3.33-src/sqlite3.c third_party/php7.4-src/main/sqlite3.c
+	@ ${DOCKER_RUN} cp -v third_party/sqlite3.33-src/sqlite3.h third_party/php7.4-src/main/sqlite3.h
+	@ ${DOCKER_RUN} cp -v third_party/sqlite3.33-src/sqlite3.c source/sqlite3.c
+	@ ${DOCKER_RUN} cp -v third_party/sqlite3.33-src/sqlite3.h source/sqlite3.h
 
 third_party/php7.4-src/ext/vrzno/vrzno.c: third_party/php7.4-src/patched
 	@ ${DOCKER_RUN} git clone https://github.com/seanmorris/vrzno.git third_party/php7.4-src/ext/vrzno \
@@ -73,7 +75,7 @@ third_party/libxml2:
 
 ########### Build the objects. ###########
 
-third_party/php7.4-src/configure:
+third_party/php7.4-src/configure: third_party/php7.4-src/ext/vrzno/vrzno.c source/sqlite3.c
 	@ ${DOCKER_RUN_IN_PHP} ./buildconf --force | ${TIMER}
 	@ ${DOCKER_RUN_IN_PHP} emconfigure ./configure \
 		--enable-embed=static \
