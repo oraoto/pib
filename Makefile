@@ -71,7 +71,7 @@ third_party/libxml2:
 
 ########### Build the objects. ###########
 
-lib/libphp7.a: third_party/php7.4-src/patched third_party/php7.4-src/ext/vrzno/vrzno.c
+third_party/php7.4-src/configure:
 	@ ${DOCKER_RUN_IN_PHP} ./buildconf --force | ${TIMER}
 	@ ${DOCKER_RUN_IN_PHP} emconfigure ./configure \
 		--enable-embed=static \
@@ -95,10 +95,12 @@ lib/libphp7.a: third_party/php7.4-src/patched third_party/php7.4-src/ext/vrzno/v
 		--disable-mbregex  \
 		--enable-tokenizer \
 		--enable-vrzno | ${TIMER}
-	@ ${DOCKER_RUN_IN_PHP} cp -v /src/third_party/php7.4-src/.libs/libphp7.la /src/third_party/php7.4-src/.libs/libphp7.a /src/lib
+
+lib/libphp7.a: third_party/php7.4-src/configure third_party/php7.4-src/patched third_party/php7.4-src/**.c third_party/php7.4-src/**.h
+	@ ${DOCKER_RUN_IN_PHP} emmake make -j8
+	@ cp -v third_party/php7.4-src/.libs/libphp7.la third_party/php7.4-src/.libs/libphp7.a lib/
 
 lib/pib_eval.o: source/pib_eval.c
-	@ ${DOCKER_RUN_IN_PHP} emmake make -j8
 	@ ${DOCKER_RUN_IN_PHP} emcc ${OPTIMIZE} \
 		-I .              \
 		-I Zend           \
