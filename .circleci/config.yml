@@ -20,5 +20,5 @@ jobs:
       image: ubuntu-1604:202004-01
     steps:
       - checkout
-      - make
+      - run: make
 
