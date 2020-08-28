@@ -33,6 +33,13 @@ all: php-web.wasm php-webview.wasm php-node.wasm php-shell.wasm php-worker.wasm 
 
 ########### Collect & patch the source code. ###########
 
+third_party/sqlite3.33-src/sqlite3.c:
+	@ wget https://sqlite.org/2020/sqlite-amalgamation-3330000.zip
+	@ unzip sqlite-amalgamation-3330000.zip
+	@ mv sqlite-amalgamation-3330000 third_party/sqlite3.33-src
+	@ rm sqlite-amalgamation-3330000.zip
+	@ git apply --no-index patch/sqlite3-wasm.patch
+
 third_party/php7.4-src/patched: third_party/sqlite3.33-src/sqlite3.c
 	@ test -e third_party/php7.4-src/patched \
 	|| git clone https://github.com/php/php-src.git third_party/php7.4-src \
@@ -41,13 +48,6 @@ third_party/php7.4-src/patched: third_party/sqlite3.33-src/sqlite3.c
 		--depth 1
 	@ git apply --no-index patch/php7.4-sqlite.patch
 	@ touch third_party/php7.4-src/patched
-
-third_party/sqlite3.33-src/sqlite3.c:
-	@ wget https://sqlite.org/2020/sqlite-amalgamation-3330000.zip
-	@ unzip sqlite-amalgamation-3330000.zip
-	@ mv sqlite-amalgamation-3330000 third_party/sqlite3.33-src
-	@ rm sqlite-amalgamation-3330000.zip
-	@ git apply --no-index patch/sqlite3-wasm.patch
 
 source/sqlite3.c: third_party/sqlite3.33-src/sqlite3.c
 	@ ${DOCKER_RUN} cp -v third_party/sqlite3.33-src/sqlite3.c third_party/php7.4-src/main/sqlite3.c
@@ -102,7 +102,7 @@ third_party/php7.4-src/configure: third_party/php7.4-src/ext/vrzno/vrzno.c sourc
 
 lib/libphp7.a: third_party/php7.4-src/configure third_party/php7.4-src/patched third_party/php7.4-src/**.c source/sqlite3.c
 	@ ${DOCKER_RUN_IN_PHP} emmake make -j8
-	@ cp -v third_party/php7.4-src/.libs/libphp7.la third_party/php7.4-src/.libs/libphp7.a lib/
+	@ ${DOCKER_RUN} cp -v third_party/php7.4-src/.libs/libphp7.la third_party/php7.4-src/.libs/libphp7.a lib/
 
 lib/pib_eval.o: source/pib_eval.c
 	@ ${DOCKER_RUN_IN_PHP} emcc ${OPTIMIZE} \
