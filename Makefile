@@ -139,30 +139,30 @@ FINAL_BUILD=${DOCKER_RUN_IN_PHP} emcc ${OPTIMIZE} \
 php-web.wasm: ENVIRONMENT=web
 php-web.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h
 	@ ${FINAL_BUILD}
-	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
-	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./docs-source/app/assets
-	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./docs-source/public
+	@ ${DOCKER_RUN} -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
+	@ ${DOCKER_RUN} -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./docs-source/app/assets
+	@ ${DOCKER_RUN} -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./docs-source/public
 
 php-worker.wasm: ENVIRONMENT=worker
 php-worker.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h
 	@ ${FINAL_BUILD}
-	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
-	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./docs-source/public
+	@ ${DOCKER_RUN} cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
+	@ ${DOCKER_RUN} cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./docs-source/public
 
 php-node.wasm: ENVIRONMENT=node
 php-node.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h
 	@ ${FINAL_BUILD}
-	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
+	@ ${DOCKER_RUN} cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
 
 php-shell.wasm: ENVIRONMENT=shell
 php-shell.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h
 	@ ${FINAL_BUILD}
-	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
+	@ ${DOCKER_RUN} cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
 
 php-webview.wasm: ENVIRONMENT=webview
 php-webview.wasm: lib/libphp7.a lib/pib_eval.o source/pib_eval.c
 	@ ${FINAL_BUILD}
-	cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
+	@ ${DOCKER_RUN} cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
 
 
 ########### Clerical stuff. ###########
