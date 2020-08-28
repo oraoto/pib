@@ -48,7 +48,7 @@ third_party/php7.4-src/patched: third_party/sqlite3.33-src/sqlite3.c
 	@ ${DOCKER_RUN} git apply --no-index patch/php7.4-sqlite.patch
 	@ ${DOCKER_RUN} touch third_party/php7.4-src/patched
 
-source/sqlite3.c: third_party/sqlite3.33-src/sqlite3.c
+source/sqlite3.c: third_party/sqlite3.33-src/sqlite3.c third_party/php7.4-src/patched
 	@ ${DOCKER_RUN} cp -v third_party/sqlite3.33-src/sqlite3.c source/sqlite3.c
 	@ ${DOCKER_RUN} cp -v third_party/sqlite3.33-src/sqlite3.h source/sqlite3.h
 	@ ${DOCKER_RUN} cp -v third_party/sqlite3.33-src/sqlite3.h third_party/php7.4-src/main/sqlite3.h
@@ -86,6 +86,7 @@ third_party/php7.4-src/configure: third_party/php7.4-src/ext/vrzno/vrzno.c sourc
 		--with-sqlite3     \
 		--enable-session   \
 		--enable-filter    \
+		--enable-calendar  \
 		--enable-pdo       \
 		--with-pdo-sqlite  \
 		--disable-rpath    \
