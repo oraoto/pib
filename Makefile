@@ -35,7 +35,7 @@ all: php-web.wasm php-webview.wasm php-node.wasm php-shell.wasm php-worker.wasm 
 
 ########### Collect & patch the source code. ###########
 
-third_party/php7.4-src/patched:
+third_party/php7.4-src/patched: third_party/sqlite3.33-src/sqlite3.c
 	@ git clone https://github.com/php/php-src.git third_party/php7.4-src \
 		--branch ${PHP_BRANCH}   \
 		--single-branch          \
@@ -47,9 +47,10 @@ third_party/sqlite3.33-src/sqlite3.c:
 	@ wget https://sqlite.org/2020/sqlite-amalgamation-3330000.zip
 	@ unzip sqlite-amalgamation-3330000.zip
 	@ mv sqlite-amalgamation-3330000 third_party/sqlite3.33-src
-	@ rm sqlite-amalgamation-3330000.zip*
+	@ rm sqlite-amalgamation-3330000.zip
 	@ git apply --no-index patch/sqlite3-wasm.patch
-	@ cp third_party/sqlite3.33-src/sqlite3.* source/
+	@ cp third_party/sqlite3.33-src/sqlite3.c source/
+	@ cp third_party/sqlite3.33-src/sqlite3.h source/
 
 third_party/php7.4-src/ext/vrzno/README.md:
 	git clone https://github.com/seanmorris/vrzno.git third_party/php7.4-src/ext/vrzno \
