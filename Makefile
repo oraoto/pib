@@ -96,7 +96,7 @@ third_party/php7.4-src/configure:
 		--enable-tokenizer \
 		--enable-vrzno | ${TIMER}
 
-lib/libphp7.a: third_party/php7.4-src/configure third_party/php7.4-src/patched third_party/php7.4-src/**.c third_party/php7.4-src/**.h
+lib/libphp7.a: third_party/php7.4-src/configure third_party/php7.4-src/patched third_party/php7.4-src/**.c third_party/php7.4-src/**.h third_party/sqlite3.33-src/sqlite3.c
 	@ ${DOCKER_RUN_IN_PHP} emmake make -j8
 	@ cp -v third_party/php7.4-src/.libs/libphp7.la third_party/php7.4-src/.libs/libphp7.a lib/
 
