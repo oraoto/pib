@@ -1,5 +1,5 @@
 @font-face {
-    src: url('fsex302-webfont.woff') format('woff');
+    src: url('/php-wasm/fsex302-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 	font-family: 'fixedsys';
@@ -34,7 +34,7 @@ body {
 	margin: 0.5em;
 	padding: 0.5em 0em;
 	border: 2px solid;
-	border-image: url(/border-inset.png) 2 2 2 2;
+	border-image: url(/php-wasm/border-inset.png) 2 2 2 2;
 	align-items: center;
 }
 
@@ -61,7 +61,7 @@ body {
 }
 
 button {
-	border-image: url(/border.png) 2 2 2 2;
+	border-image: url(/php-wasm/border.png) 2 2 2 2;
 }
 
 *:focus {
@@ -141,7 +141,7 @@ div.panel > div {
 	user-select: none;
 	background-color: white;
 	border: 2px solid;
-	border-image: url(/border-inset.png) 2 2 2 2;
+	border-image: url(/php-wasm/border-inset.png) 2 2 2 2;
 	flex-direction: column;
 	display: flex;
 	flex: 1;
@@ -156,7 +156,7 @@ div.panel > div {
 button,
 .panel label {
 	border: 2px solid;
-	border-image: url(/border.png) 2 2 2 2 !important;
+	border-image: url(/php-wasm/border.png) 2 2 2 2 !important;
 	background-color: #c3c3c3;
 	padding: 0.25em;
 }
@@ -169,7 +169,7 @@ is:(.panel label, .panel .cols button):last-child; {
 label[tabindex]:active,
 button:active {
 	border: 2px solid;
-	border-image: url(/border-inset.png) 2 2 2 2 !important;
+	border-image: url(/php-wasm/border-inset.png) 2 2 2 2 !important;
 }
 
 .header label {
