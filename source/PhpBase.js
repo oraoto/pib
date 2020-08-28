@@ -60,7 +60,6 @@ export class PhpBase extends EventTarget
 
 	run(phpCode)
 	{
-		console.log('Run script', phpCode);
 		return this.binary.then(php => php.ccall(
 			'pib_run'
 			, NUM
@@ -71,7 +70,6 @@ export class PhpBase extends EventTarget
 
 	exec(phpCode)
 	{
-		console.log('Exec expression', phpCode);
 		return this.binary.then(php => php.ccall(
 			'pib_exec'
 			, STR

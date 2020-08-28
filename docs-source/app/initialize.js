@@ -83,9 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 				const content = String(ret);
 
-				stdret.innerText += content;
-
-				console.log(ret);
+				stdret.innerText = content;
 
 				exitLabel.innerText = '_';
 

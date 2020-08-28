@@ -25,7 +25,7 @@ DOCKER_RUN_IN_PHP    =${DOCKER_ENV} -w /src/third_party/php7.4-src/ emscripten-b
 DOCKER_RUN_IN_ICU4C  =${DOCKER_ENV} -w /src/third_party/libicu-src/icu4c/source/ emscripten-builder
 DOCKER_RUN_IN_LIBXML =${DOCKER_ENV} -w /src/third_party/libxml2/ emscripten-builder
 
-TIMER=(which pv > /dev/null && pv --name '${@}' || true)
+TIMER=(which pv > /dev/null && pv --name '${@}' || cat)
 
 .PHONY: web all clean image js hooks push-image pull-image
 
