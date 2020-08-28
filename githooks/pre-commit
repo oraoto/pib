@@ -1,5 +1,9 @@
 #!/bin/bash -eux
 
-cp -v ./*.js   ./docs
 cp -v ./php-web.wasm ./docs
 cp -v ./php-web.data ./docs
+
+# cp -v ./php-worker.wasm ./docs
+# cp -v ./php-worker.data ./docs
+
+cd docs-source && brunch b -p

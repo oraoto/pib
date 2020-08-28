@@ -370,7 +370,6 @@ if (window && document) {
     }
 
     var inlineCode = element.innerText.trim();
-    console.log(inlineCode);
 
     if (inlineCode) {
       php.run(inlineCode);
@@ -718,7 +717,7 @@ Module['ready'] = new Promise(function(resolve, reject) {
     }
   
    }
-   loadPackage({"files": [{"filename": "/Zend/bench.php", "start": 0, "end": 7634, "audio": 0}], "remote_package_size": 7634, "package_uuid": "824ee15b-164e-405b-a6c5-44458af9e94a"});
+   loadPackage({"files": [{"filename": "/Zend/bench.php", "start": 0, "end": 7634, "audio": 0}], "remote_package_size": 7634, "package_uuid": "e86d0c19-6771-445f-adbe-d3f704e7d811"});
   
   })();
   
@@ -1255,8 +1254,8 @@ var wasmMemory;
 // In the wasm backend, we polyfill the WebAssembly object,
 // so this creates a (non-native-wasm) table for us.
 var wasmTable = new WebAssembly.Table({
-  'initial': 6205,
-  'maximum': 6205,
+  'initial': 6717,
+  'maximum': 6717,
   'element': 'anyfunc'
 });
 
@@ -1870,11 +1869,11 @@ function updateGlobalBufferAndViews(buf) {
 }
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 2285232,
+    STACK_BASE = 2296064,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 7528112,
-    DYNAMIC_BASE = 7528112,
-    DYNAMICTOP_PTR = 2285040;
+    STACK_MAX = 7538944,
+    DYNAMIC_BASE = 7538944,
+    DYNAMICTOP_PTR = 2295872;
 
 
 
@@ -2348,7 +2347,7 @@ function _emscripten_asm_const_iiii(code, a0, a1, a2) {
 
 
 
-// STATICTOP = STATIC_BASE + 2284208;
+// STATICTOP = STATIC_BASE + 2295040;
 /* global initializers */  __ATINIT__.push({ func: function() { ___emscripten_environ_constructor() } });
 
 
@@ -2359,7 +2358,7 @@ function _emscripten_asm_const_iiii(code, a0, a1, a2) {
 
 
 /* no memory initializer */
-var tempDoublePtr = 2285216;
+var tempDoublePtr = 2296048;
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much
   HEAP8[tempDoublePtr] = HEAP8[ptr];
@@ -7068,7 +7067,7 @@ function copyTempDouble(ptr) {
     }
 
   
-  var ___tm_formatted=2285136;
+  var ___tm_formatted=2295968;
   
   
   function _tzset() {
@@ -7393,7 +7392,7 @@ function copyTempDouble(ptr) {
     }
 
   
-  var ___tm_timezone=(stringToUTF8("GMT", 2285120, 4), 2285120);function _gmtime_r(time, tmPtr) {
+  var ___tm_timezone=(stringToUTF8("GMT", 2295952, 4), 2295952);function _gmtime_r(time, tmPtr) {
       var date = new Date(HEAP32[((time)>>2)]*1000);
       HEAP32[((tmPtr)>>2)]=date.getUTCSeconds();
       HEAP32[(((tmPtr)+(4))>>2)]=date.getUTCMinutes();
@@ -9837,10 +9836,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 });
-
 });
 
 require.alias("process/browser.js", "process");process = require('process');require.register("___globals___", function(exports, require, module) {
   
 });})();require('___globals___');
 
+
+//# sourceMappingURL=app.js.map
