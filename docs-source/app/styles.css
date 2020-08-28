@@ -196,6 +196,8 @@ label[tabindex]:active,
 button:active {
 	border: 2px solid;
 	border-image: url(border-inset.png) 2 2 2 2 !important;
+	position: relative;
+	z-index: 100;
 }
 
 .header label {
