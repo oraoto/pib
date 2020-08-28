@@ -1,4 +1,4 @@
-SHELL=/bin/bash -euo pipefail
+SHELL=/bin/bash -euxo pipefail
 
 -include .env
 
