@@ -11,6 +11,7 @@ PHP_BRANCH     ?=PHP-7.4
 VRZNO_BRANCH   ?=DomAccess
 ICU_TAG        ?=release-67-1
 LIBXML2_TAG    ?=v2.9.10
+TIDYHTML_TAG   ?=5.6.0
 
 DOCKER_ENV=docker-compose -p php_wasm_003 run --rm      \
 	-e EMCC_ALLOW_FASTCOMP=1            \
@@ -69,6 +70,12 @@ third_party/libicu-src:
 third_party/libxml2:
 	@ ${DOCKER_RUN} git clone https://gitlab.gnome.org/GNOME/libxml2.git third_party/libxml2 \
 		--branch ${LIBXML2_TAG} \
+		--single-branch     \
+		--depth 1;
+
+third_party/tidy-html5:
+	@ ${DOCKER_RUN} git clone https://github.com/htacg/tidy-html5.git third_party/tidy-html5 \
+		--branch ${TIDYHTML_TAG} \
 		--single-branch     \
 		--depth 1;
 
