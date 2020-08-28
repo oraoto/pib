@@ -13,7 +13,7 @@ jobs:
   make:
     parallelism: 1
     machine:
-      image: ubuntu-1604:202007-0
+      image: ubuntu-1604:202007-01
     steps:
       - checkout
       - run: make -j8
