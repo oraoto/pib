@@ -11,7 +11,7 @@ workflows:
 
   build-push-deploy:
     jobs:
-      - make
+      - make -j8
 
 jobs:
   make:
