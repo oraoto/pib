@@ -9661,33 +9661,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     reader.readAsText(event.target.files[0]);
   });
-  renderAs.map(function (radio) {
-    console.log(radio);
-    radio.addEventListener('change', function (event) {
-      var type = event.target.value;
-
-      if (type === 'html') {
-        stdout.style.display = 'none';
-        stdoutFrame.style.display = 'flex';
-        stderr.style.display = 'none';
-        stderrFrame.style.display = 'flex';
-        stdret.style.display = 'none';
-        stdretFrame.style.display = 'flex';
-      } else {
-        stdout.style.display = 'flex';
-        stdoutFrame.style.display = 'none';
-        stderr.style.display = 'flex';
-        stderrFrame.style.display = 'none';
-        stdret.style.display = 'flex';
-        stdretFrame.style.display = 'none';
-      }
-    });
-  });
+  var query = new URLSearchParams(location.search);
   editor.session.setMode("ace/mode/php");
   editor.setTheme('ace/theme/monokai');
   status.innerText = 'php-wasm loading...';
   var php = new PHP();
-  var query = new URLSearchParams(location.search);
   php.addEventListener('ready', function (event) {
     status.innerText = 'php-wasm ready!';
     run.removeAttribute('disabled');
@@ -9762,14 +9740,14 @@ document.addEventListener('DOMContentLoaded', function () {
   var outputBuffer = [];
   php.addEventListener('output', function (event) {
     var row = document.createElement('div');
-    var content = event.detail.join("\n");
+    var content = event.detail.join('');
     outputBuffer.push(content);
     requestAnimationFrame(function () {
       if (!outputBuffer) {
         return;
       }
 
-      var chunk = outputBuffer.join("\n");
+      var chunk = outputBuffer.join('');
       document.createTextNode(chunk);
       stdout.append(chunk);
       stdoutFrame.srcdoc += chunk;
@@ -9801,6 +9779,10 @@ document.addEventListener('DOMContentLoaded', function () {
     editor.setValue(decodeURIComponent(query.get('code')));
   }
 
+  if (query.has('render-as')) {
+    document.querySelector("[name=render-as][value=".concat(query.get('render-as'), "]")).checked = true;
+  }
+
   persistBox.checked = Number(query.get('persist'));
   singleBox.checked = Number(query.get('single-expression'));
 
@@ -9815,11 +9797,51 @@ document.addEventListener('DOMContentLoaded', function () {
   setTimeout(function () {
     return editor.selection.moveCursorFileStart();
   }, 150);
-});
+  renderAs.map(function (radio) {
+    if (query.get('render-as') === 'html') {
+      stdout.style.display = 'none';
+      stdoutFrame.style.display = 'flex';
+      stderr.style.display = 'none';
+      stderrFrame.style.display = 'flex';
+      stdret.style.display = 'none';
+      stdretFrame.style.display = 'flex';
+    } else {
+      stdout.style.display = 'flex';
+      stdoutFrame.style.display = 'none';
+      stderr.style.display = 'flex';
+      stderrFrame.style.display = 'none';
+      stdret.style.display = 'flex';
+      stdretFrame.style.display = 'none';
+    }
 
+    radio.addEventListener('change', function (event) {
+      var type = event.target.value;
+      query.set('render-as', type);
+      history.replaceState({}, document.title, "?" + query.toString());
+
+      if (type === 'html') {
+        stdout.style.display = 'none';
+        stdoutFrame.style.display = 'flex';
+        stderr.style.display = 'none';
+        stderrFrame.style.display = 'flex';
+        stdret.style.display = 'none';
+        stdretFrame.style.display = 'flex';
+      } else {
+        stdout.style.display = 'flex';
+        stdoutFrame.style.display = 'none';
+        stderr.style.display = 'flex';
+        stderrFrame.style.display = 'none';
+        stdret.style.display = 'flex';
+        stdretFrame.style.display = 'none';
+      }
+    });
+  });
+});
 });
 
 require.alias("process/browser.js", "process");process = require('process');require.register("___globals___", function(exports, require, module) {
   
 });})();require('___globals___');
 
+
+//# sourceMappingURL=app.js.map

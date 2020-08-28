@@ -24,6 +24,10 @@ body {
 	background-color: #EEE;
 }
 
+.output div.scroller {
+	white-space: pre;
+}
+
 .output .row {
 	background-color: #FFF;
 	padding: 0.5em 0.5em;

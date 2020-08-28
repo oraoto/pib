@@ -57,37 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	});
 
-	renderAs.map(radio => {
-		console.log(radio);
-		radio.addEventListener('change', event => {
-
-			const type = event.target.value;
-
-			if(type === 'html')
-			{
-				stdout.style.display = 'none';
-				stdoutFrame.style.display = 'flex';
-
-				stderr.style.display = 'none';
-				stderrFrame.style.display = 'flex';
-
-				stdret.style.display = 'none';
-				stdretFrame.style.display = 'flex';
-			}
-			else
-			{
-				stdout.style.display = 'flex';
-				stdoutFrame.style.display = 'none';
-
-				stderr.style.display = 'flex';
-				stderrFrame.style.display = 'none';
-
-				stdret.style.display = 'flex';
-				stdretFrame.style.display = 'none';
-			}
-
-		});
-	})
+	const query = new URLSearchParams(location.search);
 
 	editor.session.setMode("ace/mode/php");
 	editor.setTheme('ace/theme/monokai')
@@ -95,7 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	status.innerText = 'php-wasm loading...';
 	const php = new PHP;
 
-	const query = new URLSearchParams(location.search);
 
 	php.addEventListener('ready', (event) => {
 		status.innerText = 'php-wasm ready!';
@@ -190,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	php.addEventListener('output', (event) => {
 		const row = document.createElement('div');
-		const content = event.detail.join("\n");
+		const content = event.detail.join('');
 
 		outputBuffer.push(content);
 
@@ -201,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				return;
 			}
 
-			const chunk = outputBuffer.join("\n");
+			const chunk = outputBuffer.join('');
 
 			document.createTextNode(chunk);
 
@@ -243,6 +212,10 @@ document.addEventListener('DOMContentLoaded', () => {
 	{
 		editor.setValue(decodeURIComponent(query.get('code')));
 	}
+	if(query.has('render-as'))
+	{
+		document.querySelector(`[name=render-as][value=${query.get('render-as')}]`).checked = true;
+	}
 
 	persistBox.checked = Number(query.get('persist'));
 	singleBox.checked  = Number(query.get('single-expression'));
@@ -259,6 +232,66 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 
 	setTimeout(() => editor.selection.moveCursorFileStart(), 150);
+
+	renderAs.map(radio => {
+
+		if(query.get('render-as') === 'html')
+		{
+
+			stdout.style.display = 'none';
+			stdoutFrame.style.display = 'flex';
+
+			stderr.style.display = 'none';
+			stderrFrame.style.display = 'flex';
+
+			stdret.style.display = 'none';
+			stdretFrame.style.display = 'flex';
+		}
+		else
+		{
+			stdout.style.display = 'flex';
+			stdoutFrame.style.display = 'none';
+
+			stderr.style.display = 'flex';
+			stderrFrame.style.display = 'none';
+
+			stdret.style.display = 'flex';
+			stdretFrame.style.display = 'none';
+		}
+
+		radio.addEventListener('change', event => {
+
+			const type = event.target.value;
+
+			query.set('render-as', type);
+			history.replaceState({}, document.title, "?" + query.toString());
+
+			if(type === 'html')
+			{
+
+				stdout.style.display = 'none';
+				stdoutFrame.style.display = 'flex';
+
+				stderr.style.display = 'none';
+				stderrFrame.style.display = 'flex';
+
+				stdret.style.display = 'none';
+				stdretFrame.style.display = 'flex';
+			}
+			else
+			{
+				stdout.style.display = 'flex';
+				stdoutFrame.style.display = 'none';
+
+				stderr.style.display = 'flex';
+				stderrFrame.style.display = 'none';
+
+				stdret.style.display = 'flex';
+				stdretFrame.style.display = 'none';
+			}
+
+		});
+	});
 
 });
 
