@@ -2,10 +2,9 @@ module.exports = {
 	files: {
 		stylesheets: {joinTo: 'app.css'}
 		, javascripts: {
-			entrypoints: {
-				'app.js': {
-					'app.js': 'app/initialize.js'
-				}
+			entryPoints: {
+				'app/worker.js':      'worker.js'
+				, 'app/initialize.js':'app.js'
 			}
 		}
 	}

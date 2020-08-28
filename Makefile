@@ -39,7 +39,7 @@ third_party/php7.4-src/patched: third_party/sqlite3.33-src/sqlite3.c
 	@ git clone https://github.com/php/php-src.git third_party/php7.4-src \
 		--branch ${PHP_BRANCH}   \
 		--single-branch          \
-		--depth 1;
+		--depth 1  || test -e third_party/php7.4-src/patched;;
 	@ git apply --no-index patch/php7.4-sqlite.patch
 	@ touch third_party/php7.4-src/patched
 
@@ -56,7 +56,7 @@ third_party/php7.4-src/ext/vrzno/README.md: third_party/php7.4-src/patched
 	git clone https://github.com/seanmorris/vrzno.git third_party/php7.4-src/ext/vrzno \
 		--branch ${VRZNO_BRANCH} \
 		--single-branch          \
-		--depth 1;
+		--depth 1 || test -e third_party/php7.4-src/ext/vrzno;
 
 third_party/libicu-src:
 	@ git clone https://github.com/unicode-org/icu.git third_party/libicu-src \
