@@ -110,8 +110,8 @@ lib/pib_eval.o: source/pib_eval.c
 		-I Zend           \
 		-I main           \
 		-I TSRM/          \
-		../../source/pib_eval.c \
-		-o ../../lib/pib_eval.o | ${TIMER}
+		/src/source/pib_eval.c \
+		-o /src/lib/pib_eval.o | ${TIMER}
 
 lib/something:
 	${DOCKER_RUN_IN_LIBXML} ./autogen.sh
@@ -134,7 +134,7 @@ FINAL_BUILD=${DOCKER_RUN_IN_PHP} emcc ${OPTIMIZE} \
 	-s MODULARIZE=1                  \
 	-s ASSERTIONS=${ASSERTIONS}      \
 	-s INVOKE_RUN=0                  \
-		../../lib/libphp7.a ../../lib/pib_eval.o | ${TIMER}
+		/src/lib/libphp7.a /src/lib/pib_eval.o | ${TIMER}
 
 php-web.wasm: ENVIRONMENT=web
 php-web.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h
