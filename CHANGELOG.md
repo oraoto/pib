@@ -4,7 +4,7 @@ Changes
 
 ## 0.0.3 - New Horizons
 
-* php.run() may now return a value directly.
+* php.exec() may be used to evaluate a single php expression & return its result.
 * php may now access & traverse the dom and access nodes.
 * The querySelector method is available on dom nodes.
 * addEventListener/removeEventListener is also available on dom nodes.
