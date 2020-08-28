@@ -13,6 +13,7 @@ before_install:
   - docker run -dit --name emscripten -v $(pwd):/src trzeci/emscripten-ubuntu:latest bash
 
 script:
+  - apt install pv
   - docker system prune -af
   - make pull-image
   - make -j8

@@ -25,9 +25,9 @@ DOCKER_RUN_IN_LIBXML =${DOCKER_ENV} -w /src/third_party/libxml2/ emscripten-buil
 
 TIMER=(which pv > /dev/null && pv --name '${@}' || cat)
 
-.PHONY: lib/pib_eval.o web all clean image js hooks push-image pull-image
+.PHONY: web all clean image js hooks push-image pull-image
 
-web: php-web.wasm
+web: lib/pib_eval.o php-web.wasm
 all: php-web.wasm php-webview.wasm php-node.wasm php-shell.wasm php-worker.wasm js
 	@ echo "Done!"
 
@@ -35,25 +35,24 @@ all: php-web.wasm php-webview.wasm php-node.wasm php-shell.wasm php-worker.wasm 
 
 third_party/sqlite3.33-src/sqlite3.c:
 	@ wget https://sqlite.org/2020/sqlite-amalgamation-3330000.zip
-	@ unzip sqlite-amalgamation-3330000.zip
-	@ mv sqlite-amalgamation-3330000 third_party/sqlite3.33-src
-	@ rm sqlite-amalgamation-3330000.zip
-	@ git apply --no-index patch/sqlite3-wasm.patch
+	@ ${DOCKER_RUN} unzip sqlite-amalgamation-3330000.zip
+	@ ${DOCKER_RUN} rm sqlite-amalgamation-3330000.zip
+	@ ${DOCKER_RUN} mv sqlite-amalgamation-3330000 third_party/sqlite3.33-src
+	@ ${DOCKER_RUN} git apply --no-index patch/sqlite3-wasm.patch
 
 third_party/php7.4-src/patched: third_party/sqlite3.33-src/sqlite3.c
-	@ test -e third_party/php7.4-src/patched \
-	|| git clone https://github.com/php/php-src.git third_party/php7.4-src \
+	@ ${DOCKER_RUN} git clone https://github.com/php/php-src.git third_party/php7.4-src \
 		--branch ${PHP_BRANCH}   \
 		--single-branch          \
 		--depth 1
-	@ git apply --no-index patch/php7.4-sqlite.patch
-	@ touch third_party/php7.4-src/patched
+	@ ${DOCKER_RUN} git apply --no-index patch/php7.4-sqlite.patch
+	@ ${DOCKER_RUN} touch third_party/php7.4-src/patched
 
 source/sqlite3.c: third_party/sqlite3.33-src/sqlite3.c
-	@ ${DOCKER_RUN} cp -v third_party/sqlite3.33-src/sqlite3.c third_party/php7.4-src/main/sqlite3.c
-	@ ${DOCKER_RUN} cp -v third_party/sqlite3.33-src/sqlite3.h third_party/php7.4-src/main/sqlite3.h
 	@ ${DOCKER_RUN} cp -v third_party/sqlite3.33-src/sqlite3.c source/sqlite3.c
 	@ ${DOCKER_RUN} cp -v third_party/sqlite3.33-src/sqlite3.h source/sqlite3.h
+	@ ${DOCKER_RUN} cp -v third_party/sqlite3.33-src/sqlite3.h third_party/php7.4-src/main/sqlite3.h
+	@ ${DOCKER_RUN} cp -v third_party/sqlite3.33-src/sqlite3.c third_party/php7.4-src/main/sqlite3.c
 
 third_party/php7.4-src/ext/vrzno/vrzno.c: third_party/php7.4-src/patched
 	@ ${DOCKER_RUN} git clone https://github.com/seanmorris/vrzno.git third_party/php7.4-src/ext/vrzno \
@@ -85,6 +84,8 @@ third_party/php7.4-src/configure: third_party/php7.4-src/ext/vrzno/vrzno.c sourc
 		--disable-cli      \
 		--disable-all      \
 		--with-sqlite3     \
+		--enable-session   \
+		--enable-filter    \
 		--enable-pdo       \
 		--with-pdo-sqlite  \
 		--disable-rpath    \
@@ -104,7 +105,7 @@ lib/libphp7.a: third_party/php7.4-src/configure third_party/php7.4-src/patched t
 	@ ${DOCKER_RUN_IN_PHP} emmake make -j8
 	@ ${DOCKER_RUN} cp -v third_party/php7.4-src/.libs/libphp7.la third_party/php7.4-src/.libs/libphp7.a lib/
 
-lib/pib_eval.o: source/pib_eval.c
+lib/pib_eval.o: lib/libphp7.a source/pib_eval.c
 	@ ${DOCKER_RUN_IN_PHP} emcc ${OPTIMIZE} \
 		-I .              \
 		-I Zend           \
@@ -139,9 +140,9 @@ FINAL_BUILD=${DOCKER_RUN_IN_PHP} emcc ${OPTIMIZE} \
 php-web.wasm: ENVIRONMENT=web
 php-web.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h
 	@ ${FINAL_BUILD}
-	@ ${DOCKER_RUN} -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
-	@ ${DOCKER_RUN} -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./docs-source/app/assets
-	@ ${DOCKER_RUN} -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./docs-source/public
+	@ ${DOCKER_RUN} cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./
+	@ ${DOCKER_RUN} cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./docs-source/app/assets
+	@ ${DOCKER_RUN} cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFUX}.* ./docs-source/public
 
 php-worker.wasm: ENVIRONMENT=worker
 php-worker.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h
@@ -169,6 +170,7 @@ php-webview.wasm: lib/libphp7.a lib/pib_eval.o source/pib_eval.c
 
 clean:
 	@ ${DOCKER_RUN} rm -fv  *.js *.wasm *.data
+	@ ${DOCKER_RUN} rm -fv  build/* lib/*
 	@ ${DOCKER_RUN} rm -rfv third_party/php7.4-src
 	@ ${DOCKER_RUN} rm -rfv third_party/libxml2
 	@ ${DOCKER_RUN} rm -rfv third_party/libicu-src

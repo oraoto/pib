@@ -18,9 +18,9 @@ module.exports = {
 			wrapper: content => `module.exports = ${JSON.stringify(content)}`
 		}
 	}
-	, modules: {
-		autoRequire: {
-			'DrupalWorker.js': ['DrupalWorker']
-		}
-	}
+	// , modules: {
+	// 	autoRequire: {
+	// 		'DrupalWorker.js': ['DrupalWorker']
+	// 	}
+	// }
 };
