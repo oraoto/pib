@@ -2,10 +2,6 @@ version: 2.1
 
 commands:
 
-  setup:
-    steps:
-      - run: sudo apt update
-
 workflows:
   version: 2
 
@@ -17,7 +13,7 @@ jobs:
   make:
     parallelism: 1
     machine:
-      image: ubuntu-1604:202004-01
+      image: ubuntu-1604:202007-0
     steps:
       - checkout
       - run: make -j8
