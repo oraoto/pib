@@ -39,7 +39,7 @@ third_party/php7.4-src/patched: third_party/sqlite3.33-src/sqlite3.c
 	@ git clone https://github.com/php/php-src.git third_party/php7.4-src \
 		--branch ${PHP_BRANCH}   \
 		--single-branch          \
-		--depth 1  || test -e third_party/php7.4-src/patched;;
+		--depth 1  || test -e third_party/php7.4-src/patched;
 	@ git apply --no-index patch/php7.4-sqlite.patch
 	@ touch third_party/php7.4-src/patched
 
