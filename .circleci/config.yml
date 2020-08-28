@@ -14,7 +14,7 @@ workflows:
       - make
 
 jobs:
-  build-test-push-test:
+  make:
     parallelism: 1
     machine:
       image: ubuntu-1604:202004-01
