@@ -370,7 +370,7 @@ self.addEventListener('fetch', function (event) {
     var pathname = url.pathname.replace(/^\//, '');
     var path = pathname.split('/');
 
-    if (path[1] === 'drupal-7.59' || path[2] === 'drupal-7.59') {
+    if (!path.match(/\.\w+$/) && (path[1] === 'drupal-7.59' || path[2] === 'drupal-7.59')) {
       var getClient = self.clients.matchAll({
         includeUncontrolled: true
       });
