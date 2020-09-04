@@ -11,7 +11,7 @@ const serviceWorker = navigator.serviceWorker;
 
 if(serviceWorker)
 {
-	serviceWorker.register(`/${location.pathname}DrupalWorker.js`).catch(error => {
+	serviceWorker.register(`${location.pathname}DrupalWorker.js`).catch(error => {
 		console.log('Error, ', error);
 	});
 }
