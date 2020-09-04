@@ -15,7 +15,7 @@ self.addEventListener('fetch', event => event.respondWith(new Promise(accept => 
 	const pathname = url.pathname.replace(/^\//, '');
 	const path     = pathname.split('/');
 
-	if(!path.match(/\.\w+$/)
+	if(!path[ path.length-1 ].match(/\.\w+$/)
 		&& (path[1] === 'drupal-7.59' || path[2] === 'drupal-7.59')
 	){
 		const getClient = self.clients.matchAll({
