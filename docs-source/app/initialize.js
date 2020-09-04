@@ -116,7 +116,7 @@ parse_str(substr($request->_GET, 1), $_GET);
 $_POST = $request->_POST;
 
 $origin  = 'http://localhost:3333';
-$docroot = '/${location.pathname}preload/drupal-7.59';
+$docroot = '/preload/drupal-7.59';
 $script  = 'index.php';
 
 $path    = $request->path;
