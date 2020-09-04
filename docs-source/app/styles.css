@@ -129,6 +129,11 @@ body > div {
 	flex-grow: 1;
 }
 
+.collapse {
+	flex-grow: 0;
+	flex-shrink: 1;
+}
+
 div.column {
 	position: relative;
 	flex: 1;

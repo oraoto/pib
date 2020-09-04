@@ -35,8 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	const exitLabel   = exitBox.querySelector('span');
 	const persistBox  = document.getElementById('persist');
 	const singleBox   = document.getElementById('singleExpression');
+	const autorun     = document.querySelector('#autorun');
 
-	const renderAs = Array.from(document.querySelectorAll('[name=render-as]'));
+	const renderAs    = Array.from(document.querySelectorAll('[name=render-as]'));
 
 	openFile.addEventListener('input', event =>{
 
@@ -52,8 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	const query = new URLSearchParams(location.search);
 
+	editor.setTheme('ace/theme/monokai');
 	editor.session.setMode("ace/mode/php");
-	editor.setTheme('ace/theme/monokai')
 
 	status.innerText = 'php-wasm loading...';
 
@@ -170,7 +171,7 @@ require $script;`;
 
 		});
 
-		run.addEventListener('click', () => {
+		const runCode = () => {
 
 			exitLabel.innerText = '_';
 
@@ -199,9 +200,10 @@ require $script;`;
 
 			if(code.length < 1024)
 			{
-				query.set('code', encodeURIComponent(code));
+				query.set('autorun', autorun.checked ? 1 : 0);
 				query.set('persist', persistBox.checked ? 1 : 0);
 				query.set('single-expression', singleBox.checked ? 1 : 0);
+				query.set('code', encodeURIComponent(code));
 				history.replaceState({}, document.title, "?" + query.toString());
 			}
 
@@ -236,7 +238,14 @@ require $script;`;
 					php.refresh();
 				}
 			});
-		});
+		};
+
+		run.addEventListener('click', runCode);
+
+		if(query.get('autorun'))
+		{
+			runCode();
+		}
 	});
 
 	const outputBuffer = [];
@@ -324,11 +333,15 @@ require $script;`;
 	{
 		editor.setValue(decodeURIComponent(query.get('code')));
 	}
+
 	if(query.has('render-as'))
 	{
 		document.querySelector(`[name=render-as][value=${query.get('render-as')}]`).checked = true;
 	}
 
+	console.log(autorun, query.get('autorun'));
+
+	autorun.checked    = Number(query.get('autorun'));
 	persistBox.checked = Number(query.get('persist'));
 	singleBox.checked  = Number(query.get('single-expression'));
 

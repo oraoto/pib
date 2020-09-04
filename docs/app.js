@@ -9868,6 +9868,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var exitLabel = exitBox.querySelector('span');
   var persistBox = document.getElementById('persist');
   var singleBox = document.getElementById('singleExpression');
+  var autorun = document.querySelector('#autorun');
   var renderAs = Array.from(document.querySelectorAll('[name=render-as]'));
   openFile.addEventListener('input', function (event) {
     var reader = new FileReader();
@@ -9879,8 +9880,8 @@ document.addEventListener('DOMContentLoaded', function () {
     reader.readAsText(event.target.files[0]);
   });
   var query = new URLSearchParams(location.search);
-  editor.session.setMode("ace/mode/php");
   editor.setTheme('ace/theme/monokai');
+  editor.session.setMode("ace/mode/php");
   status.innerText = 'php-wasm loading...';
   php.addEventListener('ready', function (event) {
     if (serviceWorker) {
@@ -9929,7 +9930,8 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('Done');
       });
     });
-    run.addEventListener('click', function () {
+
+    var runCode = function runCode() {
       exitLabel.innerText = '_';
       status.innerText = 'Executing...';
       stdoutFrame.srcdoc = ' ';
@@ -9951,9 +9953,10 @@ document.addEventListener('DOMContentLoaded', function () {
       var code = editor.session.getValue();
 
       if (code.length < 1024) {
-        query.set('code', encodeURIComponent(code));
+        query.set('autorun', autorun.checked ? 1 : 0);
         query.set('persist', persistBox.checked ? 1 : 0);
         query.set('single-expression', singleBox.checked ? 1 : 0);
+        query.set('code', encodeURIComponent(code));
         history.replaceState({}, document.title, "?" + query.toString());
       }
 
@@ -9981,7 +9984,13 @@ document.addEventListener('DOMContentLoaded', function () {
           php.refresh();
         }
       });
-    });
+    };
+
+    run.addEventListener('click', runCode);
+
+    if (query.get('autorun')) {
+      runCode();
+    }
   });
   var outputBuffer = [];
   php.addEventListener('output', function (event) {
@@ -10051,6 +10060,8 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelector("[name=render-as][value=".concat(query.get('render-as'), "]")).checked = true;
   }
 
+  console.log(autorun, query.get('autorun'));
+  autorun.checked = Number(query.get('autorun'));
   persistBox.checked = Number(query.get('persist'));
   singleBox.checked = Number(query.get('single-expression'));
 
