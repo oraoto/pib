@@ -119,10 +119,7 @@ $origin  = 'http://localhost:3333';
 $docroot = '/preload/drupal-7.59';
 $script  = 'index.php';
 
-$path = $request->path;
-$path = preg_replace('/^\/php-wasm/', '', $path);
-
-$_SERVER['REQUEST_URI']     = $path;
+$_SERVER['REQUEST_URI']     = $request->path;
 $_SERVER['REMOTE_ADDR']     = '127.0.0.1';
 $_SERVER['SERVER_NAME']     = $origin;
 $_SERVER['SERVER_PORT']     = 3333;
