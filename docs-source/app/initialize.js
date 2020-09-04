@@ -58,57 +58,57 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	status.innerText = 'php-wasm loading...';
 
-	php.addEventListener('ready', event => {
+	const navigate = ({path, method, _GET, _POST}) => {
 
-		if(serviceWorker)
+		// console.trace({path, method, _GET, _POST});
+
+		exitLabel.innerText = '_';
+
+		status.innerText = 'Executing...';
+
+		stdoutFrame.srcdoc = ' ';
+		stderrFrame.srcdoc = ' ';
+		stdretFrame.srcdoc = ' ';
+
+		while(stdout.firstChild)
 		{
-			serviceWorker.addEventListener('message', event => {
+			stdout.firstChild.remove();
+		}
 
-				console.log(event.data);
+		while(stderr.firstChild)
+		{
+			stderr.firstChild.remove();
+		}
 
-				exitLabel.innerText = '_';
+		while(stdret.firstChild)
+		{
+			stdret.firstChild.remove();
+		}
 
-				status.innerText = 'Executing...';
-
-				stdoutFrame.srcdoc = ' ';
-				stderrFrame.srcdoc = ' ';
-				stdretFrame.srcdoc = ' ';
-
-				while(stdout.firstChild)
-				{
-					stdout.firstChild.remove();
-				}
-
-				while(stderr.firstChild)
-				{
-					stderr.firstChild.remove();
-				}
-
-				while(stdret.firstChild)
-				{
-					stdret.firstChild.remove();
-				}
-
-				const code = `
+		const code = `
 <?php
 ini_set('session.save_path', '/home/web_user');
+session_id('fake-cookie');
 session_start();
-session_id('${session_id}');
 
 $stdErr = fopen('php://stderr', 'w');
 $errors = [];
 
-register_shutdown_function(function() use($stdErr, &$errors){
-    fwrite($stdErr, json_encode(['session_id' => session_id()]) . "\n" );
-    fwrite($stdErr, var_export($errors,1) . "\n");
+fwrite($stdErr, json_encode(['session' => $_SESSION]) . "\n");
+
+register_shutdown_function(function() use($stdErr){
+	fwrite($stdErr, json_encode(['session_id' => session_id()]) . "\n");
+	fwrite($stdErr, json_encode(['headers'=>headers_list()]) . "\n");
+	fwrite($stdErr, json_encode(['errors' => error_get_last()]) . "\n");
+	fwrite($stdErr, json_encode(['session' => $_SESSION]) . "\n");
 });
 
 set_error_handler(function(...$args) use($stdErr, &$errors){
-	$errors[] = $args;
+	fwrite($stdErr, json_encode($args, JSON_PRETTY_PRINT) . "\n" );
 });
 
 $request = (object) json_decode(
-	'${JSON.stringify(event.data)}'
+	'${ JSON.stringify({path, method, _GET, _POST}) }'
 	, JSON_OBJECT_AS_ARRAY
 );
 
@@ -127,33 +127,46 @@ $_SERVER['REQUEST_URI']     = $path;
 $_SERVER['REMOTE_ADDR']     = '127.0.0.1';
 $_SERVER['SERVER_NAME']     = $origin;
 $_SERVER['SERVER_PORT']     = 3333;
-$_SERVER['REQUEST_METHOD']  = 'GET';
+$_SERVER['REQUEST_METHOD']  = $request->method;
 $_SERVER['SCRIPT_FILENAME'] = $docroot . '/' . $script;
 $_SERVER['SCRIPT_NAME']     = $docroot . '/' . $script;
 $_SERVER['PHP_SELF']        = $docroot . '/' . $script;
 $_SERVER['DOCUMENT_ROOT']   = '/';
-
-$databases['default']['default'] = array(
-	'database' => '/drupal-7.db'
-	, 'driver' => 'sqlite'
-);
+$_SERVER['HTTPS']           = '';
 
 chdir($docroot);
 
-require $script;`;
+define('DRUPAL_ROOT', getcwd());
 
-				php.run(code).then(exitCode => {
-					exitLabel.innerText = exitCode;
-					status.innerText = 'php-wasm ready!';
-				}).finally(
-					() => {
-						if(!persistBox.checked)
-						{
-							php.refresh();
-						}
-					}
-				);
-			});
+require_once DRUPAL_ROOT . '/includes/bootstrap.inc';
+drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+
+$uid     = 1;
+$user    = user_load($uid);
+$account = array('uid' => $user->uid);
+user_login_submit(array(), $account);
+
+menu_execute_active_handler();
+`;
+
+		php.run(code).then(exitCode => {
+			exitLabel.innerText = exitCode;
+			status.innerText = 'php-wasm ready!';
+		}).finally(
+			() => {
+				if(!persistBox.checked)
+				{
+					php.refresh();
+				}
+			}
+		);
+	};
+
+	php.addEventListener('ready', event => {
+
+		if(serviceWorker)
+		{
+			serviceWorker.addEventListener('message', event => navigate(event.data));
 		}
 
 		status.innerText = 'php-wasm ready!';
@@ -198,7 +211,7 @@ require $script;`;
 
 			let code = editor.session.getValue();
 
-			if(code.length < 1024)
+			if(code.length < 1024 * 2)
 			{
 				query.set('autorun', autorun.checked ? 1 : 0);
 				query.set('persist', persistBox.checked ? 1 : 0);
@@ -256,60 +269,89 @@ require $script;`;
 
 		outputBuffer.push(content);
 
-		requestIdleCallback(()=>{
+		setTimeout(()=>{
+			const chunk = outputBuffer.join('');
 
-			if(!outputBuffer)
+			if(!outputBuffer || !chunk)
 			{
 				return;
 			}
 
-			const chunk = outputBuffer.join('');
+			const node = document.createTextNode(chunk);
 
-			document.createTextNode(chunk);
-
-			stdout.append(chunk);
+			stdout.append(node);
 			stdoutFrame.srcdoc += chunk;
 
 			while(outputBuffer.pop()){};
-
-		});
+		}, 500);
 
 	});
 
 	const errorBuffer = [];
 
 	php.addEventListener('error', (event) => {
-		const content = event.detail.join("\n");
-
+		const content = event.detail.join(" ");
 		try{
-			const cookies = JSON.parse(content);
+			const headers = JSON.parse(content);
 
-			if(cookies.session_id)
+			if(headers.session_id)
 			{
-				session_id = cookies.session_id;
+				session_id = headers.session_id;
 			}
 
-		}catch{}
+			console.log(session_id);
 
-		errorBuffer.push(content);
-
-		requestIdleCallback(()=>{
-
-			if(!errorBuffer)
+			if(headers.headers)
 			{
-				return;
+				for(const header of headers.headers)
+				{
+					const splitAt = header.indexOf(':')
+					const [name, value] = [
+						header.substring(0,splitAt)
+						, header.substring(splitAt + 2)
+					];
+
+					if(name === 'Location')
+					{
+						console.log(value);
+
+						const redirectUrl = new URL(value);
+
+						setTimeout(()=>navigate({
+							method: 'GET'
+							, path: redirectUrl.pathname
+							, _GET:''
+							, _POST:{}
+						}), 2000);
+					}
+				}
 			}
+		}
+		catch(error)
+		{
+		}
 
-			const chunk = errorBuffer.join('');
+		for(const line of content)
+		{
+			errorBuffer.push(line);
 
-			document.createTextNode(chunk);
+			setTimeout(()=>{
+				const chunk = errorBuffer.join('');
 
-			stderr.append(chunk);
-			stderrFrame.srcdoc += chunk;
+				if(!errorBuffer || !chunk)
+				{
+					return;
+				}
 
-			while(errorBuffer.pop()){};
+				const node = document.createTextNode(chunk);
 
-		});
+				stderr.append(node);
+				stderrFrame.srcdoc += chunk;
+
+				while(errorBuffer.pop()){};
+			}, 500);
+		}
+
 	});
 
 	ret.style.display = 'none';
@@ -338,8 +380,6 @@ require $script;`;
 	{
 		document.querySelector(`[name=render-as][value=${query.get('render-as')}]`).checked = true;
 	}
-
-	console.log(autorun, query.get('autorun'));
 
 	autorun.checked    = Number(query.get('autorun'));
 	persistBox.checked = Number(query.get('persist'));

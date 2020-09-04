@@ -37,9 +37,6 @@ self.addEventListener('fetch', event => event.respondWith(new Promise(accept => 
 		return Promise.all([getClient,getPost]).then(([clients, post]) => {
 
 			clients.forEach(client => {
-
-				console.log(client);
-
 				client.postMessage({
 					method:  event.request.method
 					, path:  '/' + pathname

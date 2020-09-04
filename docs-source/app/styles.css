@@ -274,6 +274,10 @@ label {
 	white-space: nowrap;
 }
 
+.header.row {
+	align-items: flex-start;
+}
+
 iframe {
 	border: none;
 }

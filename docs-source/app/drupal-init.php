@@ -6,6 +6,7 @@ $stdErr = fopen('php://stderr', 'w');
 $errors = [];
 
 register_shutdown_function(function() use($stdErr, &$errors){
+	fwrite($stdErr, json_encode(headers_list()) . "\n");
     fwrite($stdErr, json_encode(['session_id' => session_id()]) . "\n");
     fwrite($stdErr, print_r($errors,1));
     fwrite($stdErr, print_r(error_get_last(),1));

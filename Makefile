@@ -3,7 +3,7 @@
 UID?=1000 # Change this in your .env file if you're not UID 1001
 
 ENVIRONMENT    ?=web
-INITIAL_MEMORY ?=2097088KB
+INITIAL_MEMORY ?=1gb
 PRELOAD_ASSETS ?=preload/
 ASSERTIONS     ?=0
 OPTIMIZE       ?=-O1
