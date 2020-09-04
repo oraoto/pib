@@ -9845,7 +9845,7 @@ var session_id = '';
 var serviceWorker = navigator.serviceWorker;
 
 if (serviceWorker) {
-  serviceWorker.register("/".concat(location.pathname, "DrupalWorker.js"))["catch"](function (error) {
+  serviceWorker.register("".concat(location.pathname, "DrupalWorker.js"))["catch"](function (error) {
     console.log('Error, ', error);
   });
 }
