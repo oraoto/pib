@@ -16,7 +16,7 @@ set_error_handler(function(...$args) use($stdErr, &$errors){
 });
 
 $origin  = 'http://localhost:3333';
-$docroot = '/preload/drupal-7.59';
+$docroot = '/php-wasm/preload/drupal-7.59';
 $path    = '/';
 $script  = 'index.php';
 
