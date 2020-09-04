@@ -417,6 +417,7 @@ self.addEventListener('message', function (event) {});
 self.addEventListener('push', function (event) {
   console.log(event);
 });
+
 });
 
 require.alias("process/browser.js", "process");process = require('process');require.register("___globals___", function(exports, require, module) {
@@ -424,4 +425,3 @@ require.alias("process/browser.js", "process");process = require('process');requ
 });})();require('___globals___');
 
 require('DrupalWorker');
-//# sourceMappingURL=DrupalWorker.js.map
