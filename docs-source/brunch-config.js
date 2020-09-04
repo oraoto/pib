@@ -1,10 +1,11 @@
 module.exports = {
 	files: {
 		stylesheets: {joinTo: 'app.css'}
+		, templates: {joinTo: 'include.js'}
 		, javascripts: {
 			entryPoints: {
 				'app/DrupalWorker.js': 'DrupalWorker.js'
-				, 'app/initialize.js':'app.js'
+				, 'app/initialize.js': 'app.js'
 			}
 		}
 	}
@@ -14,7 +15,7 @@ module.exports = {
 			, plugins: ['@babel/plugin-proposal-class-properties']
 		}
 		, raw: {
-			pattern: /\.tmp\.(.+)$/,
+			pattern: /\.(php)$/,
 			wrapper: content => `module.exports = ${JSON.stringify(content)}`
 		}
 	}
@@ -22,5 +23,9 @@ module.exports = {
 		autoRequire: {
 			'DrupalWorker.js': ['DrupalWorker']
 		}
+	}
+	, watcher: {
+		awaitWriteFinish: true,
+		usePolling: true
 	}
 };

@@ -1,23 +1,107 @@
 <!DOCTYPE html>
 <head>
 
-<script type="text/javascript">
-	// Allow the page to be served from any direcotry...
-	const path  = location.pathname.replace(/index.html$/, '');
-	if(!path.match(/\/$/))
-	{
-		window.location = path + '/' + (location.search||'');
-
-		console.log(window.location);
-	}
-</script>
+<script type="text/javascript">{
+// Allow the page to be served from any directory...
+const path  = location.pathname.replace(/index.html$/, '');
+path.match(/\/$/) || window.location.replace(
+	path+'/'+(location.search||'')
+);
+}</script>
 <style type = "text/css">@import url(app.css)</style>
 <script src = "app.js"></script>
 <script src = "//ajaxorg.github.io/ace-builds/src-min/ace.js"></script>
 <script>require('initialize');</script>
-<title>php-wasm</title>
 </head>
+<script type = "text/php">
+<?php
+$window   = new \Vrzno;
+$document = $window->document;
 
+$h1 = $document->querySelector('h1');
+
+$h1->addEventListener('click', function(){
+	vrzno_run('alert', ['lmao!']);
+
+	$h1->style;
+});
+
+// $console  = $window->console;
+// $openFile = $document->getElementById('.openFile');
+// $input    = $document->querySelector('.input  textarea');
+
+// openFile.addEventListener('input', event =>{
+
+// 	const reader = new FileReader();
+
+// 	reader.onload = (event) => {
+// 		editor.setValue(event.target.result);
+// 	};
+
+// 	reader.readAsText(event.target.files[0]);
+
+// });
+
+
+// $input = $document->querySelector('.input  textarea');
+
+// $console->log('$console->log in PHP!');
+
+?></script>
+
+<!--
+sssooo+++++++///////++++//:----:::::///////:::::::///+ossssssyyyhdddddmmmmNNmo`````````````````````-
+soooo+//////::::::::////:-....-----::::::----------:/+ossyyyyhdhddmmmmNNMNNNN:                     .
+soo++//:::---------:://::-----..------.-.........--:/+ossyyhddmmddmmNNNNMMNNm.                     .
+ssoo+//:-----.....-:::::..................```.`..-::/+osyhdhdddmmmmmNMNMMNNNm`                     .
+ssoo++:::----.....--:/:--.....--...--...`........--:/+osyhdddddmmmddNNNMNNNNd`                     .
+sysso+///::--.....-::/:--....-------.-..........---:/+osyhhddmmNmmmmNNNNNNNNs                      .
+syyssoo++++/+/::--:://:-...---::::::----------:::::///+syhmmNNNNmNNNNNMNNNNNs                      .
+syssssoooooooo+/////++/:-.-:://///////::::--:::::///+osydddddmNNNNNNNNMNNNNN-                      .
+yyssssssssooo+++++++o+/:--:/+//++///////::----:///++osyyysoshdNNNNNNNNNNNNNs`                      .
+yhyyssssossoo+++ooo+++/:-::////+++++////:::-::://+oooo++/:/+ohmNNNNNNNNNNNh`                       .
+yhyyssoooooo++/++////+:--::://+++++/::------::://++/////+///+sdNNNNNNNNmNd.                        .
+ssysssooooo+////::::::-----:///:::---.....----::::::/++////++shdmmNNNNNNm.`                        .
+sooo+//+++////::::-.......--:--....````......--:/+ooo+:--::/oshmNNNNNNNNo`                         .
+sssso++/:/:::::::--.`````.....````````..`.--:////:::--..--:+syhmNNNNNNms`                          .
+///+++++////:/::::-``````````````..---:-::::://:::-:///++++oshmNNNNmNho.                           .
++yhh/:+/-:/++/+///:-........```.-://+++/::+yhoosh+-ohhdmmmmmmmmmmNNNy-`-                           .
+syhds/+/+ohmmdhyso/:-.----..``.-:+syhdmy/::oh++oyosyydmNNmmmmmmmmmNN/` `.                          .
+hhhhyhhmmNNNNNNNNmhs+///:-..``-/ydNNNNNNmdyso++/+osyhhhhhhhhdmmmmmNd`                              .
+yyysyyhhdmNNNNMMNNNmhsso+/::-.+hmNNmmmddhyso+/+//+oosssooosssymmmNN+`                              .
+ooooossyhdddmNNNNNNmdyyso+++//yyhdmddhhyyso+//+oooooooosssyyhdhmNNm:.`                             .
+ssssssyhhhhdmNmmNNmdhyyssssooshyyyhdddhyso+++++++++oo++oossyhmddNNy`                               .
+ssyyyysssshdddmNNmmdhyyssssoosyyso+ooosyssoo+++/////+++ossyydmmmNN:                                .
+sssossyyhhyysmNmdddhhyyssssoooshyo//++/+++++++++++ooooosssyhdmNNNd`                                .
+ssssssyyyssyymmdhhhyyyssssoo+oosyyyyso++++++++oosssssssssyhddmNNNo                                 .
+syysssyyyyyyhddhyyyyssssoo++///++syyssoo+/+++++ossssssssyyhdmNNNN:                                 .
+sssoooooossyhdddhhhhyssooo+/////++++//:::--:--:///+oosssyhdmNNNNm.                                 .
++++/++++osssyyhmddddhyssso+++++++/::::------......--:/+syhdmNNNNd:.```      ````                   .
+++ooooo+ohmNmmddmmddhhyyssooooso++oso+-....----..```.-:+yhdmNNNMNNmdhyyyyssshddhso/--..`           .
+oooooo+ooodmmmmddmmdhhysssssssssoyso+:---....-:/:-.``.-/shdmNNNMMMMMMNNNNNNNNMMNMNNNNmdhys+/:-.``  .
+syysssssosyhhdddddddhyysssossssssso//::://////++++/:---:shdmNNNMMMNNNNNMMMNNMNMMMNMMMMMNNNNNNmdhysoo
+ssssssysssssshdddddhyyssoooooooooo/:///+ooooooooo+///o/+ydmmNNNMMMNMNNMMMMMMMMMMMMMMMMMNNMNNNNNNNNNd
+hys++oyyyssoooyhhhhyyso++/+oooo++///+++ooooo++ss////+soshmNNNMMMMMMMNNMMMMMMMMMMMMMMMMMNMMNNNNNNNNNm
+ydmdyooosssooooosyysso+/::::+++//++++oo++//+sys++++oosyhmNNNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNNNNNMNNNm
+yhdmmmdhyoo+++oo++++/:.....-://++o++++/+oyhdyoosssssyhhmNNMMMMMMMNNMMMMMMMMNMMMMMMMMMMMMMMMNMMMMMMMm
+hhyhmNNNNdyysso++///:-.`````--:///++osydmmdyossssssyddmNMMMMMMMMMMNMMMMMMNNMMMMNMMMMMMMMMMMMMMMMMNMm
+hhysydNNNN+.-ossysso+//:/::://+ooo/:mNmmmhsssyssyyhdmmNNMMMMMMMMMMNMMMMMMNNNMMNNMMMMMMNMMNNNNNNNMNMm
+hhyyyydmmmh-./``.///++oo+//::-.`-::smmmhsssyyyyyhhdNNNMMNNMMMMMMNMMMMMMNNNNMMMNNMMMMNNNMNNNNNNNNMMMm
+hdhyyyyhmmhyyy:.`-`   `.   `-.`.shhdddyosyyyhyyhdmmNNNMNNNMMMMMNNMMNMMMMNNMNMMMMMMNNNMMMNNNmNNNNNNNm
+dmdhyyssyhdhyyyysyo+//o+/:/oyysshdmdys+syyyyyhhdmmNmNMNNNNMMMMMNMNMMMMMNNNMMMMMMMMMMMMMNNNNNNNNNNMMm
+mmmdhyysssyhhyyyssssssyyyyyhyyyyhhyo+oosysyshddmmmmmNMNNNNMMMNNNMMMMMMNNNNMMMMMNMNMMNMNNmmmNNNNNNNNm
+mNNmdhhyyyyyssyyssssossysssysyyso+++osysssshhmNmmmmNNNNNNMMMNNMMMMMMMMNMMMMMMMNNNNMMNNNNmmmNNNNNNNMm
+mNNmmdhdhhyyysossssysyyyyysooo+++osssssyyyhdNNddmdmNMMNNMMMNNNMMMNMMMMNMMNNMNNNNNNNNMNNmmmNNNNNNNNMm
+dmNmmddhhhhhyyssssosooooooooooosoossyyyyyhdmmdddmmmNMNNNMMNNNNNMMMMMMMNMMMNNNNNNNNNNNNmmmmNNNNNNNMNm
+hddmmmddhdhhhyyssssssssysssoooosyyyyyyhhhdddhmmdmmNMMNMNNNNmNNNMMMMNNNNMNMNNNNNNMNMNNmmmmmmNNNNNMMMm
+ddhhddmdddhyyyyyyyssysssssssssyyyyyyhhddddhdmmNNNNNNNMMMNNmmNNNMNMMNNNNNNNNNNNNNNNNNmmdmmmmNNNNNNMMm
+hdhhyydmmdhhyhyyyyyssyysssssyysyyyhhhdmdhydNNNNNNMMNNMNNNmmmNNNMNNNNmmNNNNNNNNNNNNNNmmddmmNNmNNNMMNm
+yhyysosshhddhdhyyyssssyyyyyyyysyyyhdmdyyhdNNNNNMMNNNNMMNmmmmmNNMNNNmmmNNNNNNNNNNNNNmmddmmmNNmNNMMNNd
+yssooooo+oydddyhyhhyyyyysyhyhhyhhyyhssshdNNNMMMMNNNNMNNNmdhmmNNMNmmddmmNNNNNNNNMNNNmdhddmmNmNNNMNNNh
+sso+++++++++oyhdddddyhhhyyhhdddhho++oyhdmNNNMMMNNNNNNNNmdhhmNNNNNmhddmmNNNmNNNNNNNmddddmmmmNNNNNNNmh
+sso++++++///++//oyyyyhhhyyyyssoo+++syhhhdmNNNNmmmmmmmmdhhyhmNNNmddhhddmmmmmmmmNmNmmdhhhdddmmmmNNmmdy
+-->
+<title>php-wasm</title>
 <body>
 	<div class = "row header toolbar">
 		<div class = "cols">
@@ -53,8 +137,8 @@
 					<input type = "checkbox" id = "singleExpression" />
 				</label>
 			</div>
-		<button data-run disabled>RUN</button>
-		<!-- <button data-tokenize>tokenize</button> -->
+		<button data-run disabled>run</button>
+		<!-- <button data-tokenize>parse</button> -->
 	</div>
 
 	<div class = "row body">
@@ -64,8 +148,8 @@
 					<label tabindex="-1">
 						<img src = "php.png"> <span>PHP Code</span>
 					</label>
-					<label id = "openFile" accept=".php" class = "collapse"tabindex="-1">
-						open file<input type = "file">
+					<label id = "openFile" class = "collapse"tabindex="-1">
+						open file<input type = "file" accept=".php" >
 					</label>
 
 				</div>
@@ -75,7 +159,9 @@
 
 		<div class = "panel">
 			<div id = "ret">
-				<label tabindex="-1">return</label>
+				<div class = "cols">
+					<label tabindex="-1">return</label>
+				</div>
 				<div class = "stdret output liquid">
 					<div class = "column">
 						<iframe class = "scroller" srcdoc=""></iframe>
@@ -96,7 +182,9 @@
 				</div>
 			</div>
 			<div>
-				<label tabindex="-1">stderr</label>
+				<div class = "cols">
+					<label tabindex="-1">stderr</label>
+				</div>
 				<div class = "stderr output liquid">
 					<div class = "column">
 						<iframe class = "scroller" srcdoc=""></iframe>
@@ -117,3 +205,4 @@
 		</div>
 	</div>
 </body>
+

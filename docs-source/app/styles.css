@@ -56,7 +56,6 @@ body {
 }
 
 .row.toolbar button {
-	user-select: none;
 	padding: 0.75em;
 	font-weight: bold;
 	border: 2px solid;
@@ -79,7 +78,8 @@ button[data-run]:not([disabled])::after {
 	mix-blend-mode: darken;
     opacity: 0.5;
 }
-button[data-run] {
+
+.header button {
 	position: relative;
 	font-weight: bold;
 	font-size: 13pt;
@@ -153,8 +153,10 @@ div.panel {
 	background-color: #aaa;
 	flex-direction: column;
 	box-sizing: border-box;
-	padding: 0.5em;
+	margin: 0.5em;
 	flex: 1;
+	border-right: 1px solid rgba(0,0,0,0.5);
+	border-bottom: 1px solid rgba(0,0,0,0.5);
 }
 
 div.panel div.input {
@@ -162,7 +164,6 @@ div.panel div.input {
 }
 
 div.panel > div {
-	user-select: none;
 	background-color: white;
 	border: 2px solid;
 	border-image: url(border-inset.png) 2 2 2 2;
@@ -179,10 +180,15 @@ div.panel > div {
 
 button,
 .panel label {
+	user-select: none;
 	border: 2px solid;
 	border-image: url(border.png) 2 2 2 2 !important;
 	background-color: #c3c3c3;
 	padding: 0.25em;
+}
+
+.input, .output .scroller, iframe {
+	user-select: normal;
 }
 
 .panel .cols {
@@ -192,8 +198,13 @@ button,
 .panel label[tabindex]:first-child {
 	margin-left: -1px;
 }
-.panel label[tabindex]:last-child {
-	margin-right: -1px;
+
+.panel .cols > label[tabindex]:last-child {
+	margin-right: -3px;
+}
+
+.ace_editor {
+	margin-right: -2px;
 }
 
 label[tabindex]:active,

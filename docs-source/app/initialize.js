@@ -1,23 +1,20 @@
 "use strict";
 
+import { PhpWeb as PHP } from 'php-wasm/PhpWeb';
+
+window.PHP = PHP;
+const php  = new PHP;
+
+let session_id = '';
+
 const serviceWorker = navigator.serviceWorker;
 
-// if(serviceWorker)
-// {
-// 	serviceWorker.register('/DrupalWorker.js').then(registration => {
-
-// 		console.log('Success!');
-
-// 	}).catch(error => {
-// 		console.log('Error, ', error);
-// 	});
-
-// 	serviceWorker.addEventListener('message', event => {
-// 		console.log(event);
-// 	});
-// }
-
-import { PhpWeb as PHP } from 'php-wasm/PhpWeb';
+if(serviceWorker)
+{
+	serviceWorker.register('/DrupalWorker.js').catch(error => {
+		console.log('Error, ', error);
+	});
+}
 
 document.addEventListener('DOMContentLoaded', () => {
 	const input  = document.querySelector('.input  textarea');
@@ -33,15 +30,11 @@ document.addEventListener('DOMContentLoaded', () => {
 	const stdoutFrame = document.querySelector('.stdout > * > iframe');
 	const stderrFrame = document.querySelector('.stderr > * > iframe');
 	const stdretFrame = document.querySelector('.stdret > * > iframe');
-
-	const openFile = document.getElementById('openFile');
-
-	console.log(stdoutFrame, stderrFrame, stdretFrame);
-
-	const exitBox    = document.querySelector('#exit')
-	const exitLabel  = exitBox.querySelector('span');
-	const persistBox = document.getElementById('persist');
-	const singleBox  = document.getElementById('singleExpression');
+	const openFile    = document.getElementById('openFile');
+	const exitBox     = document.querySelector('#exit')
+	const exitLabel   = exitBox.querySelector('span');
+	const persistBox  = document.getElementById('persist');
+	const singleBox   = document.getElementById('singleExpression');
 
 	const renderAs = Array.from(document.querySelectorAll('[name=render-as]'));
 
@@ -63,24 +56,114 @@ document.addEventListener('DOMContentLoaded', () => {
 	editor.setTheme('ace/theme/monokai')
 
 	status.innerText = 'php-wasm loading...';
-	const php = new PHP;
 
+	php.addEventListener('ready', event => {
 
-	php.addEventListener('ready', (event) => {
+		if(serviceWorker)
+		{
+			serviceWorker.addEventListener('message', event => {
+
+				console.log(event.data);
+
+				exitLabel.innerText = '_';
+
+				status.innerText = 'Executing...';
+
+				stdoutFrame.srcdoc = ' ';
+				stderrFrame.srcdoc = ' ';
+				stdretFrame.srcdoc = ' ';
+
+				while(stdout.firstChild)
+				{
+					stdout.firstChild.remove();
+				}
+
+				while(stderr.firstChild)
+				{
+					stderr.firstChild.remove();
+				}
+
+				while(stdret.firstChild)
+				{
+					stdret.firstChild.remove();
+				}
+
+				const code = `
+<?php
+ini_set('session.save_path', '/home/web_user');
+session_start();
+session_id('${session_id}');
+
+$stdErr = fopen('php://stderr', 'w');
+$errors = [];
+
+register_shutdown_function(function() use($stdErr, &$errors){
+    fwrite($stdErr, json_encode(['session_id' => session_id()]) . "\n" );
+    fwrite($stdErr, var_export($errors,1) . "\n");
+});
+
+set_error_handler(function(...$args) use($stdErr, &$errors){
+	$errors[] = $args;
+});
+
+$request = (object) json_decode(
+	'${JSON.stringify(event.data)}'
+	, JSON_OBJECT_AS_ARRAY
+);
+
+parse_str(substr($request->_GET, 1), $_GET);
+
+$_POST = $request->_POST;
+
+$origin  = 'http://localhost:3333';
+$docroot = '/preload/drupal-7.59';
+$script  = 'index.php';
+
+$path    = $request->path;
+
+$_SERVER['REQUEST_URI']     = $path;
+$_SERVER['REMOTE_ADDR']     = '127.0.0.1';
+$_SERVER['SERVER_NAME']     = $origin;
+$_SERVER['SERVER_PORT']     = 3333;
+$_SERVER['REQUEST_METHOD']  = 'GET';
+$_SERVER['SCRIPT_FILENAME'] = $docroot . '/' . $script;
+$_SERVER['SCRIPT_NAME']     = $docroot . '/' . $script;
+$_SERVER['PHP_SELF']        = $docroot . '/' . $script;
+$_SERVER['DOCUMENT_ROOT']   = '/';
+
+$databases['default']['default'] = array(
+	'database' => '/drupal-7.db'
+	, 'driver' => 'sqlite'
+);
+
+chdir($docroot);
+
+require $script;`;
+
+				php.run(code).then(exitCode => {
+					exitLabel.innerText = exitCode;
+					status.innerText = 'php-wasm ready!';
+				}).finally(
+					() => {
+						if(!persistBox.checked)
+						{
+							php.refresh();
+						}
+					}
+				);
+			});
+		}
+
 		status.innerText = 'php-wasm ready!';
 
 		run.removeAttribute('disabled');
 
 		token && token.addEventListener('click', () => {
 
-			const body = new FormData();
+			const url     = '/drupal-7.59/install.php';
+			const options = {method: 'GET'};
 
-			body.append('foo', 'bar');
-
-			const options = {method: 'POST', body};
-
-			fetch('/drupal/home?something=1', options).then(r=> r.text()).then(r => {
-				// console.log(r);
+			fetch(url, options).then(r=> r.text()).then(r => {
 				console.log('Done');
 			});
 
@@ -131,11 +214,6 @@ document.addEventListener('DOMContentLoaded', () => {
 				code = code.replace(/\?>\s*/, '');
 			}
 
-			if(!persistBox.checked)
-			{
-				php.refresh();
-			}
-
 			php[func](code).then(ret=>{
 
 				status.innerText = 'php-wasm ready!';
@@ -151,6 +229,11 @@ document.addEventListener('DOMContentLoaded', () => {
 				{
 					setTimeout(() => exitLabel.innerText = ret, 100);
 				}
+			}).finally(() => {
+				if(!persistBox.checked)
+				{
+					php.refresh();
+				}
 			});
 		});
 	});
@@ -163,7 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		outputBuffer.push(content);
 
-		requestAnimationFrame(()=>{
+		requestIdleCallback(()=>{
 
 			if(!outputBuffer)
 			{
@@ -187,8 +270,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	php.addEventListener('error', (event) => {
 		const content = event.detail.join("\n");
-		stderr.innerText += content;
-		stderrFrame.srcdoc += content;
+
+		try{
+			const cookies = JSON.parse(content);
+
+			if(cookies.session_id)
+			{
+				session_id = cookies.session_id;
+			}
+
+		}catch{}
+
+		errorBuffer.push(content);
+
+		requestIdleCallback(()=>{
+
+			if(!errorBuffer)
+			{
+				return;
+			}
+
+			const chunk = errorBuffer.join('');
+
+			document.createTextNode(chunk);
+
+			stderr.append(chunk);
+			stderrFrame.srcdoc += chunk;
+
+			while(errorBuffer.pop()){};
+
+		});
 	});
 
 	ret.style.display = 'none';

@@ -41,5 +41,6 @@
 		"php-webview.data",
 		"UniqueIndex.js",
 		"ZVal.js"
-	]
+	],
+	"dependencies": {}
 }

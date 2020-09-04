@@ -2,10 +2,12 @@
 #include <emscripten.h>
 #include <stdlib.h>
 
+#include "zend_globals_macros.h"
+#include "zend_exceptions.h"
 #include "zend_closures.h"
+
 #include "../php7.4-src/ext/vrzno/php_vrzno.h"
 
-// #define SQLITE_API EMSCRIPTEN_KEEPALIVE
 #include "sqlite3.h"
 #include "sqlite3.c"
 
@@ -59,6 +61,12 @@ int EMSCRIPTEN_KEEPALIVE pib_run(char *code)
 	zend_try
 	{
 		retVal = zend_eval_string(code, NULL, "php-wasm run script");
+
+		if(EG(exception))
+		{
+			zend_exception_error(EG(exception), E_ERROR);
+			retVal = 2;
+		}
 	}
 	zend_catch
 	{

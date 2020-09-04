@@ -53,7 +53,7 @@ export class PhpBase extends EventTarget
 
 			return php;
 
-		}).catch(error => console.log(error));
+		}).catch(error => console.error(error));
 	}
 
 	run(phpCode)
@@ -85,7 +85,7 @@ export class PhpBase extends EventTarget
 			, []
 		));
 
-		call.catch(error => console.log(error));
+		call.catch(error => console.error(error));
 
 		return call;
 	}
