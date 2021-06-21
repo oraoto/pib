@@ -24,6 +24,13 @@
 	],
 	"files": [
 		"Php.js",
+		"PhpBase.js",
+		"PhpNode.js",
+		"PhpShell.js",
+		"PhpWeb.js",
+		"PhpWebView.js",
+		"PhpWorker.js",
+		"UniqueIndex.js",
 		"php-web.js",
 		"php-web.wasm",
 		"php-web.data",
