@@ -1,6 +1,6 @@
 -include .env
 
-UID?=1000 # Change this in your .env file if you're not UID 1001
+UID?=1000 # Change this in your .env file if you're not UID 1000
 
 ENVIRONMENT    ?=web
 INITIAL_MEMORY ?=1gb
@@ -9,7 +9,7 @@ ASSERTIONS     ?=0
 OPTIMIZE       ?=-O1
 RELEASE_SUFFIX ?=
 
-PHP_BRANCH     ?=PHP-7.4
+PHP_BRANCH     ?=php-7.4.20
 VRZNO_BRANCH   ?=DomAccess
 ICU_TAG        ?=release-67-1
 LIBXML2_TAG    ?=v2.9.10
@@ -17,7 +17,7 @@ TIDYHTML_TAG   ?=5.6.0
 
 PKG_CONFIG_PATH ?=/src/lib/lib/pkgconfig
 
-DOCKER_ENV=UID=${UID}docker-compose -p phpwasm run --rm \
+DOCKER_ENV=UID=${UID} docker-compose -p phpwasm run --rm \
 	-e PKG_CONFIG_PATH=${PKG_CONFIG_PATH} \
 	-e PRELOAD_ASSETS='${PRELOAD_ASSETS}' \
 	-e INITIAL_MEMORY=${INITIAL_MEMORY}   \
@@ -33,8 +33,8 @@ TIMER=(which pv > /dev/null && pv --name '${@}' || cat)
 
 .PHONY: web all clean image js hooks push-image pull-image
 
-web: lib/pib_eval.o php-web.wasm
 all: php-web.wasm php-webview.wasm php-node.wasm php-shell.wasm php-worker.wasm js
+web: lib/pib_eval.o php-web.wasm
 	@ echo "Done!"
 
 ########### Collect & patch the source code. ###########
@@ -99,7 +99,7 @@ third_party/libxml2:
 ########### Build the objects. ###########
 
 third_party/php7.4-src/configure: third_party/php7.4-src/ext/vrzno/vrzno.c source/sqlite3.c
-# 	${DOCKER_RUN_IN_PHP} ./buildconf --force
+	${DOCKER_RUN_IN_PHP} ./buildconf --force
 	${DOCKER_RUN_IN_PHP} bash -c "emconfigure ./configure \
 		PKG_CONFIG_PATH=${PKG_CONFIG_PATH} \
 		--enable-embed=static \
@@ -153,6 +153,7 @@ lib/something:
 
 FINAL_BUILD=${DOCKER_RUN_IN_PHP} emcc ${OPTIMIZE} \
 	-o ../../build/php-${ENVIRONMENT}${RELEASE_SUFFIX}.js \
+	--preload-file ../drupal-7.59@/preload/drupal-7.59 \
 	--llvm-lto 2                     \
 	--preload-file ${PRELOAD_ASSETS} \
 	-s EXPORTED_FUNCTIONS='["_pib_init", "_pib_destroy", "_pib_run", "_pib_exec" "_pib_refresh", "_main", "_php_embed_init", "_php_embed_shutdown", "_php_embed_shutdown", "_zend_eval_string", "_exec_callback", "_del_callback"]' \

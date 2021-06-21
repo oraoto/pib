@@ -4,8 +4,8 @@ const PhpBinary = require('./php-worker');
 
 export class PhpWorker extends PhpBase
 {
-	constructor()
+	constructor(args = {})
 	{
-		super(PhpBinary);
+		super(PhpBinary, args);
 	}
 }

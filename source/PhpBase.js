@@ -5,7 +5,7 @@ const NUM = 'number';
 
 export class PhpBase extends EventTarget
 {
-	constructor(PhpBinary)
+	constructor(PhpBinary, args = {})
 	{
 		super();
 
@@ -20,7 +20,7 @@ export class PhpBase extends EventTarget
 		const callbacks = new UniqueIndex;
 		const targets   = new UniqueIndex;
 
-		this.binary = new PhpBinary({
+		const defaults  = {
 
 			callbacks, targets,
 
@@ -42,7 +42,11 @@ export class PhpBase extends EventTarget
 				this.dispatchEvent(event);
 			}
 
-		}).then(php=>{
+		};
+
+		const phpSettings = (window && window.phpSettings) ? window.phpSettings : {};
+
+		this.binary = new PhpBinary(Object.assign({}, defaults, phpSettings, args)).then(php=>{
 
 			const retVal = php.ccall(
 				'pib_init'

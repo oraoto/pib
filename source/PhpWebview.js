@@ -4,8 +4,8 @@ const PhpBinary = require('./php-webview');
 
 export class PhpWebview extends PhpBase
 {
-	constructor()
+	constructor(args = {})
 	{
-		super(PhpBinary);
+		super(PhpBinary, args);
 	}
 }
