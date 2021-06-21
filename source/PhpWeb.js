@@ -4,9 +4,9 @@ const PhpBinary = require('./php-web');
 
 export class PhpWeb extends PhpBase
 {
-	constructor()
+	constructor(args = {})
 	{
-		super(PhpBinary);
+		super(PhpBinary, args);
 	}
 }
 

@@ -4,8 +4,8 @@ const PhpBinary = require('./php-node');
 
 export class PhpNode extends PhpBase
 {
-	constructor()
+	constructor(args = {})
 	{
-		super(PhpBinary);
+		super(PhpBinary, args);
 	}
 }
