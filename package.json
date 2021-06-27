@@ -3,8 +3,8 @@
 	"description": "Run PHP right in the browser.",
 	"repository": "https://github.com/seanmorris/pib",
 	"author": "Oraoto <oraoto@outlook.com>",
-	"version": "0.0.2",
-	"license": "MIT",
+	"version": "0.0.4a",
+	"license": "Apache-2.0",
 	"devDependencies": {
 		"@babel/cli": "^7.8.4",
 		"@babel/core": "^7.8.7",
@@ -24,8 +24,30 @@
 	],
 	"files": [
 		"Php.js",
+		"PhpBase.js",
+		"PhpNode.js",
+		"PhpShell.js",
+		"PhpWeb.js",
+		"PhpWebView.js",
+		"PhpWorker.js",
+		"UniqueIndex.js",
 		"php-web.js",
 		"php-web.wasm",
-		"php-web.data"
-	]
+		"php-web.data",
+		"php-worker.js",
+		"php-worker.wasm",
+		"php-worker.data",
+		"php-node.js",
+		"php-node.wasm",
+		"php-node.data",
+		"php-shell.js",
+		"php-shell.wasm",
+		"php-shell.data",
+		"php-webview.js",
+		"php-webview.wasm",
+		"php-webview.data",
+		"UniqueIndex.js",
+		"ZVal.js"
+	],
+	"dependencies": {}
 }

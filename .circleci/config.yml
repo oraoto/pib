@@ -1,0 +1,23 @@
+version: 2.1
+
+commands:
+
+workflows:
+  version: 2
+
+  build-push-deploy:
+    jobs:
+      - make
+
+jobs:
+  make:
+    parallelism: 1
+    machine:
+      image: ubuntu-1604:202007-01
+    steps:
+      - checkout
+      - run: sudo apt update && sudo apt install pv
+      - run: docker system prune -af
+      - run: make pull-image
+      - run: make -j8
+

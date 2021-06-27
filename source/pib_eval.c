@@ -2,6 +2,15 @@
 #include <emscripten.h>
 #include <stdlib.h>
 
+#include "zend_globals_macros.h"
+#include "zend_exceptions.h"
+#include "zend_closures.h"
+
+#include "../php7.4-src/ext/vrzno/php_vrzno.h"
+
+#include "sqlite3.h"
+#include "sqlite3.c"
+
 int main() { return 0; }
 
 int EMSCRIPTEN_KEEPALIVE pib_init()
@@ -11,24 +20,71 @@ int EMSCRIPTEN_KEEPALIVE pib_init()
 	return php_embed_init(0, NULL);
 }
 
-int EMSCRIPTEN_KEEPALIVE pib_eval(char *code)
+void pib_finally()
 {
-	int retVal = 0;
+	fflush(stdout);
+	fprintf(stdout, "\n");
+
+	fflush(stderr);
+	fprintf(stderr, "\n");
+}
+
+char *EMSCRIPTEN_KEEPALIVE pib_exec(char *code)
+{
+	char *retVal = NULL;
 
 	zend_try
 	{
-		retVal = zend_eval_string(code, NULL, "php shell code");
+		zval retZv;
+
+		zend_eval_string(code, &retZv, "php-wasm evaluate expression");
+
+		convert_to_string(&retZv);
+
+		retVal = Z_STRVAL(retZv);
 	}
 	zend_catch
 	{
-		fflush(stderr);
 	}
 
 	zend_end_try();
 
-	fflush(stdout);
+	pib_finally();
 
-	return retVal == FAILURE;
+	return retVal;
+}
+
+int EMSCRIPTEN_KEEPALIVE pib_run(char *code)
+{
+	int retVal = 255; // Unknown error.
+
+	zend_try
+	{
+		retVal = zend_eval_string(code, NULL, "php-wasm run script");
+
+		if(EG(exception))
+		{
+			zend_exception_error(EG(exception), E_ERROR);
+			retVal = 2;
+		}
+	}
+	zend_catch
+	{
+		retVal = 1; // Code died.
+	}
+
+	zend_end_try();
+
+	pib_finally();
+
+	return retVal;
+}
+
+char *pib_tokenize(char *code)
+{
+	// tokenize_parse(zval zend_string)
+
+	return "";
 }
 
 void EMSCRIPTEN_KEEPALIVE pib_destroy()
@@ -41,4 +97,18 @@ int EMSCRIPTEN_KEEPALIVE pib_refresh()
 	pib_destroy();
 
 	return pib_init();
+}
+
+int EMSCRIPTEN_KEEPALIVE exec_callback(zend_function *fptr)
+{
+	int retVal = vrzno_exec_callback(fptr);
+
+	fflush(stdout);
+
+	return retVal;
+}
+
+int EMSCRIPTEN_KEEPALIVE del_callback(zend_function *fptr)
+{
+	return vrzno_del_callback(fptr);
 }

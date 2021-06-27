@@ -1,7 +1,4 @@
-# Based on http://kripken.github.io/emscripten-site/docs/compiling/Travis.html
-
-notifications:
-  email: false
+dist: focal
 
 language: node_js
 node_js:
@@ -12,11 +9,14 @@ sudo: required
 services:
   - docker
 
-git:
-  submodules: false
-
 before_install:
   - docker run -dit --name emscripten -v $(pwd):/src trzeci/emscripten-ubuntu:latest bash
 
 script:
-  - make configure build-js build-web-bin
+  - sudo apt update && sudo apt install pv
+  - docker system prune -af
+  - make pull-image
+  - make -j8
+
+notifications:
+  email: false

@@ -7,19 +7,17 @@ ARG PHP_BRANCH=PHP-7.4
 
 RUN set -euxo pipefail;\
 	apt-get update; \
+	emsdk install latest; \
 	apt-get --no-install-recommends -y install \
 		build-essential \
-    	libsqlite3-dev \
-    	libxml2-dev \
-		automake \
+		automake-1.15 \
 		autoconf \
-    	valgrind \
-    	libtool \
-    	php-dev \
-    	pkgconf \
+		libtool \
+		pkgconf \
 		bison \
 		flex \
-    	make \
+		make \
 		re2c \
 		gdb \
-    	git
+		git \
+		pv

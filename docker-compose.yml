@@ -3,6 +3,7 @@ version: '3'
 services:
 
   emscripten-builder:
+    user: ${UID}:${UID}
     image: seanmorris/php-emscripten-builder
     build:
       context: ./
@@ -14,4 +15,4 @@ services:
       ENVIRONMENT: ${ENVIRONMENT:-web}
     volumes:
       - ./:/src
-    command: [bash, /src/build.sh]
+    command: [bash]

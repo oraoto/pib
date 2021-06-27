@@ -2,6 +2,17 @@
 
 Changes
 
+## 0.0.3 - New Horizons
+
+* php.exec() may be used to evaluate a single php expression & return its result.
+* php may now access & traverse the dom and access nodes.
+* The querySelector method is available on dom nodes.
+* addEventListener/removeEventListener is also available on dom nodes.
+* sqlite3 v3.33 is now statically linked to php & the sqlite3 extension is enabled.
+* The following extensions are now enabled: sqlite3, pdo, & pdo-sqlite.
+* Totally revamped build process that tracks build artifact relationships.
+* Builds for web, node, shell, worker & webview.
+
 ## 0.0.2 - Gaining Momentum
 
 * php objects now have persistent memory, may be cleared with `php.refresh();`.
