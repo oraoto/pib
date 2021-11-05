@@ -1,7 +1,5 @@
 -include .env
 
-UID?=1000 # Change this in your .env file if you're not UID 1000
-
 SHELL=bash -euxo pipefail
 
 ENVIRONMENT    ?=web
@@ -129,9 +127,8 @@ third_party/php7.4-src/configure: third_party/php7.4-src/ext/vrzno/vrzno.c sourc
 		--disable-mbregex  \
 		--enable-tokenizer \
 		--enable-vrzno     \
-		--enable-gd        \
 		--enable-xml       \
-		--enable-simple-xml
+		--enable-simplexml \
 	"
 
 lib/libphp7.a: third_party/php7.4-src/configure third_party/php7.4-src/patched third_party/php7.4-src/**.c source/sqlite3.c
