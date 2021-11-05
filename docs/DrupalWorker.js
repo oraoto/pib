@@ -359,9 +359,11 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 self.addEventListener('install', function (event) {
+  console.log('Install');
   self.skipWaiting();
 });
 self.addEventListener('activate', function (event) {
+  console.log('Activate');
   event.waitUntil(clients.claim());
 });
 self.addEventListener('fetch', function (event) {
@@ -369,6 +371,7 @@ self.addEventListener('fetch', function (event) {
     var url = new URL(event.request.url);
     var pathname = url.pathname.replace(/^\//, '');
     var path = pathname.split('/');
+    console.log(path);
 
     if (!path[path.length - 1].match(/\.\w+$/) && (path[1] === 'drupal-7.59' || path[2] === 'drupal-7.59')) {
       var getClient = self.clients.matchAll({

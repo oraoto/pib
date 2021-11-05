@@ -1,6 +1,6 @@
 "use strict";
 
-import { PhpWeb as PHP } from 'php-wasm/PhpWeb';
+import { PhpWebDrupal as PHP } from 'php-wasm/PhpWebDrupal';
 
 window.PHP = PHP;
 const php  = new PHP;
@@ -11,9 +11,9 @@ const serviceWorker = navigator.serviceWorker;
 
 if(serviceWorker)
 {
-	serviceWorker.register(`${location.pathname}DrupalWorker.js`).catch(error => {
-		console.log('Error, ', error);
-	});
+	serviceWorker.register(`${location.pathname}DrupalWorker.js`);
+	// .then(result => console.log('Result, ', result))
+	// .catch(error => console.log('Error, ', error));
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -85,16 +85,13 @@ document.addEventListener('DOMContentLoaded', () => {
 			stdret.firstChild.remove();
 		}
 
-		const code = `
-<?php
+		const code = `<?php
 ini_set('session.save_path', '/home/web_user');
-session_id('fake-cookie');
-session_start();
 
 $stdErr = fopen('php://stderr', 'w');
 $errors = [];
 
-fwrite($stdErr, json_encode(['session' => $_SESSION]) . "\n");
+fwrite($stdErr, isset($_SESSION) && json_encode(['session' => $_SESSION]) . "\n");
 
 register_shutdown_function(function() use($stdErr){
 	fwrite($stdErr, json_encode(['session_id' => session_id()]) . "\n");
@@ -123,6 +120,7 @@ $script  = 'index.php';
 $path = $request->path;
 $path = preg_replace('/^\\/php-wasm/', '', $path);
 
+$_SERVER['SERVER_SOFTWARE'] = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36';
 $_SERVER['REQUEST_URI']     = $path;
 $_SERVER['REMOTE_ADDR']     = '127.0.0.1';
 $_SERVER['SERVER_NAME']     = $origin;
@@ -146,8 +144,34 @@ $user    = user_load($uid);
 $account = array('uid' => $user->uid);
 user_login_submit(array(), $account);
 
-menu_execute_active_handler();
-`;
+$itemPath = $path;
+$itemPath = preg_replace('/^\\/preload/', '', $itemPath);
+$itemPath = preg_replace('/^\\/drupal-7.59/', '', $itemPath);
+$itemPath = preg_replace('/^\\//', '', $itemPath);
+
+if($itemPath && (substr($itemPath, 0, 4) !== 'node' || substr($itemPath, -4) === 'edit'))
+{
+    $router_item = menu_get_item($itemPath);
+    $router_item['access_callback'] = true;
+    $router_item['access'] = true;
+
+    if ($router_item['include_file']) {
+      require_once DRUPAL_ROOT . '/' . $router_item['include_file'];
+    }
+
+    $page_callback_result = call_user_func_array(
+    	$router_item['page_callback']
+    	, is_string($router_item['page_arguments'])
+    		? unserialize($router_item['page_arguments'])
+    		: $router_item['page_arguments']
+    );
+
+    drupal_deliver_page($page_callback_result);
+}
+else
+{
+    menu_execute_active_handler();
+}`;
 
 		php.run(code).then(exitCode => {
 			exitLabel.innerText = exitCode;
@@ -270,11 +294,16 @@ menu_execute_active_handler();
 		outputBuffer.push(content);
 
 		setTimeout(()=>{
-			const chunk = outputBuffer.join('');
+			let chunk = outputBuffer.join('');
 
 			if(!outputBuffer || !chunk)
 			{
 				return;
+			}
+
+			if(location.hostname.match(/github.io$/))
+			{
+				chunk = chunk.replace(/\/preload/g, '/php-wasm/preload');
 			}
 
 			const node = document.createTextNode(chunk);
@@ -298,8 +327,6 @@ menu_execute_active_handler();
 			{
 				session_id = headers.session_id;
 			}
-
-			console.log(session_id);
 
 			if(headers.headers)
 			{

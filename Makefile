@@ -2,11 +2,13 @@
 
 UID?=1000 # Change this in your .env file if you're not UID 1000
 
+SHELL=bash -euxo pipefail
+
 ENVIRONMENT    ?=web
-INITIAL_MEMORY ?=1gb
+INITIAL_MEMORY ?=2047MB
 PRELOAD_ASSETS ?=preload/
 ASSERTIONS     ?=0
-OPTIMIZE       ?=-O1
+OPTIMIZE       ?=-O3
 RELEASE_SUFFIX ?=
 
 PHP_BRANCH     ?=php-7.4.20
@@ -17,7 +19,7 @@ TIDYHTML_TAG   ?=5.6.0
 
 PKG_CONFIG_PATH ?=/src/lib/lib/pkgconfig
 
-DOCKER_ENV=UID=${UID} docker-compose -p phpwasm run --rm \
+DOCKER_ENV=USERID=${UID} docker-compose -p phpwasm run --rm \
 	-e PKG_CONFIG_PATH=${PKG_CONFIG_PATH} \
 	-e PRELOAD_ASSETS='${PRELOAD_ASSETS}' \
 	-e INITIAL_MEMORY=${INITIAL_MEMORY}   \
@@ -30,10 +32,9 @@ DOCKER_RUN_IN_ICU4C  =${DOCKER_ENV} -w /src/third_party/libicu-src/icu4c/source/
 DOCKER_RUN_IN_LIBXML =${DOCKER_ENV} -w /src/third_party/libxml2/ emscripten-builder
 
 TIMER=(which pv > /dev/null && pv --name '${@}' || cat)
-
 .PHONY: web all clean image js hooks push-image pull-image
 
-all: php-web.wasm php-webview.wasm php-node.wasm php-shell.wasm php-worker.wasm js
+all: php-web.wasm php-web-drupal.wasm php-webview.wasm php-node.wasm php-shell.wasm php-worker.wasm js
 web: lib/pib_eval.o php-web.wasm
 	@ echo "Done!"
 
@@ -73,8 +74,9 @@ third_party/drupal-7.59/README.txt:
 	@ ${DOCKER_RUN} unzip drupal-7.59.zip
 	@ ${DOCKER_RUN} rm -v drupal-7.59.zip
 	@ ${DOCKER_RUN} mv drupal-7.59 third_party/drupal-7.59
+	@ ${DOCKER_RUN} git apply --no-index patch/drupal-7.59.patch
 	@ ${DOCKER_RUN} cp -r extras/drupal-7-settings.php third_party/drupal-7.59/sites/default/settings.php
-	@ ${DOCKER_RUN} cp -r extras/drowser-files third_party/drupal-7.59/sites/default/files
+	@ ${DOCKER_RUN} cp -r extras/drowser-files/* third_party/drupal-7.59/sites/default/files
 	@ ${DOCKER_RUN} cp -r extras/drowser-logo.png third_party/drupal-7.59/sites/default/logo.png
 	@ ${DOCKER_RUN} cp -r third_party/drupal-7.59 third_party/drupal-7.59 third_party/php7.4-src/preload/
 
@@ -127,6 +129,9 @@ third_party/php7.4-src/configure: third_party/php7.4-src/ext/vrzno/vrzno.c sourc
 		--disable-mbregex  \
 		--enable-tokenizer \
 		--enable-vrzno     \
+		--enable-gd        \
+		--enable-xml       \
+		--enable-simple-xml
 	"
 
 lib/libphp7.a: third_party/php7.4-src/configure third_party/php7.4-src/patched third_party/php7.4-src/**.c source/sqlite3.c
@@ -141,7 +146,7 @@ lib/pib_eval.o: lib/libphp7.a source/pib_eval.c
 		-I TSRM/ \
 		-I /src/third_party/libxml2 \
 		/src/source/pib_eval.c \
-		-o /src/lib/pib_eval.o
+		-o /src/lib/pib_eval.o \
 
 lib/something:
 	${DOCKER_RUN_IN_LIBXML} ./autogen.sh
@@ -153,9 +158,7 @@ lib/something:
 
 FINAL_BUILD=${DOCKER_RUN_IN_PHP} emcc ${OPTIMIZE} \
 	-o ../../build/php-${ENVIRONMENT}${RELEASE_SUFFIX}.js \
-	--preload-file ../drupal-7.59@/preload/drupal-7.59 \
 	--llvm-lto 2                     \
-	--preload-file ${PRELOAD_ASSETS} \
 	-s EXPORTED_FUNCTIONS='["_pib_init", "_pib_destroy", "_pib_run", "_pib_exec" "_pib_refresh", "_main", "_php_embed_init", "_php_embed_shutdown", "_php_embed_shutdown", "_zend_eval_string", "_exec_callback", "_del_callback"]' \
 	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "UTF8ToString", "lengthBytesUTF8"]' \
 	-s ENVIRONMENT=${ENVIRONMENT}    \
@@ -169,8 +172,15 @@ FINAL_BUILD=${DOCKER_RUN_IN_PHP} emcc ${OPTIMIZE} \
 	-s INVOKE_RUN=0                  \
 		/src/lib/pib_eval.o /src/lib/libphp7.a /src/lib/lib/libxml2.a
 
+php-web-drupal.wasm: ENVIRONMENT=web-drupal
+php-web-drupal.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h third_party/drupal-7.59/README.txt
+	${FINAL_BUILD} --preload-file ${PRELOAD_ASSETS} -s ENVIRONMENT=web
+	@ ${DOCKER_RUN} cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFIX}.* ./
+	@ ${DOCKER_RUN} cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFIX}.* ./docs-source/app/assets
+	@ ${DOCKER_RUN} cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFIX}.* ./docs-source/public
+
 php-web.wasm: ENVIRONMENT=web
-php-web.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h third_party/drupal-7.59/README.txt
+php-web.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h
 	${FINAL_BUILD}
 	@ ${DOCKER_RUN} cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFIX}.* ./
 	@ ${DOCKER_RUN} cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFIX}.* ./docs-source/app/assets

@@ -3,7 +3,7 @@ version: '3'
 services:
 
   emscripten-builder:
-    user: ${UID}:${UID}
+    user: ${USERID}
     image: seanmorris/php-emscripten-builder
     build:
       context: ./
