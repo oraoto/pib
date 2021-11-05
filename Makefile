@@ -76,7 +76,7 @@ third_party/drupal-7.59/README.txt:
 	@ ${DOCKER_RUN} cp -r extras/drupal-7-settings.php third_party/drupal-7.59/sites/default/settings.php
 	@ ${DOCKER_RUN} cp -r extras/drowser-files/* third_party/drupal-7.59/sites/default/files
 	@ ${DOCKER_RUN} cp -r extras/drowser-logo.png third_party/drupal-7.59/sites/default/logo.png
-	@ ${DOCKER_RUN} cp -r mkdir -p third_party/php7.4-src/preload/
+	@ ${DOCKER_RUN} mkdir -p third_party/php7.4-src/preload/
 	@ ${DOCKER_RUN} cp -r third_party/drupal-7.59 third_party/drupal-7.59 third_party/php7.4-src/preload/
 
 # third_party/libicu-src:
