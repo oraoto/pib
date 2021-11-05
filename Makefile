@@ -97,7 +97,6 @@ third_party/libxml2:
 # 		--single-branch     \
 # 		--depth 1;
 
-
 ########### Build the objects. ###########
 
 third_party/php7.4-src/configure: third_party/php7.4-src/ext/vrzno/vrzno.c source/sqlite3.c
@@ -129,8 +128,6 @@ third_party/php7.4-src/configure: third_party/php7.4-src/ext/vrzno/vrzno.c sourc
 		--disable-mbregex  \
 		--enable-tokenizer \
 		--enable-vrzno     \
-		--enable-xml       \
-		--enable-simplexml \
 	"
 
 lib/libphp7.a: third_party/php7.4-src/configure third_party/php7.4-src/patched third_party/php7.4-src/**.c source/sqlite3.c
