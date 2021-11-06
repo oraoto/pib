@@ -145,7 +145,7 @@ lib/libphp7.a: third_party/php7.4-src/configure third_party/php7.4-src/patched t
 	@ ${DOCKER_RUN_IN_PHP} emmake make -j8
 	@ ${DOCKER_RUN} cp -v third_party/php7.4-src/.libs/libphp7.la third_party/php7.4-src/.libs/libphp7.a lib/
 
-lib/pib_eval.o: lib/libphp7.a source/pib_eval.c
+lib/pib_eval.o: lib/libphp7.a source/pib_eval.c third_party/libxml2/.gitignore
 	@ echo -e "\e[33mBuilding PHP object files"
 	${DOCKER_RUN_IN_PHP} emcc ${OPTIMIZE} \
 		-I .     \
