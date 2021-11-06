@@ -156,7 +156,7 @@ lib/pib_eval.o: lib/libphp7.a source/pib_eval.c
 		/src/source/pib_eval.c \
 		-o /src/lib/pib_eval.o \
 
-lib/lib/libxml2.la:
+lib/lib/libxml2.la: third_party/libxml2/.gitignore
 	@ echo -e "\e[33mBuilding LibXML2"
 	${DOCKER_RUN_IN_LIBXML} ./autogen.sh
 	${DOCKER_RUN_IN_LIBXML} emconfigure ./configure --prefix=/src/lib/ | ${TIMER}
