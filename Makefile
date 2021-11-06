@@ -1,6 +1,6 @@
 -include .env
 
-SHELL=bash -euxo pipefail
+SHELL=bash -euo pipefail
 
 ENVIRONMENT    ?=web
 INITIAL_MEMORY ?=1024MB
