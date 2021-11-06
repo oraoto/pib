@@ -39,7 +39,7 @@ web: lib/pib_eval.o php-web.wasm
 ########### Collect & patch the source code. ###########
 
 third_party/sqlite3.33-src/sqlite3.c:
-	@ echo "\e[33mDownloading and patching SQLite"
+	@ echo -e "\e[33mDownloading and patching SQLite"
 	@ wget https://sqlite.org/2020/sqlite-amalgamation-3330000.zip
 	@ ${DOCKER_RUN} unzip sqlite-amalgamation-3330000.zip
 	@ ${DOCKER_RUN} rm -r sqlite-amalgamation-3330000.zip
@@ -47,7 +47,7 @@ third_party/sqlite3.33-src/sqlite3.c:
 	@ ${DOCKER_RUN} git apply --no-index patch/sqlite3-wasm.patch
 
 third_party/php7.4-src/patched: third_party/sqlite3.33-src/sqlite3.c
-	@ echo "\e[33mDownloading and patching PHP"
+	@ echo -e "\e[33mDownloading and patching PHP"
 	@ ${DOCKER_RUN} git clone https://github.com/php/php-src.git third_party/php7.4-src \
 		--branch ${PHP_BRANCH}   \
 		--single-branch          \
@@ -58,21 +58,21 @@ third_party/php7.4-src/patched: third_party/sqlite3.33-src/sqlite3.c
 	@ ${DOCKER_RUN} touch third_party/php7.4-src/patched
 
 source/sqlite3.c: third_party/sqlite3.33-src/sqlite3.c third_party/php7.4-src/patched
-	@ echo "\e[33mImporting SQLite"
+	@ echo -e "\e[33mImporting SQLite"
 	@ ${DOCKER_RUN} cp -v third_party/sqlite3.33-src/sqlite3.c source/sqlite3.c
 	@ ${DOCKER_RUN} cp -v third_party/sqlite3.33-src/sqlite3.h source/sqlite3.h
 	@ ${DOCKER_RUN} cp -v third_party/sqlite3.33-src/sqlite3.h third_party/php7.4-src/main/sqlite3.h
 	@ ${DOCKER_RUN} cp -v third_party/sqlite3.33-src/sqlite3.c third_party/php7.4-src/main/sqlite3.c
 
 third_party/php7.4-src/ext/vrzno/vrzno.c: third_party/php7.4-src/patched
-	@ echo "\e[33mDownloading and importing VRZNO"
+	@ echo -e "\e[33mDownloading and importing VRZNO"
 	@ ${DOCKER_RUN} git clone https://github.com/seanmorris/vrzno.git third_party/php7.4-src/ext/vrzno \
 		--branch ${VRZNO_BRANCH} \
 		--single-branch          \
 		--depth 1
 
 third_party/drupal-7.59/README.txt:
-	@ echo "\e[33mDownloading and patching Drupal"
+	@ echo -e "\e[33mDownloading and patching Drupal"
 	@ wget https://ftp.drupal.org/files/projects/drupal-7.59.zip
 	@ ${DOCKER_RUN} unzip drupal-7.59.zip
 	@ ${DOCKER_RUN} rm -v drupal-7.59.zip
@@ -92,7 +92,7 @@ third_party/drupal-7.59/README.txt:
 # 		--depth 1;
 
 third_party/libxml2:
-	@ echo "\e[33mDownloading and importing LibXML2"
+	@ echo -e "\e[33mDownloading and importing LibXML2"
 	@ ${DOCKER_RUN} git clone https://gitlab.gnome.org/GNOME/libxml2.git third_party/libxml2 \
 		--branch ${LIBXML2_TAG} \
 		--single-branch     \
@@ -107,7 +107,7 @@ third_party/libxml2:
 ########### Build the objects. ###########
 
 third_party/php7.4-src/configure: third_party/php7.4-src/ext/vrzno/vrzno.c source/sqlite3.c
-	@ echo "\e[33mBuilding PHP object files"
+	@ echo -e "\e[33mBuilding PHP object files"
 	${DOCKER_RUN_IN_PHP} ./buildconf --force
 	${DOCKER_RUN_IN_PHP} bash -c "emconfigure ./configure \
 		PKG_CONFIG_PATH=${PKG_CONFIG_PATH} \
@@ -141,11 +141,12 @@ third_party/php7.4-src/configure: third_party/php7.4-src/ext/vrzno/vrzno.c sourc
 	"
 
 lib/libphp7.a: third_party/php7.4-src/configure third_party/php7.4-src/patched third_party/php7.4-src/**.c source/sqlite3.c
-	@ echo "\e[33mBuilding PHP object files"
+	@ echo -e "\e[33mBuilding PHP symbol files"
 	@ ${DOCKER_RUN_IN_PHP} emmake make -j8
-	${DOCKER_RUN} cp -v third_party/php7.4-src/.libs/libphp7.la third_party/php7.4-src/.libs/libphp7.a lib/
+	@ ${DOCKER_RUN} cp -v third_party/php7.4-src/.libs/libphp7.la third_party/php7.4-src/.libs/libphp7.a lib/
 
 lib/pib_eval.o: lib/libphp7.a source/pib_eval.c
+	@ echo -e "\e[33mBuilding PHP object files"
 	${DOCKER_RUN_IN_PHP} emcc ${OPTIMIZE} \
 		-I .     \
 		-I Zend  \
@@ -181,20 +182,23 @@ FINAL_BUILD=${DOCKER_RUN_IN_PHP} emcc ${OPTIMIZE} \
 
 php-web-drupal.wasm: ENVIRONMENT=web-drupal
 php-web-drupal.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h third_party/drupal-7.59/README.txt
-	${FINAL_BUILD} --preload-file ${PRELOAD_ASSETS} -s ENVIRONMENT=web
+	@ echo -e "\e[33mBuilding PHP for web (drupal)"
+	@ ${FINAL_BUILD} --preload-file ${PRELOAD_ASSETS} -s ENVIRONMENT=web
 	@ ${DOCKER_RUN} cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFIX}.* ./
 	@ ${DOCKER_RUN} cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFIX}.* ./docs-source/app/assets
 	@ ${DOCKER_RUN} cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFIX}.* ./docs-source/public
 
 php-web.wasm: ENVIRONMENT=web
 php-web.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h
-	${FINAL_BUILD}
+	@ echo -e "\e[33mBuilding PHP for web"
+	@ ${FINAL_BUILD}
 	@ ${DOCKER_RUN} cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFIX}.* ./
 	@ ${DOCKER_RUN} cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFIX}.* ./docs-source/app/assets
 	@ ${DOCKER_RUN} cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFIX}.* ./docs-source/public
 
 php-worker.wasm: ENVIRONMENT=worker
 php-worker.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h
+	@ echo -e "\e[33mBuilding PHP for workers"
 	@ ${FINAL_BUILD}
 	@ ${DOCKER_RUN} cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFIX}.* ./
 	@ ${DOCKER_RUN} cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFIX}.* ./docs-source/app/assets
@@ -202,6 +206,7 @@ php-worker.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h
 
 php-node.wasm: ENVIRONMENT=node
 php-node.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h
+	@ echo -e "\e[33mBuilding PHP for node"
 	@ ${FINAL_BUILD}
 	@ ${DOCKER_RUN} cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFIX}.* ./
 	@ ${DOCKER_RUN} cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFIX}.* ./docs-source/app/assets
@@ -209,6 +214,7 @@ php-node.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h
 
 php-shell.wasm: ENVIRONMENT=shell
 php-shell.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h
+	@ echo -e "\e[33mBuilding PHP for shell"
 	@ ${FINAL_BUILD}
 	@ ${DOCKER_RUN} cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFIX}.* ./
 	@ ${DOCKER_RUN} cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFIX}.* ./docs-source/app/assets
@@ -216,6 +222,7 @@ php-shell.wasm: lib/libphp7.a lib/pib_eval.o source/**.c source/**.h
 
 php-webview.wasm: ENVIRONMENT=webview
 php-webview.wasm: lib/libphp7.a lib/pib_eval.o source/pib_eval.c
+	@ echo -e "\e[33mBuilding PHP for webview"
 	@ ${FINAL_BUILD}
 	@ ${DOCKER_RUN} cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFIX}.* ./
 	@ ${DOCKER_RUN} cp -v build/php-${ENVIRONMENT}${RELEASE_SUFFIX}.* ./docs-source/app/assets
@@ -235,6 +242,7 @@ hooks:
 	@ git config core.hooksPath githooks
 
 js:
+	@ echo -e "\e[33mBuilding JS"
 	@ npm install | ${TIMER}
 	@ npx babel source --out-dir . | ${TIMER}
 
