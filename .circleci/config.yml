@@ -13,10 +13,12 @@ jobs:
   make:
     parallelism: 1
     machine:
-      image: ubuntu-1604:202007-01
+      image: ubuntu-2004:202010-01
     steps:
       - checkout
-      - run: sudo apt update && sudo apt install pv ca-certificates
+      - run: sudo apt update
+      - run: sudo apt install pv ca-certificates
+      - run: sudo update-ca-certificates
       - run: docker system prune -af
       - run: make pull-image
       - run: make -j8
