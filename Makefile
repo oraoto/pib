@@ -138,6 +138,7 @@ third_party/php7.4-src/configure: third_party/php7.4-src/ext/vrzno/vrzno.c sourc
 		--enable-vrzno     \
 		--enable-xml       \
 		--enable-simplexml \
+		--with-gd          \
 	"
 
 lib/libphp7.a: third_party/php7.4-src/configure third_party/php7.4-src/patched third_party/php7.4-src/**.c source/sqlite3.c
@@ -146,7 +147,7 @@ lib/libphp7.a: third_party/php7.4-src/configure third_party/php7.4-src/patched t
 	@ ${DOCKER_RUN} cp -v third_party/php7.4-src/.libs/libphp7.la third_party/php7.4-src/.libs/libphp7.a lib/
 
 lib/pib_eval.o: lib/libphp7.a source/pib_eval.c
-	@ echo -e "\e[33mBuilding PHP object files"
+	@ echo -e "\e[33mRun pkgconfig"
 	${DOCKER_RUN_IN_PHP} emcc ${OPTIMIZE} \
 		-I .     \
 		-I Zend  \
