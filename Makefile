@@ -92,7 +92,7 @@ third_party/drupal-7.59/README.txt:
 # 		--depth 1;
 
 third_party/libxml2:
-	@ echo -e "\e[33mDownloading and importing LibXML2"
+	@ echo -e "\e[33mDownloading LibXML2"
 	@ ${DOCKER_RUN} git clone https://gitlab.gnome.org/GNOME/libxml2.git third_party/libxml2 \
 		--branch ${LIBXML2_TAG} \
 		--single-branch     \
