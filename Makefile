@@ -179,6 +179,7 @@ FINAL_BUILD=${DOCKER_RUN_IN_PHP} emcc ${OPTIMIZE} \
 	-s EXPORT_NAME="'PHP'"           \
 	-s MODULARIZE=1                  \
 	-s INVOKE_RUN=0                  \
+	-s USE_ZLIB=1                    \
 		/src/lib/pib_eval.o /src/lib/libphp7.a /src/lib/lib/libxml2.a
 
 php-web-drupal.wasm: ENVIRONMENT=web-drupal
