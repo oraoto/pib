@@ -106,7 +106,7 @@ third_party/libxml2/.gitignore:
 
 ########### Build the objects. ###########
 
-third_party/php7.4-src/configure: third_party/php7.4-src/ext/vrzno/vrzno.c source/sqlite3.c
+third_party/php7.4-src/configure: third_party/php7.4-src/ext/vrzno/vrzno.c source/sqlite3.c lib/lib/libxml2.la
 	@ echo -e "\e[33mBuilding PHP object files"
 	${DOCKER_RUN_IN_PHP} ./buildconf --force
 	${DOCKER_RUN_IN_PHP} bash -c "emconfigure ./configure \
@@ -145,7 +145,7 @@ lib/libphp7.a: third_party/php7.4-src/configure third_party/php7.4-src/patched t
 	@ ${DOCKER_RUN_IN_PHP} emmake make -j8
 	@ ${DOCKER_RUN} cp -v third_party/php7.4-src/.libs/libphp7.la third_party/php7.4-src/.libs/libphp7.a lib/
 
-lib/pib_eval.o: lib/libphp7.a source/pib_eval.c third_party/libxml2/.gitignore
+lib/pib_eval.o: lib/libphp7.a source/pib_eval.c
 	@ echo -e "\e[33mBuilding PHP object files"
 	${DOCKER_RUN_IN_PHP} emcc ${OPTIMIZE} \
 		-I .     \
@@ -156,7 +156,7 @@ lib/pib_eval.o: lib/libphp7.a source/pib_eval.c third_party/libxml2/.gitignore
 		/src/source/pib_eval.c \
 		-o /src/lib/pib_eval.o \
 
-lib/something:
+lib/lib/libxml2.la:
 	${DOCKER_RUN_IN_LIBXML} ./autogen.sh
 	${DOCKER_RUN_IN_LIBXML} emconfigure ./configure --prefix=/src/lib/ | ${TIMER}
 	${DOCKER_RUN_IN_LIBXML} emmake make | ${TIMER}
