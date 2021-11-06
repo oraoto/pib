@@ -21,6 +21,6 @@ jobs:
       - run: sudo apt-get install --reinstall ca-certificates
       - run: sudo update-ca-certificates
       - run: docker system prune -af
-      - run: make pull-image
+      - run: make image
       - run: make -j1
 
