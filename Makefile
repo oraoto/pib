@@ -93,7 +93,7 @@ third_party/drupal-7.59/README.txt:
 
 third_party/libxml2/.gitignore:
 	@ echo -e "\e[33mDownloading LibXML2"
-	@ ${DOCKER_RUN} git clone https://gitlab.gnome.org/GNOME/libxml2.git third_party/libxml2 \
+	@ ${DOCKER_RUN} GIT_SSL_NO_VERIFY=true git clone https://gitlab.gnome.org/GNOME/libxml2.git third_party/libxml2 \
 		--branch ${LIBXML2_TAG} \
 		--single-branch     \
 		--depth 1;
