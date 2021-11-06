@@ -17,8 +17,7 @@ jobs:
     steps:
       - checkout
       - run: sudo apt update
-      - run: sudo apt install pv ca-certificates apt-transport-https
-      - run: sudo update-ca-certificates
+      - run: sudo apt install -y pv ca-certificates apt-transport-https openssl
       - run: docker system prune -af
       - run: make pull-image
       - run: make -j1
