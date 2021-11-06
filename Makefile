@@ -3,7 +3,7 @@
 SHELL=bash -euxo pipefail
 
 ENVIRONMENT    ?=web
-INITIAL_MEMORY ?=2047MB
+INITIAL_MEMORY ?=1024MB
 PRELOAD_ASSETS ?=preload/
 ASSERTIONS     ?=0
 OPTIMIZE       ?=-O3
@@ -39,6 +39,7 @@ web: lib/pib_eval.o php-web.wasm
 ########### Collect & patch the source code. ###########
 
 third_party/sqlite3.33-src/sqlite3.c:
+	@ echo "\e[33mDownloading and patching SQLite"
 	@ wget https://sqlite.org/2020/sqlite-amalgamation-3330000.zip
 	@ ${DOCKER_RUN} unzip sqlite-amalgamation-3330000.zip
 	@ ${DOCKER_RUN} rm -r sqlite-amalgamation-3330000.zip
@@ -46,6 +47,7 @@ third_party/sqlite3.33-src/sqlite3.c:
 	@ ${DOCKER_RUN} git apply --no-index patch/sqlite3-wasm.patch
 
 third_party/php7.4-src/patched: third_party/sqlite3.33-src/sqlite3.c
+	@ echo "\e[33mDownloading and patching PHP"
 	@ ${DOCKER_RUN} git clone https://github.com/php/php-src.git third_party/php7.4-src \
 		--branch ${PHP_BRANCH}   \
 		--single-branch          \
@@ -56,24 +58,28 @@ third_party/php7.4-src/patched: third_party/sqlite3.33-src/sqlite3.c
 	@ ${DOCKER_RUN} touch third_party/php7.4-src/patched
 
 source/sqlite3.c: third_party/sqlite3.33-src/sqlite3.c third_party/php7.4-src/patched
+	@ echo "\e[33mImporting SQLite"
 	@ ${DOCKER_RUN} cp -v third_party/sqlite3.33-src/sqlite3.c source/sqlite3.c
 	@ ${DOCKER_RUN} cp -v third_party/sqlite3.33-src/sqlite3.h source/sqlite3.h
 	@ ${DOCKER_RUN} cp -v third_party/sqlite3.33-src/sqlite3.h third_party/php7.4-src/main/sqlite3.h
 	@ ${DOCKER_RUN} cp -v third_party/sqlite3.33-src/sqlite3.c third_party/php7.4-src/main/sqlite3.c
 
 third_party/php7.4-src/ext/vrzno/vrzno.c: third_party/php7.4-src/patched
+	@ echo "\e[33mDownloading and importing VRZNO"
 	@ ${DOCKER_RUN} git clone https://github.com/seanmorris/vrzno.git third_party/php7.4-src/ext/vrzno \
 		--branch ${VRZNO_BRANCH} \
 		--single-branch          \
 		--depth 1
 
 third_party/drupal-7.59/README.txt:
+	@ echo "\e[33mDownloading and patching Drupal"
 	@ wget https://ftp.drupal.org/files/projects/drupal-7.59.zip
 	@ ${DOCKER_RUN} unzip drupal-7.59.zip
 	@ ${DOCKER_RUN} rm -v drupal-7.59.zip
 	@ ${DOCKER_RUN} mv drupal-7.59 third_party/drupal-7.59
 	@ ${DOCKER_RUN} git apply --no-index patch/drupal-7.59.patch
 	@ ${DOCKER_RUN} cp -r extras/drupal-7-settings.php third_party/drupal-7.59/sites/default/settings.php
+	@ ${DOCKER_RUN} cp -r extras/drowser-files/.ht.sqlite third_party/drupal-7.59/sites/default/files/.ht.sqlite
 	@ ${DOCKER_RUN} cp -r extras/drowser-files/* third_party/drupal-7.59/sites/default/files
 	@ ${DOCKER_RUN} cp -r extras/drowser-logo.png third_party/drupal-7.59/sites/default/logo.png
 	@ ${DOCKER_RUN} mkdir -p third_party/php7.4-src/preload/
@@ -86,6 +92,7 @@ third_party/drupal-7.59/README.txt:
 # 		--depth 1;
 
 third_party/libxml2:
+	@ echo "\e[33mDownloading and importing LibXML2"
 	@ ${DOCKER_RUN} git clone https://gitlab.gnome.org/GNOME/libxml2.git third_party/libxml2 \
 		--branch ${LIBXML2_TAG} \
 		--single-branch     \
@@ -100,12 +107,13 @@ third_party/libxml2:
 ########### Build the objects. ###########
 
 third_party/php7.4-src/configure: third_party/php7.4-src/ext/vrzno/vrzno.c source/sqlite3.c
+	@ echo "\e[33mBuilding PHP object files"
 	${DOCKER_RUN_IN_PHP} ./buildconf --force
 	${DOCKER_RUN_IN_PHP} bash -c "emconfigure ./configure \
 		PKG_CONFIG_PATH=${PKG_CONFIG_PATH} \
 		--enable-embed=static \
 		--with-layout=GNU  \
-		--with-libxml=static \
+		--with-libxml      \
 		--disable-cgi      \
 		--disable-cli      \
 		--disable-all      \
@@ -128,9 +136,12 @@ third_party/php7.4-src/configure: third_party/php7.4-src/ext/vrzno/vrzno.c sourc
 		--disable-mbregex  \
 		--enable-tokenizer \
 		--enable-vrzno     \
+		--enable-xml       \
+		--enable-simplexml \
 	"
 
 lib/libphp7.a: third_party/php7.4-src/configure third_party/php7.4-src/patched third_party/php7.4-src/**.c source/sqlite3.c
+	@ echo "\e[33mBuilding PHP object files"
 	@ ${DOCKER_RUN_IN_PHP} emmake make -j8
 	${DOCKER_RUN} cp -v third_party/php7.4-src/.libs/libphp7.la third_party/php7.4-src/.libs/libphp7.a lib/
 
