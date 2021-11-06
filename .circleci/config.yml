@@ -21,5 +21,5 @@ jobs:
       - run: sudo update-ca-certificates
       - run: docker system prune -af
       - run: make pull-image
-      - run: make -j8
+      - run: make -j1
 
