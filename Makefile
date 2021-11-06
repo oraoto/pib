@@ -30,7 +30,7 @@ DOCKER_RUN_IN_ICU4C  =${DOCKER_ENV} -w /src/third_party/libicu-src/icu4c/source/
 DOCKER_RUN_IN_LIBXML =${DOCKER_ENV} -w /src/third_party/libxml2/ emscripten-builder
 
 TIMER=(which pv > /dev/null && pv --name '${@}' || cat)
-.PHONY: web all clean image js hooks push-image pull-image
+.PHONY: web all clean show-ports image js hooks push-image pull-image
 
 all: php-web.wasm php-web-drupal.wasm php-webview.wasm php-node.wasm php-shell.wasm php-worker.wasm js
 web: lib/pib_eval.o php-web.wasm
@@ -159,7 +159,7 @@ lib/pib_eval.o: lib/libphp7.a source/pib_eval.c
 lib/lib/libxml2.la: third_party/libxml2/.gitignore
 	@ echo -e "\e[33mBuilding LibXML2"
 	${DOCKER_RUN_IN_LIBXML} ./autogen.sh
-	${DOCKER_RUN_IN_LIBXML} emconfigure ./configure --prefix=/src/lib/ | ${TIMER}
+	${DOCKER_RUN_IN_LIBXML} emconfigure ./configure --with-http=no --with-ftp=no --with-python=no --with-threads=no --enable-shared=no --prefix=/src/lib/ | ${TIMER}
 	${DOCKER_RUN_IN_LIBXML} emmake make | ${TIMER}
 	${DOCKER_RUN_IN_LIBXML} emmake make install | ${TIMER}
 
@@ -238,6 +238,9 @@ clean:
 	@ ${DOCKER_RUN} rm -rfv third_party/libxml2
 	@ ${DOCKER_RUN} rm -rfv third_party/libicu-src
 	@ ${DOCKER_RUN} rm -rfv third_party/sqlite3.33-src
+
+show-ports:
+	@ ${DOCKER_RUN} emcc --show-ports
 
 hooks:
 	@ git config core.hooksPath githooks
