@@ -157,6 +157,7 @@ lib/pib_eval.o: lib/libphp7.a source/pib_eval.c
 		-o /src/lib/pib_eval.o \
 
 lib/lib/libxml2.la:
+	@ echo -e "\e[33mBuilding LibXML2"
 	${DOCKER_RUN_IN_LIBXML} ./autogen.sh
 	${DOCKER_RUN_IN_LIBXML} emconfigure ./configure --prefix=/src/lib/ | ${TIMER}
 	${DOCKER_RUN_IN_LIBXML} emmake make | ${TIMER}
