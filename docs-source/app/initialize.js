@@ -24,6 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	const run    = document.querySelector('[data-run]');
 	const token  = document.querySelector('[data-tokenize]');
 	const status = document.querySelector('[data-status]');
+	const load   = document.querySelector('[data-load-demo]')
+	const demo   = document.querySelector('[data-select-demo]')
 	const editor = ace.edit(input);
 	const ret    = document.querySelector('#ret');
 
@@ -49,6 +51,134 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		reader.readAsText(event.target.files[0]);
 
+	});
+
+	const runCode = () => {
+
+		exitLabel.innerText = '_';
+
+		status.innerText = 'Executing...';
+
+		stdoutFrame.srcdoc = ' ';
+		stderrFrame.srcdoc = ' ';
+		stdretFrame.srcdoc = ' ';
+
+		while(stdout.firstChild)
+		{
+			stdout.firstChild.remove();
+		}
+
+		while(stderr.firstChild)
+		{
+			stderr.firstChild.remove();
+		}
+
+		while(stdret.firstChild)
+		{
+			stdret.firstChild.remove();
+		}
+
+		let code = editor.session.getValue();
+
+		if(code.length < 1024 * 2)
+		{
+			query.set('autorun', autorun.checked ? 1 : 0);
+			query.set('persist', persistBox.checked ? 1 : 0);
+			query.set('single-expression', singleBox.checked ? 1 : 0);
+			query.set('code', encodeURIComponent(code));
+			history.replaceState({}, document.title, "?" + query.toString());
+		}
+
+		const func = singleBox.checked
+			? 'exec'
+			: 'run';
+
+		if(singleBox.checked)
+		{
+			code = code.replace(/^\s*<\?php/, '');
+			code = code.replace(/\?>\s*/, '');
+		}
+
+		php[func](code).then(ret=>{
+
+			status.innerText = 'php-wasm ready!';
+
+			const content = String(ret);
+
+			stdret.innerText = content;
+			stdretFrame.srcdoc = content;
+
+			exitLabel.innerText = '_';
+
+			if(!singleBox.checked)
+			{
+				setTimeout(() => exitLabel.innerText = ret, 100);
+			}
+		}).finally(() => {
+			if(!persistBox.checked)
+			{
+				php.refresh();
+			}
+		});
+	};
+
+	load.addEventListener('click', event => {
+		if(!demo.value)
+		{
+			return;
+		}
+		fetch(`/scripts/${demo.value}`)
+		.then(r => r.text())
+		.then(php => {
+
+			const firstLine = String(php.split(/\n/).shift());
+			const settings  = JSON.parse(firstLine.split('//').pop());
+
+			if('autorun' in settings)
+			{
+				autorun.checked = !!settings.autorun;
+			}
+
+			if('single-expression' in settings)
+			{
+				singleBox.checked = !!settings['single-expression'];
+			}
+
+			if('persist' in settings)
+			{
+				persistBox.checked = !!settings.persist;
+			}
+
+			if('render-as' in settings)
+			{
+				if(settings['render-as'] === 'text')
+				{
+					renderAs[0].checked = true;
+
+					renderAs[0].dispatchEvent(new Event('change'));
+
+					query.set('render-as', 'text');
+				}
+				else if(settings['render-as'] === 'html')
+				{
+					renderAs[1].checked = true;
+
+					renderAs[1].dispatchEvent(new Event('change'));
+
+					query.set('render-as', 'html');
+				}
+			}
+
+			persistBox.dispatchEvent(new Event('change'));
+			singleBox.dispatchEvent(new Event('input'));
+			autorun.dispatchEvent(new Event('change'));
+
+			history.replaceState({}, document.title, "?" + query.toString());
+
+			editor.getSession().setValue(php);
+
+			setTimeout(() => runCode(), 100);
+		});
 	});
 
 	const query = new URLSearchParams(location.search);
@@ -120,7 +250,7 @@ $script  = 'index.php';
 $path = $request->path;
 $path = preg_replace('/^\\/php-wasm/', '', $path);
 
-$_SERVER['SERVER_SOFTWARE'] = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36';
+$_SERVER['SERVER_SOFTWARE'] = ${JSON.stringify(navigator.userAgent)};
 $_SERVER['REQUEST_URI']     = $path;
 $_SERVER['REMOTE_ADDR']     = '127.0.0.1';
 $_SERVER['SERVER_NAME']     = $origin;
@@ -207,75 +337,6 @@ else
 			});
 
 		});
-
-		const runCode = () => {
-
-			exitLabel.innerText = '_';
-
-			status.innerText = 'Executing...';
-
-			stdoutFrame.srcdoc = ' ';
-			stderrFrame.srcdoc = ' ';
-			stdretFrame.srcdoc = ' ';
-
-			while(stdout.firstChild)
-			{
-				stdout.firstChild.remove();
-			}
-
-			while(stderr.firstChild)
-			{
-				stderr.firstChild.remove();
-			}
-
-			while(stdret.firstChild)
-			{
-				stdret.firstChild.remove();
-			}
-
-			let code = editor.session.getValue();
-
-			if(code.length < 1024 * 2)
-			{
-				query.set('autorun', autorun.checked ? 1 : 0);
-				query.set('persist', persistBox.checked ? 1 : 0);
-				query.set('single-expression', singleBox.checked ? 1 : 0);
-				query.set('code', encodeURIComponent(code));
-				history.replaceState({}, document.title, "?" + query.toString());
-			}
-
-			const func = singleBox.checked
-				? 'exec'
-				: 'run';
-
-			if(singleBox.checked)
-			{
-				code = code.replace(/^\s*<\?php/, '');
-				code = code.replace(/\?>\s*/, '');
-			}
-
-			php[func](code).then(ret=>{
-
-				status.innerText = 'php-wasm ready!';
-
-				const content = String(ret);
-
-				stdret.innerText = content;
-				stdretFrame.srcdoc = content;
-
-				exitLabel.innerText = '_';
-
-				if(!singleBox.checked)
-				{
-					setTimeout(() => exitLabel.innerText = ret, 100);
-				}
-			}).finally(() => {
-				if(!persistBox.checked)
-				{
-					php.refresh();
-				}
-			});
-		};
 
 		run.addEventListener('click', runCode);
 

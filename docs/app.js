@@ -567,6 +567,8 @@ document.addEventListener('DOMContentLoaded', function () {
   var run = document.querySelector('[data-run]');
   var token = document.querySelector('[data-tokenize]');
   var status = document.querySelector('[data-status]');
+  var load = document.querySelector('[data-load-demo]');
+  var demo = document.querySelector('[data-select-demo]');
   var editor = ace.edit(input);
   var ret = document.querySelector('#ret');
   var stdoutFrame = document.querySelector('.stdout > * > iframe');
@@ -587,6 +589,107 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     reader.readAsText(event.target.files[0]);
+  });
+
+  var runCode = function runCode() {
+    exitLabel.innerText = '_';
+    status.innerText = 'Executing...';
+    stdoutFrame.srcdoc = ' ';
+    stderrFrame.srcdoc = ' ';
+    stdretFrame.srcdoc = ' ';
+
+    while (stdout.firstChild) {
+      stdout.firstChild.remove();
+    }
+
+    while (stderr.firstChild) {
+      stderr.firstChild.remove();
+    }
+
+    while (stdret.firstChild) {
+      stdret.firstChild.remove();
+    }
+
+    var code = editor.session.getValue();
+
+    if (code.length < 1024 * 2) {
+      query.set('autorun', autorun.checked ? 1 : 0);
+      query.set('persist', persistBox.checked ? 1 : 0);
+      query.set('single-expression', singleBox.checked ? 1 : 0);
+      query.set('code', encodeURIComponent(code));
+      history.replaceState({}, document.title, "?" + query.toString());
+    }
+
+    var func = singleBox.checked ? 'exec' : 'run';
+
+    if (singleBox.checked) {
+      code = code.replace(/^\s*<\?php/, '');
+      code = code.replace(/\?>\s*/, '');
+    }
+
+    php[func](code).then(function (ret) {
+      status.innerText = 'php-wasm ready!';
+      var content = String(ret);
+      stdret.innerText = content;
+      stdretFrame.srcdoc = content;
+      exitLabel.innerText = '_';
+
+      if (!singleBox.checked) {
+        setTimeout(function () {
+          return exitLabel.innerText = ret;
+        }, 100);
+      }
+    })["finally"](function () {
+      if (!persistBox.checked) {
+        php.refresh();
+      }
+    });
+  };
+
+  load.addEventListener('click', function (event) {
+    if (!demo.value) {
+      return;
+    }
+
+    fetch("/scripts/".concat(demo.value)).then(function (r) {
+      return r.text();
+    }).then(function (php) {
+      var firstLine = String(php.split(/\n/).shift());
+      var settings = JSON.parse(firstLine.split('//').pop());
+
+      if ('autorun' in settings) {
+        autorun.checked = !!settings.autorun;
+      }
+
+      if ('single-expression' in settings) {
+        singleBox.checked = !!settings['single-expression'];
+      }
+
+      if ('persist' in settings) {
+        persistBox.checked = !!settings.persist;
+      }
+
+      if ('render-as' in settings) {
+        if (settings['render-as'] === 'text') {
+          renderAs[0].checked = true;
+          renderAs[0].dispatchEvent(new Event('change'));
+          query.set('render-as', 'text');
+        } else if (settings['render-as'] === 'html') {
+          renderAs[1].checked = true;
+          renderAs[1].dispatchEvent(new Event('change'));
+          query.set('render-as', 'html');
+        }
+      }
+
+      persistBox.dispatchEvent(new Event('change'));
+      singleBox.dispatchEvent(new Event('input'));
+      autorun.dispatchEvent(new Event('change'));
+      history.replaceState({}, document.title, "?" + query.toString());
+      editor.getSession().setValue(php);
+      setTimeout(function () {
+        return runCode();
+      }, 100);
+    });
   });
   var query = new URLSearchParams(location.search);
   editor.setTheme('ace/theme/monokai');
@@ -622,7 +725,7 @@ document.addEventListener('DOMContentLoaded', function () {
       method: method,
       _GET: _GET,
       _POST: _POST
-    }), "'\n\t, JSON_OBJECT_AS_ARRAY\n);\n\nparse_str(substr($request->_GET, 1), $_GET);\n\n$_POST = $request->_POST;\n\n$origin  = 'http://localhost:3333';\n$docroot = '/preload/drupal-7.59';\n$script  = 'index.php';\n\n$path = $request->path;\n$path = preg_replace('/^\\/php-wasm/', '', $path);\n\n$_SERVER['SERVER_SOFTWARE'] = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36';\n$_SERVER['REQUEST_URI']     = $path;\n$_SERVER['REMOTE_ADDR']     = '127.0.0.1';\n$_SERVER['SERVER_NAME']     = $origin;\n$_SERVER['SERVER_PORT']     = 3333;\n$_SERVER['REQUEST_METHOD']  = $request->method;\n$_SERVER['SCRIPT_FILENAME'] = $docroot . '/' . $script;\n$_SERVER['SCRIPT_NAME']     = $docroot . '/' . $script;\n$_SERVER['PHP_SELF']        = $docroot . '/' . $script;\n$_SERVER['DOCUMENT_ROOT']   = '/';\n$_SERVER['HTTPS']           = '';\n\nchdir($docroot);\n\ndefine('DRUPAL_ROOT', getcwd());\n\nrequire_once DRUPAL_ROOT . '/includes/bootstrap.inc';\ndrupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);\n\n$uid     = 1;\n$user    = user_load($uid);\n$account = array('uid' => $user->uid);\nuser_login_submit(array(), $account);\n\n$itemPath = $path;\n$itemPath = preg_replace('/^\\/preload/', '', $itemPath);\n$itemPath = preg_replace('/^\\/drupal-7.59/', '', $itemPath);\n$itemPath = preg_replace('/^\\//', '', $itemPath);\n\nif($itemPath && (substr($itemPath, 0, 4) !== 'node' || substr($itemPath, -4) === 'edit'))\n{\n    $router_item = menu_get_item($itemPath);\n    $router_item['access_callback'] = true;\n    $router_item['access'] = true;\n\n    if ($router_item['include_file']) {\n      require_once DRUPAL_ROOT . '/' . $router_item['include_file'];\n    }\n\n    $page_callback_result = call_user_func_array(\n    \t$router_item['page_callback']\n    \t, is_string($router_item['page_arguments'])\n    \t\t? unserialize($router_item['page_arguments'])\n    \t\t: $router_item['page_arguments']\n    );\n\n    drupal_deliver_page($page_callback_result);\n}\nelse\n{\n    menu_execute_active_handler();\n}");
+    }), "'\n\t, JSON_OBJECT_AS_ARRAY\n);\n\nparse_str(substr($request->_GET, 1), $_GET);\n\n$_POST = $request->_POST;\n\n$origin  = 'http://localhost:3333';\n$docroot = '/preload/drupal-7.59';\n$script  = 'index.php';\n\n$path = $request->path;\n$path = preg_replace('/^\\/php-wasm/', '', $path);\n\n$_SERVER['SERVER_SOFTWARE'] = ").concat(JSON.stringify(navigator.userAgent), ";\n$_SERVER['REQUEST_URI']     = $path;\n$_SERVER['REMOTE_ADDR']     = '127.0.0.1';\n$_SERVER['SERVER_NAME']     = $origin;\n$_SERVER['SERVER_PORT']     = 3333;\n$_SERVER['REQUEST_METHOD']  = $request->method;\n$_SERVER['SCRIPT_FILENAME'] = $docroot . '/' . $script;\n$_SERVER['SCRIPT_NAME']     = $docroot . '/' . $script;\n$_SERVER['PHP_SELF']        = $docroot . '/' . $script;\n$_SERVER['DOCUMENT_ROOT']   = '/';\n$_SERVER['HTTPS']           = '';\n\nchdir($docroot);\n\ndefine('DRUPAL_ROOT', getcwd());\n\nrequire_once DRUPAL_ROOT . '/includes/bootstrap.inc';\ndrupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);\n\n$uid     = 1;\n$user    = user_load($uid);\n$account = array('uid' => $user->uid);\nuser_login_submit(array(), $account);\n\n$itemPath = $path;\n$itemPath = preg_replace('/^\\/preload/', '', $itemPath);\n$itemPath = preg_replace('/^\\/drupal-7.59/', '', $itemPath);\n$itemPath = preg_replace('/^\\//', '', $itemPath);\n\nif($itemPath && (substr($itemPath, 0, 4) !== 'node' || substr($itemPath, -4) === 'edit'))\n{\n    $router_item = menu_get_item($itemPath);\n    $router_item['access_callback'] = true;\n    $router_item['access'] = true;\n\n    if ($router_item['include_file']) {\n      require_once DRUPAL_ROOT . '/' . $router_item['include_file'];\n    }\n\n    $page_callback_result = call_user_func_array(\n    \t$router_item['page_callback']\n    \t, is_string($router_item['page_arguments'])\n    \t\t? unserialize($router_item['page_arguments'])\n    \t\t: $router_item['page_arguments']\n    );\n\n    drupal_deliver_page($page_callback_result);\n}\nelse\n{\n    menu_execute_active_handler();\n}");
     php.run(code).then(function (exitCode) {
       exitLabel.innerText = exitCode;
       status.innerText = 'php-wasm ready!';
@@ -653,62 +756,6 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('Done');
       });
     });
-
-    var runCode = function runCode() {
-      exitLabel.innerText = '_';
-      status.innerText = 'Executing...';
-      stdoutFrame.srcdoc = ' ';
-      stderrFrame.srcdoc = ' ';
-      stdretFrame.srcdoc = ' ';
-
-      while (stdout.firstChild) {
-        stdout.firstChild.remove();
-      }
-
-      while (stderr.firstChild) {
-        stderr.firstChild.remove();
-      }
-
-      while (stdret.firstChild) {
-        stdret.firstChild.remove();
-      }
-
-      var code = editor.session.getValue();
-
-      if (code.length < 1024 * 2) {
-        query.set('autorun', autorun.checked ? 1 : 0);
-        query.set('persist', persistBox.checked ? 1 : 0);
-        query.set('single-expression', singleBox.checked ? 1 : 0);
-        query.set('code', encodeURIComponent(code));
-        history.replaceState({}, document.title, "?" + query.toString());
-      }
-
-      var func = singleBox.checked ? 'exec' : 'run';
-
-      if (singleBox.checked) {
-        code = code.replace(/^\s*<\?php/, '');
-        code = code.replace(/\?>\s*/, '');
-      }
-
-      php[func](code).then(function (ret) {
-        status.innerText = 'php-wasm ready!';
-        var content = String(ret);
-        stdret.innerText = content;
-        stdretFrame.srcdoc = content;
-        exitLabel.innerText = '_';
-
-        if (!singleBox.checked) {
-          setTimeout(function () {
-            return exitLabel.innerText = ret;
-          }, 100);
-        }
-      })["finally"](function () {
-        if (!persistBox.checked) {
-          php.refresh();
-        }
-      });
-    };
-
     run.addEventListener('click', runCode);
 
     if (query.get('autorun')) {
@@ -890,10 +937,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 });
-
 });
 
 require.alias("process/browser.js", "process");process = require('process');require.register("___globals___", function(exports, require, module) {
   
 });})();require('___globals___');
 
+
+//# sourceMappingURL=app.js.map
