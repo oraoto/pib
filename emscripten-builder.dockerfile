@@ -11,6 +11,7 @@ RUN set -euxo pipefail;\
 	apt-get --no-install-recommends -y install \
 		build-essential \
 		automake-1.15 \
+		libxml2-dev \
 		autoconf \
 		libtool \
 		pkgconf \

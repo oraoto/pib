@@ -55,7 +55,7 @@ body {
 	flex: 1;
 }
 
-.row.toolbar button {
+.row.toolbar button[data-run] {
 	padding: 0.75em;
 	font-weight: bold;
 	border: 2px solid;
@@ -79,7 +79,7 @@ button[data-run]:not([disabled])::after {
     opacity: 0.5;
 }
 
-.header button {
+.header button[data-run] {
 	position: relative;
 	font-weight: bold;
 	font-size: 13pt;

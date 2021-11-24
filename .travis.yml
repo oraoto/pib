@@ -13,10 +13,10 @@ before_install:
   - docker run -dit --name emscripten -v $(pwd):/src trzeci/emscripten-ubuntu:latest bash
 
 script:
-  - sudo apt update && sudo apt install pv
+  - sudo apt update && sudo apt install -y  pv libxml2-dev
   - docker system prune -af
   - make pull-image
-  - make -j8
+  - make -j4
 
 notifications:
   email: false

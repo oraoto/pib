@@ -2,6 +2,12 @@
 
 Changes
 
+## 0.0.4 - Revisiting
+
+* Separated Drupal from standard php-web to save bandwidth
+* Running the build automatically on push in CircleCI
+* Getting the automatic build working for Drupal
+
 ## 0.0.3 - New Horizons
 
 * php.exec() may be used to evaluate a single php expression & return its result.
